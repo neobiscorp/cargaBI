@@ -934,6 +934,7 @@ shinyServer(function(input, output, session) {
           append = FALSE,
           allow.keywords = FALSE
         )
+        ACCESSES <<- ACCESSES
         
       }
       file.remove("ACCESSES.txt")
@@ -1160,6 +1161,9 @@ shinyServer(function(input, output, session) {
         append = FALSE,
         allow.keywords = FALSE
       )
+      
+      PLAN<<-PLAN
+      
       file.remove("Planes.txt")
     }
     
@@ -1199,6 +1203,9 @@ shinyServer(function(input, output, session) {
         append = FALSE,
         allow.keywords = FALSE
       )
+      
+      TIPO<<-TIPO
+      
       file.remove("TIPO.txt")
     }
     
@@ -1302,17 +1309,26 @@ shinyServer(function(input, output, session) {
 		  
       }
     
-    if (!is.null(input$link)){
+    if (!is.null(input$link) && !is.null(input$link)){
+      
+      link<<- input$link 
+      nombre<<- input$nombre
       
       dbSendQuery(DB,"CREATE TABLE IF NOT EXISTS `logo_cliente` (
         `id` int(11) NOT NULL,
         `Nombre Cliente` varchar(255) NOT NULL,
         `Link` text NOT NULL);")
       
-      dbSendQuery(DB,paste("INSERT INTO `logo_cliente`(`id`, `Nombre Cliente`, `Link`) VALUES (1,",input$link,",",input$nombre,")
+      dbSendQuery(DB,"TRUNCATE `logo_cliente`;")
+      
+      dbSendQuery(DB,paste("INSERT INTO `logo_cliente`(`id`, `Nombre Cliente`, `Link`) VALUES (1,",input$nombre,",",input$link,")
       on duplicate key update 
       `Nombre Cliente` = values(`Nombre Cliente`), `Link` = values(`Link`);",sep='\''))
     } 
+    
+    if (input$excel == TRUE){
+      
+    }
     
     killDbConnections()
     updateButton(session, "execute", style ="success", icon = icon("check"))
