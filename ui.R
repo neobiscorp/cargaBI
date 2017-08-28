@@ -76,6 +76,9 @@ shinyUI(fluidPage(
     conditionalPanel(
       condition = "input.Client == 'Licitacion Movil (Entel y Movistar)'",
       checkboxInput('excel', '¿Crear RFP en Excel?', value = FALSE)),
+    conditionalPanel(
+      condition = "input.excel == true",
+      dateInput('fecha', 'Fecha del RFP', format = "dd-mm-yyyy", weekstart = 1, language = "es")),
       tags$hr(),
     bsButton("execute", " Importar!")
     ),

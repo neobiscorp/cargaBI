@@ -1327,7 +1327,48 @@ shinyServer(function(input, output, session) {
     } 
     
     if (input$excel == TRUE){
+      #open RFP Workbook
+      wb <- loadWorkbook("Z:\\AUT Informes\\Licitacion SAAM\\RFP TELEFONIA MOVIL.xlsx")
       
+      licitacion <- paste0("SOLUCIÓN DE TELECOMUNICACIONES MÓVILES PARA ",input$nombre) 
+      
+      writeData(wb, sheet = "RFP MOVISTAR", licitacion, startCol = 2, startRow = 6)
+      writeData(wb, sheet = "RFP ENTEL", licitacion, startCol = 2, startRow = 6)
+      writeData(wb, sheet = "RFP PLANES", licitacion, startCol = 2, startRow = 6)
+      writeData(wb, sheet = "RFP CATEGORIAS PLANES", licitacion, startCol = 2, startRow = 6)
+      writeData(wb, sheet = "RFP EQUIPOS", licitacion, startCol = 2, startRow = 6)
+      
+      cliente <- input$nombre 
+      
+      writeData(wb, sheet = "RFP MOVISTAR", cliente, startCol = 2, startRow = 7)
+      writeData(wb, sheet = "RFP ENTEL", cliente, startCol = 2, startRow = 7)
+      writeData(wb, sheet = "RFP PLANES", cliente, startCol = 2, startRow = 7)
+      writeData(wb, sheet = "RFP CATEGORIAS PLANES", cliente, startCol = 2, startRow = 7)
+      writeData(wb, sheet = "RFP EQUIPOS", cliente, startCol = 2, startRow = 7)
+      
+      fecha <- input$fecha 
+      
+      writeData(wb, sheet = "RFP MOVISTAR", fecha, startCol = 2, startRow = 9)
+      writeData(wb, sheet = "RFP ENTEL", fecha, startCol = 2, startRow = 9)
+      writeData(wb, sheet = "RFP PLANES", fecha, startCol = 2, startRow = 9)
+      writeData(wb, sheet = "RFP CATEGORIAS PLANES", fecha, startCol = 2, startRow = 9)
+      writeData(wb, sheet = "RFP EQUIPOS", fecha, startCol = 2, startRow = 9)
+      
+      link <- input$link
+      z<- tempfile()
+      download.file(link,z,mode = "wb")
+      
+      insertImage(wb, sheet = "RFP MOVISTAR", z, startCol = 3, startRow = 1, units = "in", dpi = 100)
+      insertImage(wb, sheet = "RFP ENTEL", z, startCol = 3, startRow = 1, units = "in", dpi = 100)
+      insertImage(wb, sheet = "RFP PLANES", z, startCol = 3, startRow = 1, units = "in", dpi = 100)
+      insertImage(wb, sheet = "RFP CATEGORIAS PLANES", z, startCol = 3, startRow = 1, units = "in", dpi = 100)
+      insertImage(wb, sheet = "RFP EQUIPOS", z, startCol = 3, startRow = 1, units = "in", dpi = 100)
+
+      #Functions in other files
+      #source("", local = TRUE)
+      
+      #Save Workbook
+      saveWorkbook(wb,paste0("Z:\\AUT Informes\\Licitacion SAAM\\RFP TELEFONIA MOVIL ",cliente,".xlsx"),overwrite = T)
     }
     
     killDbConnections()
