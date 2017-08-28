@@ -934,8 +934,9 @@ shinyServer(function(input, output, session) {
           append = FALSE,
           allow.keywords = FALSE
         )
+        
       }
-      
+      file.remove("ACCESSES.txt")
       #######################################DEVICES############
       if (client != "lmovil"){
       DEVICES <- read.xlsx(export$datapath,
@@ -1159,6 +1160,7 @@ shinyServer(function(input, output, session) {
         append = FALSE,
         allow.keywords = FALSE
       )
+      file.remove("Planes.txt")
     }
     
     if (!is.null(tipos)) {
@@ -1197,6 +1199,7 @@ shinyServer(function(input, output, session) {
         append = FALSE,
         allow.keywords = FALSE
       )
+      file.remove("TIPO.txt")
     }
     
     if (!is.null(input$cdr)) {
@@ -1294,6 +1297,9 @@ shinyServer(function(input, output, session) {
 		  dbSendQuery(DB,"ALTER TABLE `cdr_join_accesses_all` CHANGE COLUMN `Proveedor Nivel 2` `Proveedor Nivel 2 llamado` VARCHAR(255);")
 		  dbSendQuery(DB,"ALTER TABLE `cdr_join_accesses_all` CHANGE COLUMN `Proveedor Nivel 3` `Proveedor Nivel 3 llamado` VARCHAR(255);")
 		  dbSendQuery(DB,"DROP TABLE IF EXISTS `cdr`;")
+		  
+		  file.remove("cdr.txt")
+		  
       }
     
     if (!is.null(input$link)){
