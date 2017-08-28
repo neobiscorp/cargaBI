@@ -1212,9 +1212,13 @@ shinyServer(function(input, output, session) {
     if (!is.null(input$cdr)) {
     
       CDRFile <<- NULL
+    #Read CDR file with correct fileencoding
       CDRFile <<- lapply(input$cdr[['datapath']], function(x) read.csv2(x,fileEncoding = "UTF-8-BOM"))
+      
+      #join all CDR months
       cdr <<- rbindlist(CDRFile)
       
+      #Change column names of the CDR
       names(cdr)[names(cdr) == 'Número.de.llamada'] <<- 'Numero de llamada'
       names(cdr)[names(cdr) == 'Número.llamado'] <<- 'Numero llamado'
       names(cdr)[names(cdr) == 'Tipo de llamada'] <<- 'Tipo de llamada'
@@ -1236,7 +1240,7 @@ shinyServer(function(input, output, session) {
       names(cdr)[names(cdr) == 'Llamadas.internas'] <<- 'Llamadas internas'
       names(cdr)[names(cdr) == 'Servicio.llamado'] <<- 'Servicio llamado'
       
-      
+      #delete not used columns
       cdr[,'Usuario'] <<- NULL
       cdr[,'Tecnologia'] <<- NULL
       cdr[,'Red recurrente'] <<- NULL
@@ -1310,17 +1314,20 @@ shinyServer(function(input, output, session) {
       }
     
     if (!is.null(input$link) && !is.null(input$link)){
-      
+      #Set variable names
       link<<- input$link 
       nombre<<- input$nombre
       
+      #Create table logo_cliente if doesnt exist
       dbSendQuery(DB,"CREATE TABLE IF NOT EXISTS `logo_cliente` (
         `id` int(11) NOT NULL,
         `Nombre Cliente` varchar(255) NOT NULL,
         `Link` text NOT NULL);")
       
+      #Delete all data in logo_cliente
       dbSendQuery(DB,"TRUNCATE `logo_cliente`;")
       
+      #Insert data in logo_cliente (if exist update)
       dbSendQuery(DB,paste("INSERT INTO `logo_cliente`(`id`, `Nombre Cliente`, `Link`) VALUES (1,",input$nombre,",",input$link,")
       on duplicate key update 
       `Nombre Cliente` = values(`Nombre Cliente`), `Link` = values(`Link`);",sep='\''))
@@ -1330,6 +1337,7 @@ shinyServer(function(input, output, session) {
       #open RFP Workbook
       wb <- loadWorkbook("Z:\\AUT Informes\\Licitacion SAAM\\RFP TELEFONIA MOVIL.xlsx")
       
+      #Insert Nombre licitacion to Workbook
       licitacion <- paste0("SOLUCIÓN DE TELECOMUNICACIONES MÓVILES PARA ",input$nombre) 
       
       writeData(wb, sheet = "RFP MOVISTAR", licitacion, startCol = 2, startRow = 6)
@@ -1338,6 +1346,7 @@ shinyServer(function(input, output, session) {
       writeData(wb, sheet = "RFP CATEGORIAS PLANES", licitacion, startCol = 2, startRow = 6)
       writeData(wb, sheet = "RFP EQUIPOS", licitacion, startCol = 2, startRow = 6)
       
+      #Insert Nombre cliente to Workbook
       cliente <- input$nombre 
       
       writeData(wb, sheet = "RFP MOVISTAR", cliente, startCol = 2, startRow = 7)
@@ -1346,6 +1355,7 @@ shinyServer(function(input, output, session) {
       writeData(wb, sheet = "RFP CATEGORIAS PLANES", cliente, startCol = 2, startRow = 7)
       writeData(wb, sheet = "RFP EQUIPOS", cliente, startCol = 2, startRow = 7)
       
+      #Insert Date to Workbook
       fecha <- input$fecha 
       
       writeData(wb, sheet = "RFP MOVISTAR", fecha, startCol = 2, startRow = 9)
@@ -1354,6 +1364,7 @@ shinyServer(function(input, output, session) {
       writeData(wb, sheet = "RFP CATEGORIAS PLANES", fecha, startCol = 2, startRow = 9)
       writeData(wb, sheet = "RFP EQUIPOS", fecha, startCol = 2, startRow = 9)
       
+      #Insert client image to Workbook
       link <- input$link
       z<- tempfile()
       download.file(link,z,mode = "wb")
@@ -1370,8 +1381,10 @@ shinyServer(function(input, output, session) {
       #Save Workbook
       saveWorkbook(wb,paste0("Z:\\AUT Informes\\Licitacion SAAM\\RFP TELEFONIA MOVIL ",cliente,".xlsx"),overwrite = T)
     }
-    
+    #Kill open connections
     killDbConnections()
+    
+    #Update the excecute button to "finished" status
     updateButton(session, "execute", style ="success", icon = icon("check"))
   })
   
