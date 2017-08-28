@@ -1298,12 +1298,12 @@ shinyServer(function(input, output, session) {
     
     if (!is.null(input$link)){
       
-      dbSendQuery(DB,"CREATE TABLE IF NOT EXISTS `otros` (
+      dbSendQuery(DB,"CREATE TABLE IF NOT EXISTS `logo_cliente` (
         `id` int(11) NOT NULL,
         `Nombre Cliente` varchar(255) NOT NULL,
         `Link` text NOT NULL);")
       
-      dbSendQuery(DB,paste("INSERT INTO `otros`(`id`, `Nombre Cliente`, `Link`) VALUES (1,",input$link,",",input$nombre,")
+      dbSendQuery(DB,paste("INSERT INTO `logo_cliente`(`id`, `Nombre Cliente`, `Link`) VALUES (1,",input$link,",",input$nombre,")
       on duplicate key update 
       `Nombre Cliente` = values(`Nombre Cliente`), `Link` = values(`Link`);",sep='\''))
     } 
