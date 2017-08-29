@@ -75,6 +75,10 @@ shinyUI(fluidPage(
                 accept=c('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'))),
     conditionalPanel(
       condition = "input.Client == 'Licitacion Movil (Entel y Movistar)'",
+      fileInput('cuentas', 'Elegir el Archivo xlsx que contiene RUT de la empresa a licitar y sus cuentas clientes',
+                accept=c('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'))),
+    conditionalPanel(
+      condition = "input.Client == 'Licitacion Movil (Entel y Movistar)'",
       checkboxInput('excel', '¿Crear RFP en Excel?', value = FALSE)),
     conditionalPanel(
       condition = "input.excel == true",

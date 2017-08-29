@@ -51,6 +51,7 @@ shinyServer(function(input, output, session) {
     planes <- input$planes
     tipos <- input$tipos
     presupuesto <- input$presupuesto
+    cuentas <- input$cuentas
     
     #Change name of client input to the same name of the database
     if(client == "Parque Arauco"){
@@ -1313,7 +1314,7 @@ shinyServer(function(input, output, session) {
 		  
       }
     
-    if (!is.null(input$link) && !is.null(input$link)){
+    if (!is.null(input$link) && !is.null(input$nombre)){
       #Set variable names
       link<<- input$link 
       nombre<<- input$nombre
@@ -1332,6 +1333,49 @@ shinyServer(function(input, output, session) {
       on duplicate key update 
       `Nombre Cliente` = values(`Nombre Cliente`), `Link` = values(`Link`);",sep='\''))
     } 
+    
+    if (!is.null(cuentas)){
+      #Copy the file uploaded and add the .xlsx file type to the temp file
+      file.copy(cuentas$datapath, paste(cuentas$datapath, ".xlsx", sep = ""))
+      
+      CUENTAS <- read.xlsx(cuentas$datapath,
+                        sheet = "CUENTAS",
+                        startRow = 1)
+      
+      CUENTAS <- CUENTAS[c(1:4)]
+      
+      file.remove("CUENTAS.txt")
+      write.table(CUENTAS,
+                  file = "CUENTAS.txt",
+                  fileEncoding = "utf8")
+      CUENTAS <- read.table(file = "CUENTAS.txt", encoding = "utf8")
+      
+      names(CUENTAS) <- c("Empresa", 
+                       "RUT", 
+                       "Cuenta Cliente", 
+                       "Proveedor")
+      
+      dbWriteTable(
+        DB,
+        "cuentas",
+        CUENTAS,
+        field.types = list(
+          `Empresa`= "varchar(255)",
+          `RUT`= "varchar(255)",
+          `Cuenta Cliente`= "varchar(255)",
+          `Proveedor` = "varchar(255)"
+        ),
+        row.names = FALSE,
+        overwrite = TRUE,
+        append = FALSE,
+        allow.keywords = FALSE
+      )
+      
+      CUENTAS<<-CUENTAS
+      
+      file.remove("CUENTAS.txt")
+      
+    }
     
     if (input$excel == TRUE){
       #open RFP Workbook
