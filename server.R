@@ -19,7 +19,7 @@ killDbConnections <- function () {
   
 }
 
-#Increase the maxium size of an uploaded file to 30mb
+#Increase the maxium size of an uploaded file to 250mb
 options(shiny.maxRequestSize = 250 * 1024 ^ 2)
 
 #Function to convert ITEM months to number
@@ -1079,7 +1079,7 @@ shinyServer(function(input, output, session) {
       )
       }
     }
-    
+    #Run the following code if theres a file in the presupuesto file input
     if (!is.null(presupuesto)) {
       file.copy(presupuesto$datapath, paste(presupuesto$datapath, ".xlsx", sep = ""))
       
@@ -1106,7 +1106,7 @@ shinyServer(function(input, output, session) {
       )
       
     }
-    
+    #Run the following code if theres a file in the planes file input
     if (!is.null(planes)) {
       
       file.copy(planes$datapath, paste(planes$datapath, ".xlsx", sep = ""))
@@ -1167,7 +1167,7 @@ shinyServer(function(input, output, session) {
       
       file.remove("Planes.txt")
     }
-    
+    #Run the following code if theres a file in the tipos file input
     if (!is.null(tipos)) {
       
       file.copy(tipos$datapath, paste(tipos$datapath, ".xlsx", sep = ""))
@@ -1209,7 +1209,7 @@ shinyServer(function(input, output, session) {
       
       file.remove("TIPO.txt")
     }
-    
+    #Run the following code if theres a file in the cdr file input
     if (!is.null(input$cdr)) {
     
       CDRFile <<- NULL
@@ -1313,7 +1313,7 @@ shinyServer(function(input, output, session) {
 		  file.remove("cdr.txt")
 		  
       }
-    
+    #Run the following code if theres a file in the nombre and link text input
     if (!is.null(input$link) && !is.null(input$nombre)){
       #Set variable names
       link<<- input$link 
@@ -1333,7 +1333,7 @@ shinyServer(function(input, output, session) {
       on duplicate key update 
       `Nombre Cliente` = values(`Nombre Cliente`), `Link` = values(`Link`);",sep='\''))
     } 
-    
+    #Run the following code if theres a file in the cuentas file input
     if (!is.null(cuentas)){
       #Copy the file uploaded and add the .xlsx file type to the temp file
       file.copy(cuentas$datapath, paste(cuentas$datapath, ".xlsx", sep = ""))
@@ -1376,7 +1376,7 @@ shinyServer(function(input, output, session) {
       file.remove("CUENTAS.txt")
       
     }
-    
+    #Run the following code if theres a ticket in the RFP excel checkbox
     if (input$excel == TRUE){
       #open RFP Workbook
       wb <- loadWorkbook("Z:\\AUT Informes\\Licitacion SAAM\\RFP TELEFONIA MOVIL.xlsx")
@@ -1421,6 +1421,94 @@ shinyServer(function(input, output, session) {
 
       #Functions in other files
       #source("", local = TRUE)
+      
+      # Consumo total Voz MOVISTAR
+      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 4, startRow = 14)
+      # 
+      # Consumo voz entre usuarios MOVISTAR
+      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 4, startRow = 16)
+      # 
+      # Consumo voz a todo destino MOVISTAR
+      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 4, startRow = 18)
+      # 
+      # Smartphones Gama ALTA MOVISTAR
+      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 4, startRow = 20)
+      # 
+      # Smartphones Gama MEDIA MOVISTAR
+      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 4, startRow = 22)
+      # 
+      # BAM o Servicios de Telemetria MOVISTAR
+      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 4, startRow = 26)
+      # 
+      # Mensajeria SMS MOVISTAR
+      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 4, startRow = 28)
+      # 
+      # Mensajeria MMS MOVISTAR
+      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 4, startRow = 30)
+      # 
+      # Usuarios Roaming On Demand MOVISTAR
+      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 4, startRow = 32)
+      # 
+      # Roaming Voz MOVISTAR
+      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 4, startRow = 34)
+      # 
+      # Roaming Datos MOVISTAR
+      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 4, startRow = 36)
+      # 
+      # Roaming Mensajes MOVISTAR
+      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 4, startRow = 38)
+      # 
+      # $/Minuto Actual MOVISTAR
+      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 8, startRow = 15)
+      # 
+      # $/Mb Actual MOVISTAR
+      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 8, startRow = 20)
+      
+      
+      # Consumo total Voz ENTEL
+      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 4, startRow = 14)
+      # 
+      # Consumo voz entre usuarios ENTEL
+      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 4, startRow = 16)
+      # 
+      # Consumo voz a todo destino ENTEL
+      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 4, startRow = 18)
+      # 
+      # Smartphones Gama ALTA ENTEL
+      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 4, startRow = 20)
+      # 
+      # Smartphones Gama MEDIA ENTEL
+      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 4, startRow = 22)
+      # 
+      # BAM o Servicios de Telemetria ENTEL
+      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 4, startRow = 26)
+      # 
+      # Mensajeria SMS ENTEL
+      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 4, startRow = 28)
+      # 
+      # Mensajeria MMS ENTEL
+      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 4, startRow = 30)
+      # 
+      # Usuarios Roaming On Demand ENTEL
+      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 4, startRow = 32)
+      # 
+      # Roaming Voz ENTEL
+      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 4, startRow = 34)
+      # 
+      # Roaming Datos ENTEL
+      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 4, startRow = 36)
+      # 
+      # Roaming Mensajes ENTEL
+      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 4, startRow = 38)
+      #
+      # Internacional Voz ENTEL
+      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 4, startRow = 40)
+      # 
+      # $/Minuto promedio ENTEL
+      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 8, startRow = 16)
+      # 
+      # $/Mb Actual ENTEL
+      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 8, startRow = 21)
       
       #Save Workbook
       saveWorkbook(wb,paste0("Z:\\AUT Informes\\Licitacion SAAM\\RFP TELEFONIA MOVIL ",cliente,".xlsx"),overwrite = T)
