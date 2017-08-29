@@ -84,7 +84,6 @@ shinyUI(fluidPage(
     ),
     mainPanel(
       h5("Campos Uso: #Acceso
- #
         #Período de
          #Proveedor
          #Total
