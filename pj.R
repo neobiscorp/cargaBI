@@ -1,32 +1,42 @@
 #ajustando la base de datos
 cdr_accesses <-
   merge(cdr, ACCESSES, by.x = "Numero de llamada fix", by.y = "Acceso fix")
-mes1 <- substr(cdr_accesses$`Fecha de llamada`, 6, 7)
+mes1 <- substr(cdr_accesses["Fecha de llamada"], 6, 7)
 mes <- as.numeric(mes1)
+rm(mes1)
 cdr_accesses <- data.frame(cdr_accesses, mes)
 cdr_accesses <-
-  subset(cdr_accesses, cdr_accesses$mes != min(cdr_accesses$mes))
-n <-length(unique(cdr_accesses$mes))
-
+  subset(cdr_accesses, cdr_accesses["mes"] != min(cdr_accesses["mes"]))
+n <-length(unique(cdr_accesses["mes"]))
+cdr_accesses <-subset(cdr_accesses,cdr_accesses["Proveedor"] == "Movistar CL")
+rm(mes)
 #BAM o Servicios de Telemetria ->plan datos por dispositivos
+mes1 <- substr(uso["Fecha"], 6, 7)
+mes <- as.numeric(mes1)
+uso <- data.frame(uso,mes)
+usoM <- subset(uso,uso["Proveedor"] == "Movistar CL")
+n2 <-length(unique(usoM["mes2"]))
+asdas <- length(unique(usoM["Acceso"]))
+
+
 
 #Precio por SMS
 
 MensajeriaSMS <-
   subset(
-    cdr_accesses$Precio,
+    cdr_accesses["Precio"],
     (
-      cdr_accesses$Geografia == "Local" |
-        cdr_accesses$Geografia == "Nacional desconocido"
+      cdr_accesses["Geografia"] == "Local" |
+        cdr_accesses["Geografia"] == "Nacional desconocido"
     )
     &
-      cdr_accesses$Precio > 0
+      cdr_accesses["Precio"] > 0
     &
-      cdr_accesses$Precio < 100
+      cdr_accesses["Precio"] < 100
     &
-      cdr_accesses$Proveedor == "Movistar CL"
+      cdr_accesses["Proveedor"] == "Movistar CL"
     &
-      cdr_accesses$Tipo.de.llamada == "SMS"
+      cdr_accesses["Tipo de llamada"] == "SMS"
   )
 a <- mean(MensajeriaSMS)
 
@@ -81,7 +91,6 @@ while (i <= 12) {
     )
   prommesroamingVoz[i] <- sum(RoamingVoz2)
   i <- i + 1
-  print(i - 1)
 }
 print(prommesroamingVoz)
 VRmin <- mean(subset(prommesroamingVoz / 60, prommesroamingVoz > 0))
@@ -90,7 +99,6 @@ VRminajustado <-
   (VRmin + (length(RoamingVoz3) / length(
     subset(prommesroamingVoz, prommesroamingVoz > 0)
   )))
-f <- sum(prommesroamingVoz[c(2, 3, 4, 5)]) / 4 / 60
 #Roaming Datos
 RoamingDatos <-
   subset(
@@ -105,7 +113,8 @@ RoamingDatos <-
   )
 
 d <- sum(RoamingDatos) / 1024
-summary(RoamingDatos/1024)
+
+maxRD <-max(RoamingDatos/1024)
 
 #Roaming Mensajes
 RoamingSMS <-
