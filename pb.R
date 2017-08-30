@@ -17,16 +17,14 @@ cdr_accesses[, "NET"] <-
           1,
           0)
 
-mes1 <- substr(cdr_accesses$`Fecha de llamada`, 6, 7)
+mes1 <- sapply(cdr_accesses["Fecha de llamada"], substr, 6, 7)
 mes <- as.numeric(mes1)
-rm(mes1)
-cdr_accesses <- data.frame(cdr_accesses, mes)
+cdr_accesses["Mes"] <- mes
+n <- (length(unique(mes))) - 1 #número de meses
+rm(mes1, mes)
 
 cdr_accesses <-
-  subset(cdr_accesses, cdr_accesses$mes != min(cdr_accesses$mes))
-
-#n <- número de meses
-n <- length(unique(cdr_accesses$mes))
+  subset(cdr_accesses, cdr_accesses["Mes"] != min(cdr_accesses["Mes"]))
 
 cdr_movistar <-
   subset(cdr_accesses, cdr_accesses$Proveedor.x == "Movistar CL")
@@ -34,18 +32,18 @@ cdr_movistar <-
 #CONSUMO TOTAL VOZ
 movistarvoz <-
   subset(cdr_movistar,
-         cdr_movistar$Tipo.de.llamada == "Voz" &
-           cdr_movistar$Duracion > 0)
+         cdr_movistar["Tipo de llamada"] == "Voz" &
+           cdr_movistar["Duracion"] > 0)
 
-x <- (sum(movistarvoz$Duracion) / 60) / n
+x <- (sum(movistarvoz["Duracion"]) / 60) / n
 #print(x)
 
-#CONSUMO VOZ ENTRE USUARIOS SAAM
+#CONSUMO VOZ ENTRE USUARIOS SAAM SA
 movistarvozonnet <-
   subset(movistarvoz,
-         movistarvoz$"NET" == 1)
+         movistarvoz["NET"] == 1)
 
-y <- (sum(movistarvozonnet$Duracion) / 60) / n
+y <- (sum(movistarvozonnet["Duracion"]) / 60) / n
 #print(y)
 
 #CONSUMO VOZ A TODO DESTINO
@@ -60,15 +58,15 @@ print(c(x, y, z))
 movistarvoz <-
   subset(
     movistarvoz,
-    movistarvoz$Precio > 0  &
-      movistarvoz$mes == max(movistarvoz$mes) &
+    movistarvoz["Precio"] > 0  &
+      movistarvoz["Mes"] == max(movistarvoz["Mes"]) &
       (
-        movistarvoz$Geografia == "Local" |
-          movistarvoz$Geografia == "Nacional desconocido"
+        movistarvoz$Geografia == "Nacional desconocido" |
+          movistarvoz$Geografia == "Local"
       )
   )
 
-print(sum(movistarvoz$Precio) / (sum(movistarvoz$Duracion) / 60))
+print(sum(movistarvoz["Precio"]) / (sum(movistarvoz["Duracion"]) / 60))
 
 #Remoción tablas y variables
 rm(cdr_movistar, movistarvoz, movistarvozonnet, x, y, z)
