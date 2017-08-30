@@ -1,20 +1,17 @@
+##################SETUP##############################
 #Load Libraries
-library(shiny) #Dashboard
-library(RMySQL) #Secundary MySQL connection
-library(DBI) #Primary MySQL connection
-library(stringr) #
-library(openxlsx) #Read xlsx files
-library(data.table) #
+library(shiny)      #Dashboard
+library(RMySQL)     #Secundary MySQL connection, Kill connections
+library(DBI)        #Primary MySQL connection
+library(openxlsx)   #Read xlsx files
+library(data.table) #For merge, rbind and dataframe works
 
 #Function to kill MySQL connections
 killDbConnections <- function () {
   all_cons <- dbListConnections(MySQL())
-  
   print(all_cons)
-  
   for (con in all_cons)
     +  dbDisconnect(con)
-  
   print(paste(length(all_cons), " connections killed."))
 }
 
@@ -38,7 +35,7 @@ y <-
     "dic. " = "12"
   )
 
-#Start Shiny Server With session
+#############Start Shiny Server With session############
 shinyServer(function(input, output, session) {
   #Run function after pressing execute button
   observeEvent(input$execute, {
@@ -1338,6 +1335,83 @@ shinyServer(function(input, output, session) {
       
       file.remove("TIPO.txt")
     }
+    #Run the following code if theres a file in the nombre and link text input
+    if (!is.null(input$link) && !is.null(input$nombre)) {
+      #Set variable names
+      link <<- input$link
+      nombre <<- input$nombre
+      
+      #Create table logo_cliente if doesnt exist
+      dbSendQuery(
+        DB,
+        "CREATE TABLE IF NOT EXISTS `logo_cliente` (
+        `id` int(11) NOT NULL,
+        `Nombre Cliente` varchar(255) NOT NULL,
+        `Link` text NOT NULL);"
+  )
+      
+      #Delete all data in logo_cliente
+      dbSendQuery(DB, "TRUNCATE `logo_cliente`;")
+      
+      #Insert data in logo_cliente (if exist update)
+      dbSendQuery(
+        DB,
+        paste(
+          "INSERT INTO `logo_cliente`(`id`, `Nombre Cliente`, `Link`) VALUES (1,",
+          input$nombre,
+          ",",
+          input$link,
+          ")
+          on duplicate key update
+          `Nombre Cliente` = values(`Nombre Cliente`), `Link` = values(`Link`);",
+          sep = '\''
+        )
+      )
+    }
+    #Run the following code if theres a file in the cuentas file input
+    if (!is.null(cuentas)) {
+      #Copy the file uploaded and add the .xlsx file type to the temp file
+      file.copy(cuentas$datapath,
+                paste(cuentas$datapath, ".xlsx", sep = ""))
+      
+      CUENTAS <- read.xlsx(cuentas$datapath,
+                           sheet = "CUENTAS",
+                           startRow = 1)
+      
+      CUENTAS <- CUENTAS[c(1:4)]
+      
+      file.remove("CUENTAS.txt")
+      write.table(CUENTAS,
+                  file = "CUENTAS.txt",
+                  fileEncoding = "utf8")
+      CUENTAS <- read.table(file = "CUENTAS.txt", encoding = "utf8")
+      
+      names(CUENTAS) <- c("Empresa",
+                          "RUT",
+                          "Cuenta Cliente",
+                          "Proveedor")
+      
+      dbWriteTable(
+        DB,
+        "cuentas",
+        CUENTAS,
+        field.types = list(
+          `Empresa` = "varchar(255)",
+          `RUT` = "varchar(255)",
+          `Cuenta Cliente` = "varchar(255)",
+          `Proveedor` = "varchar(255)"
+        ),
+        row.names = FALSE,
+        overwrite = TRUE,
+        append = FALSE,
+        allow.keywords = FALSE
+      )
+      
+      CUENTAS <<- CUENTAS
+      
+      file.remove("CUENTAS.txt")
+      
+    }
     #Run the following code if theres a file in the cdr file input
     if (!is.null(input$cdr)) {
       CDRFile <<- NULL
@@ -1471,82 +1545,67 @@ shinyServer(function(input, output, session) {
       
       file.remove("cdr.txt")
       
-    }
-    #Run the following code if theres a file in the nombre and link text input
-    if (!is.null(input$link) && !is.null(input$nombre)) {
-      #Set variable names
-      link <<- input$link
-      nombre <<- input$nombre
+      #CREATE TABLE cdr_accesses
+      cdr_accesses <-
+        merge (cdr, ACCESSES, by.x = "Numero de llamada fix", by.y = "Acceso fix")
       
-      #Create table logo_cliente if doesnt exist
-      dbSendQuery(
-        DB,
-        "CREATE TABLE IF NOT EXISTS `logo_cliente` (
-        `id` int(11) NOT NULL,
-        `Nombre Cliente` varchar(255) NOT NULL,
-        `Link` text NOT NULL);"
-  )
-      
-      #Delete all data in logo_cliente
-      dbSendQuery(DB, "TRUNCATE `logo_cliente`;")
-      
-      #Insert data in logo_cliente (if exist update)
-      dbSendQuery(
-        DB,
-        paste(
-          "INSERT INTO `logo_cliente`(`id`, `Nombre Cliente`, `Link`) VALUES (1,",
-          input$nombre,
-          ",",
-          input$link,
-          ")
-          on duplicate key update
-          `Nombre Cliente` = values(`Nombre Cliente`), `Link` = values(`Link`);",
-          sep = '\''
+      cdr_accesses <-
+        merge (
+          cdr_accesses,
+          ACCESSES,
+          by.x = "Numero llamado",
+          by.y = "Acceso fix",
+          all.x = TRUE
         )
-      )
-    }
-    #Run the following code if theres a file in the cuentas file input
-    if (!is.null(cuentas)) {
-      #Copy the file uploaded and add the .xlsx file type to the temp file
-      file.copy(cuentas$datapath,
-                paste(cuentas$datapath, ".xlsx", sep = ""))
       
-      CUENTAS <- read.xlsx(cuentas$datapath,
-                           sheet = "CUENTAS",
-                           startRow = 1)
+      cdr_accesses[,"NET"] <-
+        ifelse (cdr_accesses["Proveedor Nivel 2.x"] == cdr_accesses["Proveedor Nivel 2.y"] &
+                  cdr_accesses["Proveedor Nivel 3.x"] == cdr_accesses["Proveedor Nivel 3.y"],
+                1,
+                0)
       
-      CUENTAS <- CUENTAS[c(1:4)]
+      mes1 <- sapply(cdr_accesses["Fecha de llamada"],substr, 6, 7)
+      mes <- as.numeric(mes1)
+      rm(mes1)
+      cdr_accesses["Mes"] <- mes
       
-      file.remove("CUENTAS.txt")
-      write.table(CUENTAS,
-                  file = "CUENTAS.txt",
-                  fileEncoding = "utf8")
-      CUENTAS <- read.table(file = "CUENTAS.txt", encoding = "utf8")
-      
-      names(CUENTAS) <- c("Empresa",
-                          "RUT",
-                          "Cuenta Cliente",
-                          "Proveedor")
+      cdr_accesses <<-
+        subset(cdr_accesses, cdr_accesses["Mes"] != min(cdr_accesses["Mes"]))
       
       dbWriteTable(
         DB,
-        "cuentas",
-        CUENTAS,
+        "cdr_accesses",
+        cdr_accesses,
         field.types = list(
-          `Empresa` = "varchar(255)",
-          `RUT` = "varchar(255)",
-          `Cuenta Cliente` = "varchar(255)",
-          `Proveedor` = "varchar(255)"
+          `Numero de llamada` = "char(11)",
+          `Numero de llamada fix` = "int(9)",
+          `Numero llamado` = "varchar(20)",
+          `Tipo de llamada` = "ENUM('Datos','MMS','SMS','Voz','E-mail','Desconocidos') NOT NULL",
+          `Fecha de llamada` = "DATE",
+          `Geografia` = "ENUM('A internacional','Local','Regional','Nacional desconocido','Roaming entrante','Roaming saliente','Roaming desconocido','Internacional desconocido','Desconocidos') NOT NULL",
+          `Pais emisor` = "varchar(40)",
+          `Pais destinatario` = "varchar(40)",
+          `Duracion` = "SMALLINT(8) UNSIGNED NOT NULL",
+          `Volumen` = "MEDIUMINT(10) UNSIGNED NOT NULL",
+          `Precio` = "FLOAT(10,2) NOT NULL",
+          `Tarificacion` = "ENUM('En el plan','Más alla del plan','Desconocidos','Fuera de plan') NOT NULL",
+          `Organizacion Proveedor` = "varchar(255)",
+          `Acceso.x` = "char(11)",
+          `Proveedor.x` = "varchar(255)",
+          `Proveedor Nivel 2.x` = "varchar(255)",
+          `Proveedor Nivel 3.x` = "varchar(255)",
+          `Acceso.y` = "char(11)",
+          `Proveedor.y` = "varchar(255)",
+          `Proveedor Nivel 2.y` = "varchar(255)",
+          `Proveedor Nivel 3.y` = "varchar(255)",
+          `NET` = "int(2)",
+          `Mes` = "int(2)"
         ),
         row.names = FALSE,
         overwrite = TRUE,
         append = FALSE,
         allow.keywords = FALSE
       )
-      
-      CUENTAS <<- CUENTAS
-      
-      file.remove("CUENTAS.txt")
       
     }
     #Run the following code if theres a ticket in the RFP excel checkbox
@@ -1730,41 +1789,36 @@ shinyServer(function(input, output, session) {
       #source("pb.r", local = TRUE)
       #source("jp.r", local = TRUE)
       
+      
       # Consumo total Voz MOVISTAR
-      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 4, startRow = 14)
+      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 5, startRow = 14)
       #
       # Consumo voz entre usuarios MOVISTAR
-      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 4, startRow = 16)
+      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 5, startRow = 16)
       #
       # Consumo voz a todo destino MOVISTAR
-      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 4, startRow = 18)
-      #
-      # Smartphones Gama ALTA MOVISTAR
-      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 4, startRow = 20)
-      #
-      # Smartphones Gama MEDIA MOVISTAR
-      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 4, startRow = 22)
+      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 5, startRow = 18)
       #
       # BAM o Servicios de Telemetria MOVISTAR
-      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 4, startRow = 26)
+      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 5, startRow = 26)
       #
       # Mensajeria SMS MOVISTAR
-      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 4, startRow = 28)
+      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 5, startRow = 28)
       #
       # Mensajeria MMS MOVISTAR
-      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 4, startRow = 30)
+      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 5, startRow = 30)
       #
       # Usuarios Roaming On Demand MOVISTAR
-      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 4, startRow = 32)
+      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 5, startRow = 32)
       #
       # Roaming Voz MOVISTAR
-      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 4, startRow = 34)
+      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 5, startRow = 34)
       #
       # Roaming Datos MOVISTAR
-      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 4, startRow = 36)
+      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 5, startRow = 36)
       #
       # Roaming Mensajes MOVISTAR
-      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 4, startRow = 38)
+      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 5, startRow = 38)
       #
       # $/Minuto Actual MOVISTAR
       # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 8, startRow = 15)
@@ -1774,43 +1828,37 @@ shinyServer(function(input, output, session) {
       
       
       # Consumo total Voz ENTEL
-      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 4, startRow = 14)
+      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 5, startRow = 14)
       #
       # Consumo voz entre usuarios ENTEL
-      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 4, startRow = 16)
+      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 5, startRow = 16)
       #
       # Consumo voz a todo destino ENTEL
-      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 4, startRow = 18)
-      #
-      # Smartphones Gama ALTA ENTEL
-      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 4, startRow = 20)
-      #
-      # Smartphones Gama MEDIA ENTEL
-      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 4, startRow = 22)
+      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 5, startRow = 18)
       #
       # BAM o Servicios de Telemetria ENTEL
-      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 4, startRow = 26)
+      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 5, startRow = 26)
       #
       # Mensajeria SMS ENTEL
-      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 4, startRow = 28)
+      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 5, startRow = 28)
       #
       # Mensajeria MMS ENTEL
-      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 4, startRow = 30)
+      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 5, startRow = 30)
       #
       # Usuarios Roaming On Demand ENTEL
-      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 4, startRow = 32)
+      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 5, startRow = 32)
       #
       # Roaming Voz ENTEL
-      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 4, startRow = 34)
+      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 5, startRow = 34)
       #
       # Roaming Datos ENTEL
-      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 4, startRow = 36)
+      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 5, startRow = 36)
       #
       # Roaming Mensajes ENTEL
-      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 4, startRow = 38)
+      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 5, startRow = 38)
       #
       # Internacional Voz ENTEL
-      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 4, startRow = 40)
+      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 5, startRow = 40)
       #
       # $/Minuto promedio ENTEL
       # writeData(wb, sheet = "RFP ENTEL", X, startCol = 8, startRow = 16)
@@ -1829,6 +1877,7 @@ shinyServer(function(input, output, session) {
         overwrite = T
       )
     }
+    
     #Kill open connections
     killDbConnections()
     

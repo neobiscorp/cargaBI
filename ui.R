@@ -1,9 +1,9 @@
+##################SETUP##############################
 #Load Libraries
 library(shiny) #Dashboard
 library(shinythemes) #Load Themes for shiny
 library(shinyBS) #Load Javascript plugin for shiny
-##################SETUP##############################
-#Start the UI file from Shiny
+#############Start the UI file from Shiny############
 shinyUI(fluidPage(
   #Name the title from title panel
   titlePanel("Carga de Datos a BD"),
