@@ -1786,34 +1786,34 @@ shinyServer(function(input, output, session) {
       
       
       # Consumo total Voz MOVISTAR
-      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 5, startRow = 14)
+      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 4, startRow = 14)
       #
       # Consumo voz entre usuarios MOVISTAR
-      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 5, startRow = 16)
+      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 4, startRow = 16)
       #
       # Consumo voz a todo destino MOVISTAR
-      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 5, startRow = 18)
+      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 4, startRow = 18)
       #
       # BAM o Servicios de Telemetria MOVISTAR
-      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 5, startRow = 26)
+      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 4, startRow = 26)
       #
       # Mensajeria SMS MOVISTAR
-      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 5, startRow = 28)
+      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 4, startRow = 28)
       #
       # Mensajeria MMS MOVISTAR
-      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 5, startRow = 30)
+      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 4, startRow = 30)
       #
       # Usuarios Roaming On Demand MOVISTAR
-      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 5, startRow = 32)
+      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 4, startRow = 32)
       #
       # Roaming Voz MOVISTAR
-      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 5, startRow = 34)
+      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 4, startRow = 34)
       #
       # Roaming Datos MOVISTAR
-      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 5, startRow = 36)
+      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 4, startRow = 36)
       #
       # Roaming Mensajes MOVISTAR
-      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 5, startRow = 38)
+      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 4, startRow = 38)
       #
       # $/Minuto Actual MOVISTAR
       # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 8, startRow = 15)
@@ -1823,37 +1823,37 @@ shinyServer(function(input, output, session) {
       
       
       # Consumo total Voz ENTEL
-      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 5, startRow = 14)
+      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 4, startRow = 14)
       #
       # Consumo voz entre usuarios ENTEL
-      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 5, startRow = 16)
+      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 4, startRow = 16)
       #
       # Consumo voz a todo destino ENTEL
-      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 5, startRow = 18)
+      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 4, startRow = 18)
       #
       # BAM o Servicios de Telemetria ENTEL
-      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 5, startRow = 26)
+      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 4, startRow = 26)
       #
       # Mensajeria SMS ENTEL
-      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 5, startRow = 28)
+      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 4, startRow = 28)
       #
       # Mensajeria MMS ENTEL
-      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 5, startRow = 30)
+      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 4, startRow = 30)
       #
       # Usuarios Roaming On Demand ENTEL
-      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 5, startRow = 32)
+      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 4, startRow = 32)
       #
       # Roaming Voz ENTEL
-      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 5, startRow = 34)
+      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 4, startRow = 34)
       #
       # Roaming Datos ENTEL
-      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 5, startRow = 36)
+      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 4, startRow = 36)
       #
       # Roaming Mensajes ENTEL
-      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 5, startRow = 38)
+      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 4, startRow = 38)
       #
       # Internacional Voz ENTEL
-      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 5, startRow = 40)
+      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 4, startRow = 40)
       #
       # $/Minuto promedio ENTEL
       # writeData(wb, sheet = "RFP ENTEL", X, startCol = 8, startRow = 16)
