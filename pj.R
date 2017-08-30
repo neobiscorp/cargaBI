@@ -10,13 +10,16 @@ cdr_accesses <-
 n <-length(unique(cdr_accesses["mes"]))
 cdr_accesses <-subset(cdr_accesses,cdr_accesses["Proveedor"] == "Movistar CL")
 rm(mes)
+
+
+
 #BAM o Servicios de Telemetria ->plan datos por dispositivos
 mes1 <- substr(uso["Fecha"], 6, 7)
 mes <- as.numeric(mes1)
 uso <- data.frame(uso,mes)
 usoM <- subset(uso,uso["Proveedor"] == "Movistar CL")
 n2 <-length(unique(usoM["mes2"]))
-asdas <- length(unique(usoM["Acceso"]))
+lineas <- length(unique(usoM["Acceso"]))
 
 
 
@@ -25,19 +28,11 @@ asdas <- length(unique(usoM["Acceso"]))
 MensajeriaSMS <-
   subset(
     cdr_accesses["Precio"],
-    (
-      cdr_accesses["Geografia"] == "Local" |
-        cdr_accesses["Geografia"] == "Nacional desconocido"
-    )
-    &
-      cdr_accesses["Precio"] > 0
-    &
-      cdr_accesses["Precio"] < 100
-    &
-      cdr_accesses["Proveedor"] == "Movistar CL"
-    &
-      cdr_accesses["Tipo de llamada"] == "SMS"
-  )
+    (cdr_accesses["Geografia"] == "Local" |
+        cdr_accesses["Geografia"] == "Nacional desconocido")
+    &cdr_accesses["Precio"] > 0
+    &cdr_accesses["Precio"] < 100
+    &cdr_accesses["Tipo de llamada"] == "SMS")
 a <- mean(MensajeriaSMS)
 
 
@@ -45,33 +40,26 @@ a <- mean(MensajeriaSMS)
 #Precio por MMS -> no aplica para  SAAM
 MensajeriaMMS <-
   subset(
-    cdr_accesses$Precio,
-    (
-      cdr_accesses$Geografia == "Local" |
-        cdr_accesses$Geografia == "Nacional desconocido"
-    )
-    &
-      cdr_accesses$Precio > 0
-    &
-      cdr_accesses$Proveedor == "Movistar CL"
-    &
-      cdr_accesses$Tipo.de.llamada == "MMS"
-  )
+    cdr_accesses["Precio"],
+    (cdr_accesses["Geografia"] == "Local" |
+        cdr_accesses["Geografia"] == "Nacional desconocido")
+    &cdr_accesses["Precio"] > 0
+    &cdr_accesses["Tipo de llamada"] == "MMS")
 b <- mean(MensajeriaMMS)
 #Usuarios Roaming On Demand
+
+
+
 
 #Roaming Voz
 RoamingVoz3 <-
   subset(
-    cdr_accesses$Duracion,
-    (
-      cdr_accesses$Geografia == "Roaming entrante" |
-        cdr_accesses$Geografia == "Roaming saliente"
-    )
-    & cdr_accesses$Proveedor == "Movistar CL"
-    & cdr_accesses$Tipo.de.llamada == "Voz"
-    & cdr_accesses$Duracion <= 60
-    & cdr_accesses$Duracion > 0
+    cdr_accesses["Duracion"],
+    (cdr_accesses["Geografia"] == "Roaming entrante" |
+        cdr_accesses["Geografia"] == "Roaming saliente")
+    & cdr_accesses["Tipo de llamada"] == "Voz"
+    & cdr_accesses["Duracion"] <= 60
+    & cdr_accesses["Duracion"] > 0
   )
 
 i <- 01
@@ -79,15 +67,12 @@ prommesroamingVoz <- c()
 while (i <= 12) {
   RoamingVoz2 <-
     subset(
-      cdr_accesses$Duracion,
-      (
-        cdr_accesses$Geografia == "Roaming entrante" |
-          cdr_accesses$Geografia == "Roaming saliente"
-      )
-      & cdr_accesses$Proveedor == "Movistar CL"
-      & cdr_accesses$Tipo.de.llamada == "Voz"
-      & cdr_accesses$Duracion > 60
-      & cdr_accesses$mes == i
+      cdr_accesses["Duracion"],
+      (cdr_accesses["Geografia"] == "Roaming entrante" |
+          cdr_accesses["Geografia"] == "Roaming saliente")
+      & cdr_accesses["Tipo de llamada"] == "Voz"
+      & cdr_accesses["Duracion"] > 60
+      & cdr_accesses["mes"] == i
     )
   prommesroamingVoz[i] <- sum(RoamingVoz2)
   i <- i + 1
@@ -99,17 +84,17 @@ VRminajustado <-
   (VRmin + (length(RoamingVoz3) / length(
     subset(prommesroamingVoz, prommesroamingVoz > 0)
   )))
+
+
+
+
 #Roaming Datos
 RoamingDatos <-
   subset(
-    cdr_accesses$Volumen,
-    (
-      #cdr_accesses$Geografia == "Roaming entrante" |
-        cdr_accesses$Geografia == "Roaming saliente"
-    )
-    & cdr_accesses$Precio > 0
-    & cdr_accesses$Proveedor == "Movistar CL"
-    & cdr_accesses$Tipo.de.llamada == "Datos"
+    cdr_accesses["Volumen"],
+    cdr_accesses["Geografia"] == "Roaming saliente"
+    & cdr_accesses["Precio"] > 0
+    & cdr_accesses["Tipo de llamada"] == "Datos"
   )
 
 d <- sum(RoamingDatos) / 1024
@@ -119,14 +104,11 @@ maxRD <-max(RoamingDatos/1024)
 #Roaming Mensajes
 RoamingSMS <-
   subset(
-    cdr_accesses$Precio,
-    (
-      cdr_accesses$Geografia == "Roaming entrante" |
-        cdr_accesses$Geografia == "Roaming saliente"
-    )
-    & cdr_accesses$Precio > 0
-    & cdr_accesses$Proveedor == "Movistar CL"
-    & cdr_accesses$Tipo.de.llamada == "SMS"
+    cdr_accesses["Precio"],
+    (cdr_accesses["Geografia"] == "Roaming entrante" |
+        cdr_accesses["Geografia"] == "Roaming saliente")
+    & cdr_accesses["Precio"] > 0
+    & cdr_accesses["Tipo de llamada"] == "SMS"
   )
 e <- mean(RoamingSMS)
 
