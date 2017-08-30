@@ -1,4 +1,3 @@
-#MOVISTAR
 cdr_accesses <-
   merge (cdr, ACCESSES, by.x = "Numero de llamada fix", by.y = "Acceso fix")
 
@@ -26,6 +25,7 @@ rm(mes1, mes)
 cdr_accesses <-
   subset(cdr_accesses, cdr_accesses["Mes"] != min(cdr_accesses["Mes"]))
 
+#MOVISTAR
 cdr_movistar <-
   subset(cdr_accesses, cdr_accesses$Proveedor.x == "Movistar CL")
 
@@ -59,7 +59,7 @@ movistarvoz <-
   subset(
     movistarvoz,
     movistarvoz["Precio"] > 0  &
-      movistarvoz["Mes"] == max(movistarvoz["Mes"]) &
+      #movistarvoz["Mes"] == max(movistarvoz["Mes"]) &
       (
         movistarvoz$Geografia == "Nacional desconocido" |
           movistarvoz$Geografia == "Local"
