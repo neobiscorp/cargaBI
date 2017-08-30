@@ -19,8 +19,8 @@ cdr_accesses[,"NET"] <-
 
 mes1 <- sapply(cdr_accesses["Fecha de llamada"],substr, 6, 7)
 mes <- as.numeric(mes1)
-rm(mes1)
 cdr_accesses["Mes"] <- mes
+rm(c(mes1,mes))
 
 cdr_accesses <-
   subset(cdr_accesses, cdr_accesses["Mes"] != min(cdr_accesses["Mes"]))
