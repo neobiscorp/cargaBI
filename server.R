@@ -1823,43 +1823,43 @@ shinyServer(function(input, output, session) {
       
       
       # Consumo total Voz ENTEL
-      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 4, startRow = 14)
+       writeData(wb, sheet = "RFP ENTEL", EntTotMin, startCol = 4, startRow = 14)
       #
       # Consumo voz entre usuarios ENTEL
-      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 4, startRow = 16)
+      writeData(wb, sheet = "RFP ENTEL", EntVozOnNet, startCol = 4, startRow = 16)
       #
       # Consumo voz a todo destino ENTEL
-      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 4, startRow = 18)
+      writeData(wb, sheet = "RFP ENTEL", EntATodDes, startCol = 4, startRow = 18)
       #
       # BAM o Servicios de Telemetria ENTEL
       # writeData(wb, sheet = "RFP ENTEL", X, startCol = 4, startRow = 26)
       #
       # Mensajeria SMS ENTEL
-      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 4, startRow = 28)
+       writeData(wb, sheet = "RFP ENTEL", EntSms, startCol = 4, startRow = 28)
       #
       # Mensajeria MMS ENTEL
-      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 4, startRow = 30)
+       writeData(wb, sheet = "RFP ENTEL", EntMms, startCol = 4, startRow = 30)
       #
       # Usuarios Roaming On Demand ENTEL
       # writeData(wb, sheet = "RFP ENTEL", X, startCol = 4, startRow = 32)
       #
       # Roaming Voz ENTEL
-      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 4, startRow = 34)
+       writeData(wb, sheet = "RFP ENTEL", EntRoaVoz, startCol = 4, startRow = 34)
       #
       # Roaming Datos ENTEL
-      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 4, startRow = 36)
+       writeData(wb, sheet = "RFP ENTEL", EntRoaDat, startCol = 4, startRow = 36)
       #
       # Roaming Mensajes ENTEL
-      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 4, startRow = 38)
+       writeData(wb, sheet = "RFP ENTEL", EntRoaSms, startCol = 4, startRow = 38)
       #
       # Internacional Voz ENTEL
       # writeData(wb, sheet = "RFP ENTEL", X, startCol = 4, startRow = 40)
       #
       # $/Minuto promedio ENTEL
-      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 8, startRow = 16)
+       writeData(wb, sheet = "RFP ENTEL", EntMinAct, startCol = 8, startRow = 16)
       #
       # $/Mb Actual ENTEL
-      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 8, startRow = 21)
+       writeData(wb, sheet = "RFP ENTEL", EntMbAct, startCol = 8, startRow = 21)
       
       #Save Workbook
       saveWorkbook(
