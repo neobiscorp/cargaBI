@@ -1,23 +1,26 @@
 #ajustando la base de datos
 cdr_accesses <-
   merge(cdr, ACCESSES, by.x = "Numero de llamada fix", by.y = "Acceso fix")
-mes1 <- substr(cdr_accesses["Fecha de llamada"], 6, 7)
+mes1 <- sapply(cdr_accesses["Fecha de llamada"],substr,6,7)
 mes <- as.numeric(mes1)
 rm(mes1)
-cdr_accesses <- data.frame(cdr_accesses, mes)
+cdr_accesses["Mes"] <- mes
 cdr_accesses <-
-  subset(cdr_accesses, cdr_accesses["mes"] != min(cdr_accesses["mes"]))
-n <-length(unique(cdr_accesses["mes"]))
-cdr_accesses <-subset(cdr_accesses,cdr_accesses["Proveedor"] == "Movistar CL")
+  subset(cdr_accesses, cdr_accesses["Mes"] != min(cdr_accesses["Mes"]))
+
+cdr_accesses <-sapply(cdr_accesses,subset,cdr_accesses,cdr_accesses["Proveedor"] == "Movistar CL")
+cdr_accesses <-subset(cdr_accesses,cdr_accesses["Proveedor.x"] == "Movistar CL")
 rm(mes)
 
-
-
+n <-length(unique(cdr_accesses["mes"]))
+n1 <-sapply(cdr_accesses["Mes"],unique)
+n <-length(n1)
+rm(n1)
 #BAM o Servicios de Telemetria ->plan datos por dispositivos
 mes1 <- substr(uso["Fecha"], 6, 7)
 mes <- as.numeric(mes1)
 uso <- data.frame(uso,mes)
-usoM <- subset(uso,uso["Proveedor"] == "Movistar CL")
+usoM <- subset(uso,uso["Proveedor.x"] == "Movistar CL")
 n2 <-length(unique(usoM["mes2"]))
 lineas <- length(unique(usoM["Acceso"]))
 
@@ -33,7 +36,8 @@ MensajeriaSMS <-
     &cdr_accesses["Precio"] > 0
     &cdr_accesses["Precio"] < 100
     &cdr_accesses["Tipo de llamada"] == "SMS")
-a <- mean(MensajeriaSMS)
+MensajeriaSMS2 <- as.double(MensajeriaSMS)
+a <- sapply(MensajeriaSMS,mean)
 
 
 
@@ -45,7 +49,7 @@ MensajeriaMMS <-
         cdr_accesses["Geografia"] == "Nacional desconocido")
     &cdr_accesses["Precio"] > 0
     &cdr_accesses["Tipo de llamada"] == "MMS")
-b <- mean(MensajeriaMMS)
+b <- sapply(MensajeriaMMS,mean)
 #Usuarios Roaming On Demand
 
 
@@ -72,18 +76,19 @@ while (i <= 12) {
           cdr_accesses["Geografia"] == "Roaming saliente")
       & cdr_accesses["Tipo de llamada"] == "Voz"
       & cdr_accesses["Duracion"] > 60
-      & cdr_accesses["mes"] == i
+      & cdr_accesses["Mes"] == i
     )
-  prommesroamingVoz[i] <- sum(RoamingVoz2)
+  prommesroamingVoz[i] <- sapply(RoamingVoz2,sum)
   i <- i + 1
 }
 print(prommesroamingVoz)
-VRmin <- mean(subset(prommesroamingVoz / 60, prommesroamingVoz > 0))
+VRmin1<-subset(prommesroamingVoz,prommesroamingVoz>0)
+VRmin <- mean(VRmin1/60)
+  
 #USAR VRminajustado para presentar RoamingVoz
+ajuste<-lengths(RoamingVoz3)
 VRminajustado <-
-  (VRmin + (length(RoamingVoz3) / length(
-    subset(prommesroamingVoz, prommesroamingVoz > 0)
-  )))
+  VRmin + (lengths(RoamingVoz3) / n)
 
 
 
