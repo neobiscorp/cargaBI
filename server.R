@@ -653,10 +653,10 @@ shinyServer(function(input, output, session) {
             "Estado")
         #In case the following file exist, delete it
         file.remove("USERS.txt")
-        #Create an txt file from the previus columns, this is needed for getting the right encoding UTF8
-        write.table(USERS, file = "USERS.txt", fileEncoding = "utf8")
+        #Create an txt file from the previus columns, this is needed for getting the right encoding UTF-8
+        write.table(USERS, file = "USERS.txt", fileEncoding = "UTF-8")
         #Read the txt File
-        USERS <- read.table(file = "USERS.txt", encoding = "utf8")
+        USERS <- read.table(file = "USERS.txt", encoding = "UTF-8")
         #Upload to the DB the data
         dbWriteTable(
           DB,
@@ -678,9 +678,9 @@ shinyServer(function(input, output, session) {
       if (client == "Subsole") {
         ACCESSES <- ACCESSES[c(1, 2, 10, 13, 45, 46, 47, 48, 49)]
         
-        write.table(ACCESSES, file = "ACCESSES.txt", fileEncoding = "utf8")
+        write.table(ACCESSES, file = "ACCESSES.txt", fileEncoding = "UTF-8")
         ACCESSES <-
-          read.table(file = "ACCESSES.txt", encoding = "utf8")
+          read.table(file = "ACCESSES.txt", encoding = "UTF-8")
         names(ACCESSES) <-
           c(
             "Acceso",
@@ -718,9 +718,9 @@ shinyServer(function(input, output, session) {
       }
       else if (client == "Walmart") {
         ACCESSES <- ACCESSES[c(1, 2, 10, 13, 45, 46, 47, 48, 49, 50, 51)]
-        write.table(ACCESSES, file = "ACCESSES.txt", fileEncoding = "utf8")
+        write.table(ACCESSES, file = "ACCESSES.txt", fileEncoding = "UTF-8")
         ACCESSES <-
-          read.table(file = "ACCESSES.txt", encoding = "utf8")
+          read.table(file = "ACCESSES.txt", encoding = "UTF-8")
         names(ACCESSES) <-
           c(
             "Acceso",
@@ -762,9 +762,9 @@ shinyServer(function(input, output, session) {
       }
       else if (client == "hdc") {
         ACCESSES <- ACCESSES[c(1, 2, 10, 13, 43, 44, 45, 46, 47)]
-        write.table(ACCESSES, file = "ACCESSES.txt", fileEncoding = "utf8")
+        write.table(ACCESSES, file = "ACCESSES.txt", fileEncoding = "UTF-8")
         ACCESSES <-
-          read.table(file = "ACCESSES.txt", encoding = "utf8")
+          read.table(file = "ACCESSES.txt", encoding = "UTF-8")
         names(ACCESSES) <-
           c(
             "Acceso",
@@ -802,9 +802,9 @@ shinyServer(function(input, output, session) {
       }
       else if (client == "Falabella") {
         ACCESSES <- ACCESSES[c(1, 2, 10, 13, 47, 48, 49, 50, 51, 52)]
-        write.table(ACCESSES, file = "ACCESSES.txt", fileEncoding = "utf8")
+        write.table(ACCESSES, file = "ACCESSES.txt", fileEncoding = "UTF-8")
         ACCESSES <-
-          read.table(file = "ACCESSES.txt", encoding = "utf8")
+          read.table(file = "ACCESSES.txt", encoding = "UTF-8")
         names(ACCESSES) <-
           c(
             "Acceso",
@@ -844,9 +844,9 @@ shinyServer(function(input, output, session) {
       }
       else if (client == "pa") {
         ACCESSES <- ACCESSES[c(1, 2, 10, 13, 44, 45, 46, 47, 48, 54)]
-        write.table(ACCESSES, file = "ACCESSES.txt", fileEncoding = "utf8")
+        write.table(ACCESSES, file = "ACCESSES.txt", fileEncoding = "UTF-8")
         ACCESSES <-
-          read.table(file = "ACCESSES.txt", encoding = "utf8")
+          read.table(file = "ACCESSES.txt", encoding = "UTF-8")
         names(ACCESSES) <-
           c(
             "Acceso",
@@ -887,9 +887,9 @@ shinyServer(function(input, output, session) {
       else if (client == "Copec") {
         ACCESSES <-
           ACCESSES[c(1, 2, 10, 13, 44, 45, 46, 47, 48, 49, 53, 54, 55, 56, 57)]
-        write.table(ACCESSES, file = "ACCESSES.txt", fileEncoding = "utf8")
+        write.table(ACCESSES, file = "ACCESSES.txt", fileEncoding = "UTF-8")
         ACCESSES <-
-          read.table(file = "ACCESSES.txt", encoding = "utf8")
+          read.table(file = "ACCESSES.txt", encoding = "UTF-8")
         names(ACCESSES) <-
           c(
             "Acceso",
@@ -941,9 +941,9 @@ shinyServer(function(input, output, session) {
       else if (client == "AguasAndinas") {
         ACCESSES <-
           ACCESSES[c(1, 2, 10, 13, 43, 44, 45, 46, 47)]
-        write.table(ACCESSES, file = "ACCESSES.txt", fileEncoding = "utf8")
+        write.table(ACCESSES, file = "ACCESSES.txt", fileEncoding = "UTF-8")
         ACCESSES <-
-          read.table(file = "ACCESSES.txt", encoding = "utf8")
+          read.table(file = "ACCESSES.txt", encoding = "UTF-8")
         names(ACCESSES) <-
           c(
             "Acceso",
@@ -992,9 +992,9 @@ shinyServer(function(input, output, session) {
               "CARRIER_ORG:3"
             )
           )
-        write.table(ACCESSES, file = "ACCESSES.txt", fileEncoding = "utf8")
+        write.table(ACCESSES, file = "ACCESSES.txt", fileEncoding = "UTF-8")
         ACCESSES <-
-          read.table(file = "ACCESSES.txt", encoding = "utf8")
+          read.table(file = "ACCESSES.txt", encoding = "UTF-8")
         names(ACCESSES) <-
           c("Acceso",
             "Proveedor",
@@ -1033,9 +1033,9 @@ shinyServer(function(input, output, session) {
         file.remove("DEVICES.txt")
         if (client == "Subsole") {
           DEVICES <- DEVICES[c(1, 2, 3, 4, 9)]
-          write.table(DEVICES, file = "DEVICES.txt", fileEncoding = "utf8")
+          write.table(DEVICES, file = "DEVICES.txt", fileEncoding = "UTF-8")
           DEVICES <-
-            read.table(file = "DEVICES.txt", encoding = "utf8")
+            read.table(file = "DEVICES.txt", encoding = "UTF-8")
           names(DEVICES) <-
             c("Tipo",
               "Modelo",
@@ -1044,9 +1044,9 @@ shinyServer(function(input, output, session) {
               "Estado")
         } else if (client == "Walmart") {
           DEVICES <- DEVICES[c(1, 2, 3, 4, 9)]
-          write.table(DEVICES, file = "DEVICES.txt", fileEncoding = "utf8")
+          write.table(DEVICES, file = "DEVICES.txt", fileEncoding = "UTF-8")
           DEVICES <-
-            read.table(file = "DEVICES.txt", encoding = "utf8")
+            read.table(file = "DEVICES.txt", encoding = "UTF-8")
           names(DEVICES) <-
             c("Tipo",
               "Modelo",
@@ -1055,9 +1055,9 @@ shinyServer(function(input, output, session) {
               "Estado")
         } else if (client == "hdc") {
           DEVICES <- DEVICES[c(1, 2, 3, 4, 9, 27)]
-          write.table(DEVICES, file = "DEVICES.txt", fileEncoding = "utf8")
+          write.table(DEVICES, file = "DEVICES.txt", fileEncoding = "UTF-8")
           DEVICES <-
-            read.table(file = "DEVICES.txt", encoding = "utf8")
+            read.table(file = "DEVICES.txt", encoding = "UTF-8")
           names(DEVICES) <-
             c("Tipo",
               "Modelo",
@@ -1067,9 +1067,9 @@ shinyServer(function(input, output, session) {
               "Ancho de Banda (MB)")
         } else if (client == "Falabella") {
           DEVICES <- DEVICES[c(1, 2, 3, 4, 9, 62, 64)]
-          write.table(DEVICES, file = "DEVICES.txt", fileEncoding = "utf8")
+          write.table(DEVICES, file = "DEVICES.txt", fileEncoding = "UTF-8")
           DEVICES <-
-            read.table(file = "DEVICES.txt", encoding = "utf8")
+            read.table(file = "DEVICES.txt", encoding = "UTF-8")
           names(DEVICES) <-
             c("Tipo",
               "Modelo",
@@ -1080,9 +1080,9 @@ shinyServer(function(input, output, session) {
               "Categoria")
         } else if (client == "pa") {
           DEVICES <- DEVICES[c(1, 2, 3, 4, 9)]
-          write.table(DEVICES, file = "DEVICES.txt", fileEncoding = "utf8")
+          write.table(DEVICES, file = "DEVICES.txt", fileEncoding = "UTF-8")
           DEVICES <-
-            read.table(file = "DEVICES.txt", encoding = "utf8")
+            read.table(file = "DEVICES.txt", encoding = "UTF-8")
           names(DEVICES) <-
             c("Tipo",
               "Modelo",
@@ -1091,9 +1091,9 @@ shinyServer(function(input, output, session) {
               "Estado")
         } else if (client == "Copec") {
           DEVICES <- DEVICES[c(1, 2, 3, 4, 9, 27)]
-          write.table(DEVICES, file = "DEVICES.txt", fileEncoding = "utf8")
+          write.table(DEVICES, file = "DEVICES.txt", fileEncoding = "UTF-8")
           DEVICES <-
-            read.table(file = "DEVICES.txt", encoding = "utf8")
+            read.table(file = "DEVICES.txt", encoding = "UTF-8")
           names(DEVICES) <-
             c("Tipo",
               "Modelo",
@@ -1104,9 +1104,9 @@ shinyServer(function(input, output, session) {
         }
         else if (client == "AguasAndinas") {
           DEVICES <- DEVICES[c(1, 2, 3, 4, 9)]
-          write.table(DEVICES, file = "DEVICES.txt", fileEncoding = "utf8")
+          write.table(DEVICES, file = "DEVICES.txt", fileEncoding = "UTF-8")
           DEVICES <-
-            read.table(file = "DEVICES.txt", encoding = "utf8")
+            read.table(file = "DEVICES.txt", encoding = "UTF-8")
           names(DEVICES) <-
             c("Tipo",
               "Modelo",
@@ -1134,9 +1134,9 @@ shinyServer(function(input, output, session) {
         file.remove("ASSOCIATIONS.txt")
         write.table(ASSOCIATIONS,
                     file = "ASSOCIATIONS.txt",
-                    fileEncoding = "utf8")
+                    fileEncoding = "UTF-8")
         ASSOCIATIONS <-
-          read.table(file = "ASSOCIATIONS.txt", encoding = "utf8")
+          read.table(file = "ASSOCIATIONS.txt", encoding = "UTF-8")
         names(ASSOCIATIONS) <- c("Acceso", "UUI", "IMEI", "REFNUM")
         dbWriteTable(
           DB,
@@ -1158,9 +1158,9 @@ shinyServer(function(input, output, session) {
         file.remove("PRODUCT_ASSOCIATIONS.txt")
         write.table(PRODUCT_ASSOCIATIONS,
                     file = "PRODUCT_ASSOCIATIONS.txt",
-                    fileEncoding = "utf8")
+                    fileEncoding = "UTF-8")
         PRODUCT_ASSOCIATIONS <-
-          read.table(file = "PRODUCT_ASSOCIATIONS.txt", encoding = "utf8")
+          read.table(file = "PRODUCT_ASSOCIATIONS.txt", encoding = "UTF-8")
         names(PRODUCT_ASSOCIATIONS) <- c("Acceso", "Plan")
         dbWriteTable(
           DB,
@@ -1196,9 +1196,9 @@ shinyServer(function(input, output, session) {
           "Presupuesto Anual"
         )
       file.remove("presupuesto.txt")
-      write.table(presupuesto, file = "presupuesto.txt", fileEncoding = "utf8")
+      write.table(presupuesto, file = "presupuesto.txt", fileEncoding = "UTF-8")
       presupuesto <-
-        read.table(file = "presupuesto.txt", encoding = "utf8")
+        read.table(file = "presupuesto.txt", encoding = "UTF-8")
       names(presupuesto) <-
         c(
           "Gestion",
@@ -1234,42 +1234,38 @@ shinyServer(function(input, output, session) {
                         sheet = "Uso por accesoproducto",
                         startRow = 1)
       
-      PLAN <- PLAN[c(1:7)]
+      PLAN <-
+        subset(
+          PLAN,
+          select = c(
+            "Acceso",
+            "Producto",
+            "Tipo.de.producto",
+            "Proveedor",
+            "Centro.de.facturación",
+            "Importe.de.las.opciones.descontadas.(CLP)"
+          )
+        )
       
       file.remove("Planes.txt")
       write.table(PLAN,
                   file = "Planes.txt",
-                  fileEncoding = "utf8")
-      PLAN <- read.table(file = "Planes.txt", encoding = "utf8")
+                  fileEncoding = "UTF-8")
+      PLAN <- read.table(file = "Planes.txt", encoding = "UTF-8")
       
       names(PLAN) <- c(
         "Acceso",
         "Producto",
-        "Tipo de Producto",
+        "Tipo de producto",
         "Proveedor",
-        "Centro de Facturacion",
-        "Mes",
+        "Centro de facturacion",
         "Importe de las opciones descontadas (CLP)"
       )
-      
-      for (i in 1:12) {
-        PLAN['Mes'] <-
-          lapply(PLAN['Mes'], function(x)
-            gsub(names(y[i]), y[[i]], x))
-      }
-      
-      PLAN['Fecha'] <-
-        lapply(PLAN['Mes'], function(x)
-          paste(substr(x , 3 , 6),
-                substr(x , 1 , 2),
-                "01",
-                sep = "/"))
-      
-      PLAN[, 'Mes'] <- NULL
       
       PLAN[, 'Acceso fix'] <-
         lapply(PLAN['Acceso'], function(x)
           substring(x, 3))
+      
       dbWriteTable(
         DB,
         "plan",
@@ -1280,7 +1276,6 @@ shinyServer(function(input, output, session) {
           `Tipo de Producto` = "varchar(255)",
           `Proveedor` = "varchar(255)",
           `Centro de Facturacion` = "varchar(255)",
-          `Fecha` = "DATE",
           `Importe de las opciones descontadas (CLP)` = "double(15,2)",
           `Acceso fix` = "varchar(255)"
         ),
@@ -1307,8 +1302,8 @@ shinyServer(function(input, output, session) {
       file.remove("TIPO.txt")
       write.table(TIPO,
                   file = "TIPO.txt",
-                  fileEncoding = "utf8")
-      TIPO <- read.table(file = "TIPO.txt", encoding = "utf8")
+                  fileEncoding = "UTF-8")
+      TIPO <- read.table(file = "TIPO.txt", encoding = "UTF-8")
       
       names(TIPO) <- c("Producto",
                        "Descripcion Plan",
@@ -1383,8 +1378,8 @@ shinyServer(function(input, output, session) {
       file.remove("CUENTAS.txt")
       write.table(CUENTAS,
                   file = "CUENTAS.txt",
-                  fileEncoding = "utf8")
-      CUENTAS <- read.table(file = "CUENTAS.txt", encoding = "utf8")
+                  fileEncoding = "UTF-8")
+      CUENTAS <- read.table(file = "CUENTAS.txt", encoding = "UTF-8")
       
       names(CUENTAS) <- c("Empresa",
                           "RUT",
@@ -1470,8 +1465,8 @@ shinyServer(function(input, output, session) {
           substring(x, 3))
       
       file.remove("cdr.txt")
-      write.table(cdr, file = "cdr.txt", fileEncoding = "utf8")
-      cdr <<- read.table(file = "cdr.txt", encoding = "utf8")
+      write.table(cdr, file = "cdr.txt", fileEncoding = "UTF8")
+      cdr <<- read.table(file = "cdr.txt", encoding = "UTF8")
       names(cdr) <<-
         c(
           "Numero de llamada",
