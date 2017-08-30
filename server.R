@@ -17,6 +17,7 @@ killDbConnections <- function () {
   
   print(paste(length(all_cons), " connections killed."))
 }
+
 #Increase the maxium size of an uploaded file to 250mb
 options(shiny.maxRequestSize = 250 * 1024 ^ 2)
 
