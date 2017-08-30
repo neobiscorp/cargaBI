@@ -155,21 +155,21 @@ cdr_accesses <-
            cdr_entel["Tipo de llamada"] == "Voz" &
              cdr_entel["Duracion"] > 0)
   
-  x <- (sum(entelvoz["Duracion"]) / 60) / n
-  print(x)
+  EntTotMin <- (sum(entelvoz["Duracion"]) / 60) / n
+  print(EntTotMin)
   
   #CONSUMO VOZ ENTRE USUARIOS SAAM SA
   entelvozonnet <-
     subset(entelvoz,
            entelvoz["NET"] == 1)
   
-  y <- (sum(entelvozonnet["Duracion"]) / 60) / n
+  EntVozOnNet <- (sum(entelvozonnet["Duracion"]) / 60) / n
   rm(entelvozonnet)
-  print(y)
+  print(EntVozOnNet)
   
   #CONSUMO VOZ A TODO DESTINO
-  z <- x - y
-  print(z)
+  EntATodDes <- EntTotMin - EntVozOnNet
+  print(EntATodDes)
   
   #SMARTPHONES GAMA ALTA
   #SMARTPHONES GAMA MEDIA
@@ -185,8 +185,8 @@ cdr_accesses <-
         (cdr_entel["Geografia"] == "Local" |
            cdr_entel["Geografia"] == "Nacional desconocido")
     )
-  
-  print(sapply(entelSMS["Precio"], median))
+  EntSms <- (sapply(entelSMS["Precio"], median))
+  print(EntSms)
   rm (entelSMS)
   
   #MENSAJERÍA MMS
@@ -200,54 +200,67 @@ cdr_accesses <-
            cdr_entel["Geografia"] == "Nacional desconocido")
     )
   
-  print(sapply(entelMMS["Precio"], median))
+  EntMms <- (sapply(entelMMS["Precio"], median))
+  print(EntMms)
   rm (entelMMS)
   
   #USUARIOS ROAMING ON DEMAND
   #ROAMING VOZ
-  eroam <-
+  mroam <-
     subset(cdr_entel,
            cdr_entel["Geografia"] == "Roaming saliente" |
              cdr_entel["Geografia"] == "Roaming entrante")
-  eroamvoz <-
-    subset(eroam,
-           eroam["Tipo de llamada"] == "Voz" &
-             eroam["Duracion"] > 0)
+  mroamvoz <-
+    subset(mroam,
+           mroam["Tipo de llamada"] == "Voz" &
+             mroam["Duracion"] > 0)
   
-  print(sum(eroamvoz["Duracion"]) / 60 / n)
-  rm(eroamvoz)
+  EntRoaVoz <- (sum(mroamvoz["Duracion"]) / 60 / n)
+  print(EntRoaVoz)
+  rm(mroamvoz)
   #ROAMING DATOS
-  eroamdat <- subset(eroam,
-                     eroam["Tipo de llamada"] == "Datos" &
-                       eroam["Volumen"] > 0)
+  mroamdat <- subset(mroam,
+                     mroam["Tipo de llamada"] == "Datos" &
+                       mroam["Volumen"] > 0)
   
-  print(sum(eroamdat["Volumen"]) / 1024 / n)
-  rm(eroamdat)
+  EntRoaDat <- (sum(mroamdat["Volumen"]) / 1024 / n)
+  print(EntRoaDat)
+  rm(mroamdat)
   #ROAMING MENSAJES
-  eroamsms <- subset(eroam,
-                     eroam["Tipo de llamada"] == "SMS" &
-                       eroam["Precio"] > 0)
+  mroamsms <- subset(mroam,
+                     mroam["Tipo de llamada"] == "SMS" &
+                       mroam["Precio"] > 0)
   
-  print(sapply(eroamsms["Precio"], median))
-  rm(eroamsms)
+  EntRoaSms <- (sapply(mroamsms["Precio"], median))
+  print(EntRoaSms)
+  rm(mroamsms)
   
   #---
   #$/minuto actual
   entelvoz <-
-    subset(
-      entelvoz,
-      entelvoz["Precio"] > 0  &
-        #entelvoz["Mes"] == max(entelvoz["Mes"]) &
-        (
-          entelvoz$Geografia == "Nacional desconocido" |
-            entelvoz$Geografia == "Local"
-        )
-    )
+    subset(entelvoz,
+           entelvoz["Precio"] > 0  &
+             #entelvoz["Mes"] == max(entelvoz["Mes"]) &
+             (entelvoz["Geografia"] == "Nacional desconocido" |
+                entelvoz["Geografia"] == "Local"))
   
-  print(sum(entelvoz["Precio"]) / (sum(entelvoz["Duracion"]) / 60))
+  EntMinAct <-
+    (sum(entelvoz["Precio"]) / (sum(entelvoz["Duracion"]) / 60))
+  print(EntMinAct)
   
   #$/Mb Actual
+  enteldatos <- subset(cdr_entel,
+                       cdr_entel["Tipo de llamada"] == "Datos"
+                       # & (cdr_entel["Geografia"] == "Nacional Desconocido" |
+                       #    cdr_entel["Geografia"] == "Local")
+                       & cdr_entel["Volumen"] > 0
+                       & cdr_entel["Precio"] > 0)
   
+  enteldatos[, "Volumen"] <- enteldatos["Volumen"] / 1024
+  
+  EntMbAct <-
+    (sum(enteldatos["Precio"]) / (sum((enteldatos["Volumen"])) / n))
+  print(EntMbAct)
   #Remoción tablas y variables
-  rm(cdr_entel, eroam, entelvoz, x, y, z)
+  rm(cdr_entel, mroam, entelvoz, enteldatos)
 }
