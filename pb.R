@@ -36,21 +36,21 @@ cdr_accesses <-
            cdr_movistar["Tipo de llamada"] == "Voz" &
              cdr_movistar["Duracion"] > 0)
   
-  x <- (sum(movistarvoz["Duracion"]) / 60) / n
-  print(x)
+  MovTotMin <- (sum(movistarvoz["Duracion"]) / 60) / n
+  print(MovTotMin)
   
   #CONSUMO VOZ ENTRE USUARIOS SAAM SA
   movistarvozonnet <-
     subset(movistarvoz,
            movistarvoz["NET"] == 1)
   
-  y <- (sum(movistarvozonnet["Duracion"]) / 60) / n
+  MovVozOnNet <- (sum(movistarvozonnet["Duracion"]) / 60) / n
   rm(movistarvozonnet)
-  print(y)
+  print(MovVozOnNet)
   
   #CONSUMO VOZ A TODO DESTINO
-  z <- x - y
-  print(z)
+  MovATodDes <- MovTotMin - MovVozOnNet
+  print(MovATodDes)
   
   #SMARTPHONES GAMA ALTA
   #SMARTPHONES GAMA MEDIA
@@ -68,8 +68,8 @@ cdr_accesses <-
             cdr_movistar["Geografia"] == "Nacional desconocido"
         )
     )
-  
-  print(sapply(movistarSMS["Precio"], median))
+  MovSms<-(sapply(movistarSMS["Precio"], median))
+  print(MovSms)
   rm (movistarSMS)
   
   #MENSAJERÍA MMS
@@ -85,7 +85,8 @@ cdr_accesses <-
         )
     )
   
-  print(sapply(movistarMMS["Precio"], median))
+  MovMms<-(sapply(movistarMMS["Precio"], median))
+  print(MovMms)
   rm (movistarMMS)
   
   #USUARIOS ROAMING ON DEMAND
@@ -101,21 +102,24 @@ cdr_accesses <-
            mroam["Tipo de llamada"] == "Voz" &
              mroam["Duracion"] > 0)
   
-  print(sum(mroamvoz["Duracion"]) / 60 / n)
+  MovRoaVoz<-(sum(mroamvoz["Duracion"]) / 60 / n)
+  print(MovRoaVoz)
   rm(mroamvoz)
   #ROAMING DATOS
   mroamdat <- subset(mroam,
                      mroam["Tipo de llamada"] == "Datos" &
                        mroam["Volumen"] > 0)
   
-  print(sum(mroamdat["Volumen"]) / 1024 / n)
+  MovRoaDat<-(sum(mroamdat["Volumen"]) / 1024 / n)
+  print(MovRoaDat)
   rm(mroamdat)
   #ROAMING MENSAJES
   mroamsms <- subset(mroam,
                      mroam["Tipo de llamada"] == "SMS" &
                        mroam["Precio"] > 0)
   
-  print(sapply(mroamsms["Precio"], median))
+  MovRoaSms<-(sapply(mroamsms["Precio"], median))
+  print(MovRoaSms)
   rm(mroamsms)
   
   #---
@@ -131,12 +135,13 @@ cdr_accesses <-
         )
     )
   
-  print(sum(movistarvoz["Precio"]) / (sum(movistarvoz["Duracion"]) / 60))
+  MovMinAct<-(sum(movistarvoz["Precio"]) / (sum(movistarvoz["Duracion"]) / 60))
+  print(MovMinAct)
   
   #$/Mb Actual
   
   #Remoción tablas y variables
-  rm(cdr_movistar, mroam, movistarvoz, x, y, z)
+  rm(cdr_movistar, mroam, movistarvoz)
   }
 
 #ENTEL
