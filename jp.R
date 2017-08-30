@@ -1,3 +1,5 @@
+<<<<<<< HEAD
+=======
 #MOVISTAR
 cdr_accesses <-
   merge (cdr, ACCESSES, by.x = "Numero de llamada fix", by.y = "Acceso fix")
@@ -24,3 +26,4 @@ rm(c(mes1,mes))
 
 cdr_accesses <-
   subset(cdr_accesses, cdr_accesses["Mes"] != min(cdr_accesses["Mes"]))
+>>>>>>> 12b68d56b6fc971e3610d455f33b0b7bf915a8bf
