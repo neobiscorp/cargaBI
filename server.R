@@ -1781,42 +1781,42 @@ shinyServer(function(input, output, session) {
       
       #Functions in other files
       #source("pj.r", local = TRUE)
-      #source("pb.r", local = TRUE)
+      source("pb.r", local = TRUE)
       #source("jp.r", local = TRUE)
       
       
       # Consumo total Voz MOVISTAR
-      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 4, startRow = 14)
+       writeData(wb, sheet = "RFP MOVISTAR", MovTotMin, startCol = 4, startRow = 14)
       #
       # Consumo voz entre usuarios MOVISTAR
-      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 4, startRow = 16)
+       writeData(wb, sheet = "RFP MOVISTAR", MovVozOnNet, startCol = 4, startRow = 16)
       #
       # Consumo voz a todo destino MOVISTAR
-      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 4, startRow = 18)
+       writeData(wb, sheet = "RFP MOVISTAR", MovATodDes, startCol = 4, startRow = 18)
       #
       # BAM o Servicios de Telemetria MOVISTAR
       # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 4, startRow = 26)
       #
       # Mensajeria SMS MOVISTAR
-      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 4, startRow = 28)
+       writeData(wb, sheet = "RFP MOVISTAR", MovSms, startCol = 4, startRow = 28)
       #
       # Mensajeria MMS MOVISTAR
-      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 4, startRow = 30)
+       writeData(wb, sheet = "RFP MOVISTAR", MovMms, startCol = 4, startRow = 30)
       #
       # Usuarios Roaming On Demand MOVISTAR
       # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 4, startRow = 32)
       #
       # Roaming Voz MOVISTAR
-      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 4, startRow = 34)
+       writeData(wb, sheet = "RFP MOVISTAR", MovRoaVoz, startCol = 4, startRow = 34)
       #
       # Roaming Datos MOVISTAR
-      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 4, startRow = 36)
+       writeData(wb, sheet = "RFP MOVISTAR", MovRoaDat, startCol = 4, startRow = 36)
       #
       # Roaming Mensajes MOVISTAR
-      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 4, startRow = 38)
+       writeData(wb, sheet = "RFP MOVISTAR", MovRoaSms, startCol = 4, startRow = 38)
       #
       # $/Minuto Actual MOVISTAR
-      # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 8, startRow = 15)
+       writeData(wb, sheet = "RFP MOVISTAR", MovMinAct, startCol = 8, startRow = 15)
       #
       # $/Mb Actual MOVISTAR
       # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 8, startRow = 20)
