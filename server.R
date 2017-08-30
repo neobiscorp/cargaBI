@@ -1726,7 +1726,9 @@ shinyServer(function(input, output, session) {
       )
       
       #Functions in other files
-      #source("", local = TRUE)
+      #source("pj.r", local = TRUE)
+      #source("pb.r", local = TRUE)
+      #source("jp.r", local = TRUE)
       
       # Consumo total Voz MOVISTAR
       # writeData(wb, sheet = "RFP MOVISTAR", X, startCol = 4, startRow = 14)
