@@ -940,7 +940,24 @@ shinyServer(function(input, output, session) {
       }
       else if (client == "AguasAndinas") {
         ACCESSES <-
-          ACCESSES[c(1, 2, 10, 13, 43, 44, 45, 46, 47)]
+          subset(
+            ACCESSES,
+            select = c(
+              "ACCESS NUMBER",
+              "TYPE",
+              "CUSTOM_FIELD:Tipo línea",
+              "MANAGEMENT_ORG:1",
+              "MANAGEMENT_ORG:2",
+              "MANAGEMENT_ORG:3",
+              "MANAGEMENT_ORG:4",
+              "MANAGEMENT_ORG:5",
+              "MANAGEMENT_ORG:6",
+              "MANAGEMENT_ORG:7",
+              "CARRIER_ORG:1",
+              "CARRIER_ORG:2",
+              "CARRIER_ORG:3"
+            )
+          )
         write.table(ACCESSES, file = "ACCESSES.txt", fileEncoding = "UTF-8")
         ACCESSES <-
           read.table(file = "ACCESSES.txt", encoding = "UTF-8")
@@ -948,16 +965,18 @@ shinyServer(function(input, output, session) {
           c(
             "Acceso",
             "Tipo",
-            "Estado",
-            "Fecha Expiracion",
+            "CUSTOM_FIELD_Tipo linea",
             "MANAGEMENT_ORG_1",
-            "MANAGEMENT_ORG_2",
-            "MANAGEMENT_ORG_3",
-            "MANAGEMENT_ORG_4",
-            "Proveedor"
+            "Empresa",
+            "Gerencia Corp.",
+            "Gerencia",
+            "Subgerencia",
+            "Jefatura",
+            "CECO",
+            "Proveedor Nv1",
+            "Proveedor Nv2",
+            "Proveedor Nv3"
           )
-        ACCESSES$`Fecha Expiracion` <-
-          as.Date(ACCESSES$`Fecha Expiracion`, origin = "1899-12-30")
         dbWriteTable(
           DB,
           "accesses",
@@ -965,13 +984,17 @@ shinyServer(function(input, output, session) {
           field.types = list(
             Acceso = "varchar(255)",
             Tipo = "varchar(255)",
-            Estado = "varchar(255)",
-            `Fecha Expiracion` = "date",
+            `CUSTOM_FIELD_Tipo linea` = "varchar(255)",
             MANAGEMENT_ORG_1 = "varchar(255)",
-            MANAGEMENT_ORG_2 = "varchar(255)",
-            MANAGEMENT_ORG_3 = "varchar(255)",
-            MANAGEMENT_ORG_4 = "varchar(255)",
-            Proveedor = "varchar(255)"
+            Empresa = "varchar(255)",
+            `Gerencia Corp.` = "varchar(255)",
+            Gerencia = "varchar(255)",
+            Subgerencia = "varchar(255)",
+            Jefatura = "varchar(255)",
+            CECO = "varchar(255)",
+            `Proveedor Nv1` = "varchar(255)",
+            `Proveedor Nv2` = "varchar(255)",
+            `Proveedor Nv3` = "varchar(255)"
           ) ,
           row.names = FALSE,
           overwrite = TRUE,
@@ -1564,7 +1587,7 @@ shinyServer(function(input, output, session) {
       rm(mes1)
       cdr_accesses["Mes"] <- mes
       
-      cdr_accesses <<-
+      cdr_accesses <-
         subset(cdr_accesses, cdr_accesses["Mes"] != min(cdr_accesses["Mes"]))
       
       dbWriteTable(
@@ -1601,6 +1624,8 @@ shinyServer(function(input, output, session) {
         append = FALSE,
         allow.keywords = FALSE
       )
+      
+      cdr_accesses<<-cdr_accesses
       
     }
     #Run the following code if theres a ticket in the RFP excel checkbox
@@ -1738,36 +1763,28 @@ shinyServer(function(input, output, session) {
         sheet = "RFP MOVISTAR",
         z,
         startCol = 3,
-        startRow = 1,
-        units = "in",
-        dpi = 100
+        startRow = 1
       )
       insertImage(
         wb,
         sheet = "RFP ENTEL",
         z,
         startCol = 3,
-        startRow = 1,
-        units = "in",
-        dpi = 100
+        startRow = 1
       )
       insertImage(
         wb,
         sheet = "RFP PLANES",
         z,
         startCol = 3,
-        startRow = 1,
-        units = "in",
-        dpi = 100
+        startRow = 1
       )
       insertImage(
         wb,
         sheet = "RFP CATEGORIAS PLANES",
         z,
         startCol = 3,
-        startRow = 1,
-        units = "in",
-        dpi = 100
+        startRow = 1
       )
       insertImage(
         wb,
@@ -1775,8 +1792,6 @@ shinyServer(function(input, output, session) {
         z,
         startCol = 3,
         startRow = 1,
-        units = "in",
-        dpi = 100
       )
       
       #Functions in other files
