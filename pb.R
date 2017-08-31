@@ -235,6 +235,13 @@ cdr_accesses <-
   print(EntRoaSms)
   rm(mroamsms)
   
+  #Internacional Voz
+  entelvozint <-
+    subset(entelvoz, entelvoz["Geografia"] == "A internacional")
+  entelvozint["Duracion"]<-entelvozint["Duracion"]/60
+  EntIntVoz <- sapply(entelvozint["Duracion"],sum)
+  print (EntIntVoz)
+  
   #---
   #$/minuto actual
   entelvoz <-

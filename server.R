@@ -1853,7 +1853,7 @@ shinyServer(function(input, output, session) {
        writeData(wb, sheet = "RFP ENTEL", EntRoaSms, startCol = 4, startRow = 38)
       #
       # Internacional Voz ENTEL
-      # writeData(wb, sheet = "RFP ENTEL", X, startCol = 4, startRow = 40)
+       writeData(wb, sheet = "RFP ENTEL", EntIntVoz, startCol = 4, startRow = 40)
       #
       # $/Minuto promedio ENTEL
        writeData(wb, sheet = "RFP ENTEL", EntMinAct, startCol = 8, startRow = 16)
