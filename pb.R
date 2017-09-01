@@ -37,7 +37,7 @@ cdr_accesses <-
              cdr_movistar["Duracion"] > 0)
   
   MovTotMin <- (sum(movistarvoz["Duracion"]) / 60) / n
-  print(MovTotMin)
+  #print(MovTotMin)
   
   #CONSUMO VOZ ENTRE USUARIOS SAAM SA
   movistarvozonnet <-
@@ -46,11 +46,11 @@ cdr_accesses <-
   
   MovVozOnNet <- (sum(movistarvozonnet["Duracion"]) / 60) / n
   rm(movistarvozonnet)
-  print(MovVozOnNet)
+  #print(MovVozOnNet)
   
   #CONSUMO VOZ A TODO DESTINO
   MovATodDes <- MovTotMin - MovVozOnNet
-  print(MovATodDes)
+  #print(MovATodDes)
   
   #SMARTPHONES GAMA ALTA
   #SMARTPHONES GAMA MEDIA
@@ -68,8 +68,8 @@ cdr_accesses <-
             cdr_movistar["Geografia"] == "Nacional desconocido"
         )
     )
-  MovSms<-(sapply(movistarSMS["Precio"], median))
-  print(MovSms)
+  MovSms <- (sapply(movistarSMS["Precio"], median))
+  #print(MovSms)
   rm (movistarSMS)
   
   #MENSAJERÍA MMS
@@ -85,8 +85,8 @@ cdr_accesses <-
         )
     )
   
-  MovMms<-(sapply(movistarMMS["Precio"], median))
-  print(MovMms)
+  MovMms <- (sapply(movistarMMS["Precio"], median))
+  #print(MovMms)
   rm (movistarMMS)
   
   #USUARIOS ROAMING ON DEMAND
@@ -102,24 +102,24 @@ cdr_accesses <-
            mroam["Tipo de llamada"] == "Voz" &
              mroam["Duracion"] > 0)
   
-  MovRoaVoz<-(sum(mroamvoz["Duracion"]) / 60 / n)
-  print(MovRoaVoz)
+  MovRoaVoz <- (sum(mroamvoz["Duracion"]) / 60 / n)
+  #print(MovRoaVoz)
   rm(mroamvoz)
   #ROAMING DATOS
   mroamdat <- subset(mroam,
                      mroam["Tipo de llamada"] == "Datos" &
                        mroam["Volumen"] > 0)
   
-  MovRoaDat<-(sum(mroamdat["Volumen"]) / 1024 / n)
-  print(MovRoaDat)
+  MovRoaDat <- (sum(mroamdat["Volumen"]) / 1024 / n)
+  #print(MovRoaDat)
   rm(mroamdat)
   #ROAMING MENSAJES
   mroamsms <- subset(mroam,
                      mroam["Tipo de llamada"] == "SMS" &
                        mroam["Precio"] > 0)
   
-  MovRoaSms<-(sapply(mroamsms["Precio"], median))
-  print(MovRoaSms)
+  MovRoaSms <- (sapply(mroamsms["Precio"], median))
+  #print(MovRoaSms)
   rm(mroamsms)
   
   #---
@@ -135,8 +135,9 @@ cdr_accesses <-
         )
     )
   
-  MovMinAct<-(sum(movistarvoz["Precio"]) / (sum(movistarvoz["Duracion"]) / 60))
-  print(MovMinAct)
+  MovMinAct <-
+    (sum(movistarvoz["Precio"]) / (sum(movistarvoz["Duracion"]) / 60))
+  #print(MovMinAct)
   
   #$/Mb Actual
   
@@ -156,7 +157,7 @@ cdr_accesses <-
              cdr_entel["Duracion"] > 0)
   
   EntTotMin <- (sum(entelvoz["Duracion"]) / 60) / n
-  print(EntTotMin)
+  #print(EntTotMin)
   
   #CONSUMO VOZ ENTRE USUARIOS SAAM SA
   entelvozonnet <-
@@ -165,11 +166,11 @@ cdr_accesses <-
   
   EntVozOnNet <- (sum(entelvozonnet["Duracion"]) / 60) / n
   rm(entelvozonnet)
-  print(EntVozOnNet)
+  #print(EntVozOnNet)
   
   #CONSUMO VOZ A TODO DESTINO
   EntATodDes <- EntTotMin - EntVozOnNet
-  print(EntATodDes)
+  #print(EntATodDes)
   
   #SMARTPHONES GAMA ALTA
   #SMARTPHONES GAMA MEDIA
@@ -186,7 +187,7 @@ cdr_accesses <-
            cdr_entel["Geografia"] == "Nacional desconocido")
     )
   EntSms <- (sapply(entelSMS["Precio"], median))
-  print(EntSms)
+  #print(EntSms)
   rm (entelSMS)
   
   #MENSAJERÍA MMS
@@ -201,7 +202,7 @@ cdr_accesses <-
     )
   
   EntMms <- (sapply(entelMMS["Precio"], median))
-  print(EntMms)
+  #print(EntMms)
   rm (entelMMS)
   
   #USUARIOS ROAMING ON DEMAND
@@ -216,7 +217,7 @@ cdr_accesses <-
              mroam["Duracion"] > 0)
   
   EntRoaVoz <- (sum(mroamvoz["Duracion"]) / 60 / n)
-  print(EntRoaVoz)
+  #print(EntRoaVoz)
   rm(mroamvoz)
   #ROAMING DATOS
   mroamdat <- subset(mroam,
@@ -224,7 +225,7 @@ cdr_accesses <-
                        mroam["Volumen"] > 0)
   
   EntRoaDat <- (sum(mroamdat["Volumen"]) / 1024 / n)
-  print(EntRoaDat)
+  #print(EntRoaDat)
   rm(mroamdat)
   #ROAMING MENSAJES
   mroamsms <- subset(mroam,
@@ -232,15 +233,15 @@ cdr_accesses <-
                        mroam["Precio"] > 0)
   
   EntRoaSms <- (sapply(mroamsms["Precio"], median))
-  print(EntRoaSms)
+  #print(EntRoaSms)
   rm(mroamsms)
   
   #Internacional Voz
   entelvozint <-
     subset(entelvoz, entelvoz["Geografia"] == "A internacional")
-  entelvozint["Duracion"]<-entelvozint["Duracion"]/60
-  EntIntVoz <- sapply(entelvozint["Duracion"],sum)
-  print (EntIntVoz)
+  entelvozint["Duracion"] <- entelvozint["Duracion"] / 60
+  EntIntVoz <- sapply(entelvozint["Duracion"], sum)
+  #print (EntIntVoz)
   
   #---
   #$/minuto actual
@@ -253,7 +254,7 @@ cdr_accesses <-
   
   EntMinAct <-
     (sum(entelvoz["Precio"]) / (sum(entelvoz["Duracion"]) / 60))
-  print(EntMinAct)
+  #print(EntMinAct)
   
   #$/Mb Actual
   enteldatos <- subset(cdr_entel,
@@ -267,7 +268,7 @@ cdr_accesses <-
   
   EntMbAct <-
     (sum(enteldatos["Precio"]) / (sum((enteldatos["Volumen"])) / n))
-  print(EntMbAct)
+  #print(EntMbAct)
   #Remoción tablas y variables
   rm(cdr_entel, mroam, entelvoz, enteldatos)
 }
