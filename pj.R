@@ -86,7 +86,7 @@ cdr_accesses[,"PdivV"] <- cdr_accesses[,"Precio"]/cdr_accesses[,"Volumen"]*1024
                     &usoplantjointipo["Proveedor"]=="Movistar CL"
   )
   MovBAM <-lengths(MovBAMm["Acceso fix"])
-  
+  rm(MovBAMm)
   #MENSAJERÍA SMS
   movistarSMS <-
     subset(
@@ -185,7 +185,7 @@ cdr_accesses[,"PdivV"] <- cdr_accesses[,"Precio"]/cdr_accesses[,"Volumen"]*1024
   # (sum(movistardatos["Precio"]) / (sum((movistardatos["Volumen"])) / n))
   print(MovMbAct)
   #Remoción tablas y variables
-  rm(cdr_movistar, mroam, movistarvoz)
+  rm(cdr_movistar, mroam, movistarvoz,movistardatos)
 }
 
 #ENTEL
@@ -222,6 +222,7 @@ cdr_accesses[,"PdivV"] <- cdr_accesses[,"Precio"]/cdr_accesses[,"Volumen"]*1024
   EntBAMm <- subset(usoplantjointipo,usoplantjointipo["Tipo"] == "BAM"
                     &usoplantjointipo["Proveedor"]=="Entel PCS (CL)")
   EntBAM <-lengths(EntBAMm["Acceso fix"])
+  rm(EntBAMm)
   #MENSAJERÍA SMS
   entelSMS <-
     subset(
@@ -316,6 +317,6 @@ cdr_accesses[,"PdivV"] <- cdr_accesses[,"Precio"]/cdr_accesses[,"Volumen"]*1024
   #(sum(enteldatos["Precio"]) / (sum((enteldatos["Volumen"])) / n))
   print(EntMbAct)
   #Remoción tablas y variables
-  rm(cdr_entel, mroam, entelvoz, enteldatos)
+  rm(cdr_entel, mroam, entelvoz, enteldatos,entelvozint)
 }
 
