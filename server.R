@@ -1466,38 +1466,36 @@ shinyServer(function(input, output, session) {
       CDRFile <<- NULL
       #Read CDR file with correct fileencoding
       CDRFile <<-
-        lapply(input$cdr[['datapath']], function(x)
-          read.csv2(x, fileEncoding = "UTF8"))
+        lapply(input$cdr[['datapath']], read.csv2)
       
       #join all CDR months
       cdr <<- rbindlist(CDRFile)
       
-      stop()
       #Change column names of the CDR
-      names(cdr)[names(cdr) == 'Número.de.llamada'] <<-
+      names(cdr)[names(cdr) == 'NÃºmero.de.llamada'] <<-
         'Numero de llamada'
-      names(cdr)[names(cdr) == 'Número.llamado'] <<-
+      names(cdr)[names(cdr) == 'NÃºmero.llamado'] <<-
         'Numero llamado'
-      names(cdr)[names(cdr) == 'Tipo de llamada'] <<-
+      names(cdr)[names(cdr) == 'Tipo.de.llamada'] <<-
         'Tipo de llamada'
       names(cdr)[names(cdr) == 'Fecha de llamada'] <<-
         'Fecha de llamada'
-      names(cdr)[names(cdr) == 'Geografía'] <<- 'Geografia'
-      names(cdr)[names(cdr) == 'País.emisor'] <<- 'Pais emisor'
-      names(cdr)[names(cdr) == 'País.destinatario'] <<-
+      names(cdr)[names(cdr) == 'GeografÃ.a'] <<- 'Geografia'
+      names(cdr)[names(cdr) == 'PaÃ.s.emisor'] <<- 'Pais emisor'
+      names(cdr)[names(cdr) == 'PaÃ.s.destinatario'] <<-
         'Pais destinatario'
-      names(cdr)[names(cdr) == 'Duración'] <<- 'Duracion'
+      names(cdr)[names(cdr) == 'DuraciÃ³n'] <<- 'Duracion'
       names(cdr)[names(cdr) == 'Volumen'] <<- 'Volumen'
       names(cdr)[names(cdr) == 'Precio'] <<- 'Precio'
-      names(cdr)[names(cdr) == 'Organización.Proveedor'] <<-
+      names(cdr)[names(cdr) == 'OrganizaciÃ³n.Proveedor'] <<-
         'Organizacion Proveedor'
-      names(cdr)[names(cdr) == 'Tarificación'] <<- 'Tarificacion'
+      names(cdr)[names(cdr) == 'TarificaciÃ³n'] <<- 'Tarificacion'
       names(cdr)[names(cdr) == 'ï..Usuario'] <<- 'Usuario'
-      names(cdr)[names(cdr) == 'Tecnología'] <<- 'Tecnologia'
+      names(cdr)[names(cdr) == 'TecnologÃ.a'] <<- 'Tecnologia'
       names(cdr)[names(cdr) == 'Red.recurrente'] <<-
         'Red recurrente'
       names(cdr)[names(cdr) == 'Red.destinada'] <<- 'Red destinada'
-      names(cdr)[names(cdr) == 'Organización.de.gestiòn'] <<-
+      names(cdr)[names(cdr) == 'OrganizaciÃ³n.de.gestiÃ²n'] <<-
         'Organización de gestion'
       names(cdr)[names(cdr) == 'VPN'] <<- 'VPN'
       names(cdr)[names(cdr) == 'Llamadas.internas'] <<-
