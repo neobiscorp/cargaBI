@@ -26,6 +26,23 @@ cdr_accesses <-
   subset(cdr_accesses, cdr_accesses["Mes"] != min(cdr_accesses["Mes"]))
 cdr_accesses[,"PdivD"] <- cdr_accesses[,"Precio"]/cdr_accesses[,"Duracion"]*60
 cdr_accesses[,"PdivV"] <- cdr_accesses[,"Precio"]/cdr_accesses[,"Volumen"]*1024
+#Eleccion de Centro de Facturacion
+{
+  cdr_accesses2 <-
+    merge (
+      cdr_accesses,
+      CUENTAS,
+      by.x = "Proveedor Nivel 3.x",
+      by.y = "Cuenta Cliente",
+      all.x = TRUE
+    )
+     
+       
+  
+ summary(ACCESSES$`Proveedor Nivel 3`)
+  summary(cdr_accesses$`Proveedor Nivel 3.x`)
+summary(CUENTAS$`Cuenta Cliente`)
+}
 #CREACION usos con accesos unicos
 {
   uso2 <- uso

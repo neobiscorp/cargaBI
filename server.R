@@ -1467,11 +1467,12 @@ shinyServer(function(input, output, session) {
       #Read CDR file with correct fileencoding
       CDRFile <<-
         lapply(input$cdr[['datapath']], function(x)
-          read.csv2(x, fileEncoding = "UTF8-BOM"))
+          read.csv2(x, fileEncoding = "UTF8"))
       
       #join all CDR months
       cdr <<- rbindlist(CDRFile)
       
+      stop()
       #Change column names of the CDR
       names(cdr)[names(cdr) == 'Número.de.llamada'] <<-
         'Numero de llamada'
@@ -1539,59 +1540,59 @@ shinyServer(function(input, output, session) {
         )
       
       
-      dbWriteTable(
-        DB,
-        "cdr",
-        cdr,
-        field.types = list(
-          `Numero de llamada` = "char(11)",
-          `Numero de llamada fix` = "int(9)",
-          `Numero llamado` = "varchar(20)",
-          `Tipo de llamada` = "ENUM('Datos','MMS','SMS','Voz','E-mail','Desconocidos') NOT NULL",
-          `Fecha de llamada` = "DATE",
-          `Geografia` = "ENUM('A internacional','Local','Regional','Nacional desconocido','Roaming entrante','Roaming saliente','Roaming desconocido','Internacional desconocido','Desconocidos') NOT NULL",
-          `Pais emisor` = "varchar(40)",
-          `Pais destinatario` = "varchar(40)",
-          `Duracion` = "SMALLINT(8) UNSIGNED NOT NULL",
-          `Volumen` = "MEDIUMINT(10) UNSIGNED NOT NULL",
-          `Precio` = "FLOAT(10,2) NOT NULL",
-          `Tarificacion` = "ENUM('En el plan','Más alla del plan','Desconocidos','Fuera de plan') NOT NULL",
-          `Organizacion Proveedor` = "varchar(255)"
-        ),
-        row.names = FALSE,
-        overwrite = TRUE,
-        append = FALSE,
-        allow.keywords = FALSE
-      )
-      
-      dbSendQuery(DB, "DROP TABLE IF EXISTS `cdr_join_accesses_all`;")
-      dbSendQuery(DB, "ALTER TABLE `accesses` ADD INDEX(`Acceso fix`);")
-      dbSendQuery(DB,
-                  "ALTER TABLE `cdr` ADD id int NOT NULL AUTO_INCREMENT primary key;")
-      dbSendQuery(DB,
-                  "ALTER TABLE `cdr` ADD INDEX `Numero llamado` (`Numero llamado`);")
-      dbSendQuery(
-        DB,
-        "CREATE TABLE cdr_join_accesses_all SELECT * FROM `cdr` LEFT JOIN `accesses` ON `cdr`.`Numero llamado`=`accesses`.`Acceso fix`;"
-      )
-      dbSendQuery(
-        DB,
-        "ALTER TABLE `cdr_join_accesses_all` CHANGE COLUMN `Acceso` `Acceso llamado` VARCHAR(255);"
-      )
-      dbSendQuery(
-        DB,
-        "ALTER TABLE `cdr_join_accesses_all` CHANGE COLUMN `Proveedor` `Proveedor llamado` VARCHAR(255);"
-      )
-      dbSendQuery(
-        DB,
-        "ALTER TABLE `cdr_join_accesses_all` CHANGE COLUMN `Proveedor Nivel 2` `Proveedor Nivel 2 llamado` VARCHAR(255);"
-      )
-      dbSendQuery(
-        DB,
-        "ALTER TABLE `cdr_join_accesses_all` CHANGE COLUMN `Proveedor Nivel 3` `Proveedor Nivel 3 llamado` VARCHAR(255);"
-      )
-      dbSendQuery(DB, "DROP TABLE IF EXISTS `cdr`;")
-      
+      # dbWriteTable(
+      #   DB,
+      #   "cdr",
+      #   cdr,
+      #   field.types = list(
+      #     `Numero de llamada` = "char(11)",
+      #     `Numero de llamada fix` = "int(9)",
+      #     `Numero llamado` = "varchar(20)",
+      #     `Tipo de llamada` = "ENUM('Datos','MMS','SMS','Voz','E-mail','Desconocidos') NOT NULL",
+      #     `Fecha de llamada` = "DATE",
+      #     `Geografia` = "ENUM('A internacional','Local','Regional','Nacional desconocido','Roaming entrante','Roaming saliente','Roaming desconocido','Internacional desconocido','Desconocidos') NOT NULL",
+      #     `Pais emisor` = "varchar(40)",
+      #     `Pais destinatario` = "varchar(40)",
+      #     `Duracion` = "SMALLINT(8) UNSIGNED NOT NULL",
+      #     `Volumen` = "MEDIUMINT(10) UNSIGNED NOT NULL",
+      #     `Precio` = "FLOAT(10,2) NOT NULL",
+      #     `Tarificacion` = "ENUM('En el plan','Más alla del plan','Desconocidos','Fuera de plan') NOT NULL",
+      #     `Organizacion Proveedor` = "varchar(255)"
+      #   ),
+      #   row.names = FALSE,
+      #   overwrite = TRUE,
+      #   append = FALSE,
+      #   allow.keywords = FALSE
+      # )
+      # 
+      # dbSendQuery(DB, "DROP TABLE IF EXISTS `cdr_join_accesses_all`;")
+      # dbSendQuery(DB, "ALTER TABLE `accesses` ADD INDEX(`Acceso fix`);")
+      # dbSendQuery(DB,
+      #             "ALTER TABLE `cdr` ADD id int NOT NULL AUTO_INCREMENT primary key;")
+      # dbSendQuery(DB,
+      #             "ALTER TABLE `cdr` ADD INDEX `Numero llamado` (`Numero llamado`);")
+      # dbSendQuery(
+      #   DB,
+      #   "CREATE TABLE cdr_join_accesses_all SELECT * FROM `cdr` LEFT JOIN `accesses` ON `cdr`.`Numero llamado`=`accesses`.`Acceso fix`;"
+      # )
+      # dbSendQuery(
+      #   DB,
+      #   "ALTER TABLE `cdr_join_accesses_all` CHANGE COLUMN `Acceso` `Acceso llamado` VARCHAR(255);"
+      # )
+      # dbSendQuery(
+      #   DB,
+      #   "ALTER TABLE `cdr_join_accesses_all` CHANGE COLUMN `Proveedor` `Proveedor llamado` VARCHAR(255);"
+      # )
+      # dbSendQuery(
+      #   DB,
+      #   "ALTER TABLE `cdr_join_accesses_all` CHANGE COLUMN `Proveedor Nivel 2` `Proveedor Nivel 2 llamado` VARCHAR(255);"
+      # )
+      # dbSendQuery(
+      #   DB,
+      #   "ALTER TABLE `cdr_join_accesses_all` CHANGE COLUMN `Proveedor Nivel 3` `Proveedor Nivel 3 llamado` VARCHAR(255);"
+      # )
+      # dbSendQuery(DB, "DROP TABLE IF EXISTS `cdr`;")
+      # 
       file.remove("cdr.txt")
       
       #CREATE TABLE cdr_accesses
