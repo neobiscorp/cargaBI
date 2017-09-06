@@ -51,17 +51,46 @@ cdr_accesses[,"PdivV"] <- cdr_accesses[,"Precio"]/cdr_accesses[,"Volumen"]*1024
       all.x = TRUE
     ) 
   rm(uso2,usounicojoinPLANt,a,PLAN2)
+  #Datos a sacar
+  #Datos a sacar
+  datEn<-c()
+  datM<-c()
+  EntATodDes<-c()
+  EntBAM<-c()
+  EntIntVoz<-c()
+  EntMbAct<-c()
+  EntMinAct<-c()
+  EntMms<-c()
+  EntRoaDat<-c()
+  EntRoaSms<-c()
+  EntRoaVoz<-c()
+  EntSms<-c()
+  EntTotMin<-c()
+  EntVozOnNet<-c()
+  
+  MovATodDes<-c()
+  MovBAM<-c()
+  #MovIntVoz<-c() solo esta en entel
+  MovMbAct<-c()
+  MovMinAct<-c()
+  MovMms<-c()
+  MovRoaDat<-c()
+  MovRoaSms<-c()
+  MovRoaVoz<-c()
+  MovSms<-c()
+  MovTotMin<-c()
+  MovVozOnNet<-c()
 
   #BAM O SERVICIOS DE TELEMETRÍA MOVISTAR
   MovBAMm <- subset(usoplantjointipo,usoplantjointipo[["Tipo"]] == "BAM"
                     &usoplantjointipo[["Proveedor"]]=="Movistar CL"
   )
-  MovBAM <-length(MovBAMm[["Acceso fix"]])
+  MovBAM <-as.numeric(length(MovBAMm[["Acceso fix"]]))
   rm(MovBAMm)
   #BAM O SERVICIOS DE TELEMETRÍA ENTEL
   EntBAMm <- subset(usoplantjointipo,usoplantjointipo[["Tipo"]] == "BAM"
                     &usoplantjointipo[["Proveedor"]]=="Entel PCS (CL)")
-  EntBAM <-length(EntBAMm[["Acceso fix"]])
+  EntBAM <-as.numeric(length(EntBAMm[["Acceso fix"]]))
   rm(EntBAMm)
   
 #Eleccion de Centro de Facturacion
@@ -102,31 +131,33 @@ if (i==CC+1){
 {
   cdr_movistar <-
     subset(cdr_accesses, cdr_accesses[["Proveedor.x"]] == "Movistar CL")
-  datM<-as.numeric(lengths(cdr_movistar["Tipo de llamada"]))
-  if(datM!=0){
+  datM[i]<-as.numeric(lengths(cdr_movistar["Tipo de llamada"]))
+  if(datM[[i]]!=0){
   #CONSUMO TOTAL VOZ
+    print("Datos Movistar")
+    print(datM[[i]])
   movistarvoz <-
     subset(cdr_movistar,
            cdr_movistar["Tipo de llamada"] == "Voz" &
              cdr_movistar["Duracion"] > 0)
-  
-  MovTotMin <- (sum(movistarvoz["Duracion"]) / 60) / n
+  n<-as.numeric(length(unique(cdr_accesses[["Mes"]])))
+  MovTotMin[i] <- (sum(movistarvoz["Duracion"]) / 60) / n
   print("MovTotMin")
-  print(MovTotMin)
+  print(MovTotMin[[i]])
   #CONSUMO VOZ ENTRE USUARIOS SAAM SA
   movistarvozonnet <-
     subset(movistarvoz,
            movistarvoz["NET"] == 1)
   
-  MovVozOnNet <- (sum(movistarvozonnet["Duracion"]) / 60) / n
+  MovVozOnNet[i] <- (sum(movistarvozonnet["Duracion"]) / 60) / n
   rm(movistarvozonnet)
   print("MovVozOnNet")
-  print(MovVozOnNet)
+  print(MovVozOnNet[[i]])
   
   #CONSUMO VOZ A TODO DESTINO
-  MovATodDes <- MovTotMin - MovVozOnNet
+  MovATodDes[i] <- MovTotMin[[i]] - MovVozOnNet[[i]]
   print("MovATodDes")
-  print(MovATodDes)
+  print(MovATodDes[[i]])
  
   #SMARTPHONES GAMA ALTA
   #SMARTPHONES GAMA MEDIA
@@ -144,7 +175,7 @@ if (i==CC+1){
             cdr_movistar["Geografia"] == "Nacional desconocido"
         )
     )
-  MovSms<-(sapply(movistarSMS["Precio"], median))
+  MovSms[i]<-as.numeric(sapply(movistarSMS["Precio"], median))
   print("MovSms")
   print(MovSms)
   rm (movistarSMS)
@@ -162,7 +193,7 @@ if (i==CC+1){
         )
     )
   
-  MovMms<-(sapply(movistarMMS["Precio"], median))
+  MovMms[i]<-as.numeric(sapply(movistarMMS["Precio"], median))
   print(MovMms)
   rm (movistarMMS)
   
@@ -178,9 +209,9 @@ if (i==CC+1){
     subset(mroam,
            mroam["Tipo de llamada"] == "Voz" &
              mroam["Duracion"] > 0)
-  datM<-as.numeric(lengths(mroamvoz["Tipo de llamada"]))
-  if(datM!=0){
-  MovRoaVoz<-(sum(mroamvoz["Duracion"]) / 60 / n)
+  datM2<-as.numeric(lengths(mroamvoz["Tipo de llamada"]))
+  if(datM2!=0){
+  MovRoaVoz[i]<-(sum(mroamvoz["Duracion"]) / 60 / n)
   print(MovRoaVoz)
   }
   rm(mroamvoz)
@@ -188,9 +219,9 @@ if (i==CC+1){
   mroamdat <- subset(mroam,
                      mroam["Tipo de llamada"] == "Datos" &
                        mroam["Volumen"] > 0)
-  datM<-as.numeric(lengths(mroamdat["Tipo de llamada"]))
-  if(datM!=0){
-  MovRoaDat<-(sum(mroamdat["Volumen"]) / 1024 / n)
+  datM2<-as.numeric(lengths(mroamdat["Tipo de llamada"]))
+  if(datM2!=0){
+  MovRoaDat[i]<-(sum(mroamdat["Volumen"]) / 1024 / n)
   print(MovRoaDat)
   }
   rm(mroamdat)
@@ -199,7 +230,7 @@ if (i==CC+1){
                      mroam["Tipo de llamada"] == "SMS" &
                        mroam["Precio"] > 0)
   
-  MovRoaSms<-(sapply(mroamsms["Precio"], median))
+  MovRoaSms[i]<-as.numeric(sapply(mroamsms["Precio"], median))
   print(MovRoaSms)
   rm(mroamsms)
   
@@ -218,7 +249,7 @@ if (i==CC+1){
   
   #MovMinAct<-(sum(movistarvoz["Precio"]) / (sum(movistarvoz["Duracion"]) / 60))
   #movistarvoz[,"PdivD"] <- movistarvoz[,"Precio"]/(movistarvoz[,"Duracion"]/60)
-  MovMinAct<-sapply(movistarvoz["PdivD"],mean)
+  MovMinAct[i]<-as.numeric(sapply(movistarvoz["PdivD"],mean))
   print(MovMinAct)
   
   #$/Mb Actual
@@ -230,7 +261,7 @@ if (i==CC+1){
                           & cdr_movistar["Precio"] > 0)
   
   movistardatos[, "Volumen"] <- movistardatos["Volumen"] / 1024
-  MovMbAct <- sapply(movistardatos["PdivV"],mean)
+  MovMbAct <- as.numeric(sapply(movistardatos["PdivV"],mean))
   #MovMbAct <-
   # (sum(movistardatos["Precio"]) / (sum((movistardatos["Volumen"])) / n))
   print("MovMbAct")
@@ -244,15 +275,17 @@ if (i==CC+1){
 {
   cdr_entel <-
     subset(cdr_accesses, cdr_accesses[["Proveedor.x"]] == "Entel PCS (CL)")
-  datEn<-as.numeric(lengths(cdr_entel["Tipo de llamada"]))
-  if(datEn!=0){
+  datEn[i]<-as.numeric(lengths(cdr_entel["Tipo de llamada"]))
+  if(datEn[[i]]!=0){
   #CONSUMO TOTAL VOZ
+    print("Datos entel")
+    print(datEn[[i]])
   entelvoz <-
     subset(cdr_entel,
            cdr_entel["Tipo de llamada"] == "Voz" &
              cdr_entel["Duracion"] > 0)
   
-  EntTotMin <- (sum(entelvoz["Duracion"]) / 60) / n
+  EntTotMin[i] <- (sum(entelvoz["Duracion"]) / 60) / n
   print("EntTotMin")
   print(EntTotMin)
   
@@ -261,12 +294,12 @@ if (i==CC+1){
     subset(entelvoz,
            entelvoz["NET"] == 1)
   
-  EntVozOnNet <- (sum(entelvozonnet["Duracion"]) / 60) / n
+  EntVozOnNet[i] <- (sum(entelvozonnet["Duracion"]) / 60) / n
   rm(entelvozonnet)
   print(EntVozOnNet)
   
   #CONSUMO VOZ A TODO DESTINO
-  EntATodDes <- EntTotMin - EntVozOnNet
+  EntATodDes[i] <- EntTotMin[[i]] - EntVozOnNet[[i]]
   print(EntATodDes)
   
   #SMARTPHONES GAMA ALTA
@@ -283,7 +316,7 @@ if (i==CC+1){
         (cdr_entel["Geografia"] == "Local" |
            cdr_entel["Geografia"] == "Nacional desconocido")
     )
-  EntSms <- (sapply(entelSMS["Precio"], median))
+  EntSms[i] <- as.numeric(sapply(entelSMS["Precio"], median))
   print("EntSms")
   print(EntSms)
   rm (entelSMS)
@@ -299,7 +332,7 @@ if (i==CC+1){
            cdr_entel["Geografia"] == "Nacional desconocido")
     )
   
-  EntMms <- (sapply(entelMMS["Precio"], median))
+  EntMms[i] <- as.numeric(sapply(entelMMS["Precio"], median))
   print(EntMms)
   rm (entelMMS)
   
@@ -314,16 +347,16 @@ if (i==CC+1){
            mroam["Tipo de llamada"] == "Voz" &
              mroam["Duracion"] > 0)
   
-  EntRoaVoz <- (sum(mroamvoz["Duracion"]) / 60 / n)
+  EntRoaVoz[i] <- (sum(mroamvoz["Duracion"]) / 60 / n)
   print(EntRoaVoz)
   rm(mroamvoz)
   #ROAMING DATOS
   mroamdat <- subset(mroam,
                      mroam["Tipo de llamada"] == "Datos" &
                        mroam["Volumen"] > 0)
-  datM<-as.numeric(lengths(mroamdat["Tipo de llamada"]))
-  if(datM!=0){
-  EntRoaDat <- (sum(mroamdat["Volumen"]) / 1024 / n)
+  datM2<-as.numeric(lengths(mroamdat["Tipo de llamada"]))
+  if(datM2!=0){
+  EntRoaDat[i] <- (sum(mroamdat["Volumen"]) / 1024 / n)
   print(EntRoaDat)
   }
   rm(mroamdat)
@@ -331,9 +364,9 @@ if (i==CC+1){
   mroamsms <- subset(mroam,
                      mroam["Tipo de llamada"] == "SMS" &
                        mroam["Precio"] > 0)
-  datM<-as.numeric(lengths(mroamsms["Tipo de llamada"]))
-  if(datM!=0){
-  EntRoaSms <- (sapply(mroamsms["Precio"], median))
+  datM2<-as.numeric(lengths(mroamsms["Tipo de llamada"]))
+  if(datM2!=0){
+  EntRoaSms[i] <- as.numeric(sapply(mroamsms["Precio"], median))
   print(EntRoaSms)
   }
   rm(mroamsms)
@@ -342,7 +375,7 @@ if (i==CC+1){
   entelvozint <-
     subset(entelvoz, entelvoz["Geografia"] == "A internacional")
   entelvozint["Duracion"]<-entelvozint["Duracion"]/60
-  EntIntVoz <- sapply(entelvozint["Duracion"],sum)
+  EntIntVoz[i] <- as.numeric(sapply(entelvozint["Duracion"],sum))
   print (EntIntVoz)
   
   #---
@@ -353,7 +386,7 @@ if (i==CC+1){
              #entelvoz["Mes"] == max(entelvoz["Mes"]) &
              (entelvoz["Geografia"] == "Nacional desconocido" |
                 entelvoz["Geografia"] == "Local"))
-  EntMinAct<-sapply(entelvoz["PdivD"],mean)
+  EntMinAct[i]<-as.numeric(sapply(entelvoz["PdivD"],mean))
   #EntMinAct <-
   # (sum(entelvoz["Precio"]) / (sum(entelvoz["Duracion"]) / 60))
   print("EntMinAct")
@@ -368,7 +401,7 @@ if (i==CC+1){
                        & cdr_entel["Precio"] > 0)
   
   #enteldatos[, "Volumen"] <- enteldatos["Volumen"] / 1024
-  EntMbAct <- sapply(enteldatos["PdivV"],mean)
+  EntMbAct[i] <- as.numeric(sapply(enteldatos["PdivV"],mean))
   #EntMbAct <-
   #(sum(enteldatos["Precio"]) / (sum((enteldatos["Volumen"])) / n))
   print(EntMbAct)
@@ -378,3 +411,5 @@ if (i==CC+1){
  print(i)
 }
 }
+
+print(MovATodDes)
