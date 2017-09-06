@@ -49,10 +49,20 @@ cdr_accesses[,"PdivV"] <- cdr_accesses[,"Precio"]/cdr_accesses[,"Volumen"]*1024
       by.x = "Producto",
       by.y = "Producto",
       all.x = TRUE
-    ) 
+    )
+  UTP_accesses<-
+  merge (
+    usoplantjointipo,
+    ACCESSES,
+    by.x = "Acceso fix",
+    by.y = "Acceso fix",
+    all.x = TRUE
+  )
+ 
   rm(uso2,usounicojoinPLANt,a,PLAN2)
   #Datos a sacar
-  #Datos a sacar
+  nM<-c()
+  nE<-c()
   datEn<-c()
   datM<-c()
   EntATodDes<-c()
@@ -80,18 +90,51 @@ cdr_accesses[,"PdivV"] <- cdr_accesses[,"Precio"]/cdr_accesses[,"Volumen"]*1024
   MovSms<-c()
   MovTotMin<-c()
   MovVozOnNet<-c()
+  
+  nomemp<-unique(CUENTAS["Empresa"])
+  m<-lapply(nomemp,as.character)
+  CC<-as.numeric(lengths(nomemp))
+  
 
+  
+  UTP_accesses["Proveedor.x"] <- NULL
+  UTP_accesses["Proveedor.y"] <- NULL
+  
+  UTP_accesses <-
+    merge (
+      UTP_accesses,
+      CUENTAS,
+      by.x = "Proveedor Nivel 3",
+      by.y = "Cuenta Cliente",
+      all.x = TRUE
+    )
+  UTP_accesses2<-UTP_accesses
+  for(i in 0:CC+1){
+    UTP_accesses<-UTP_accesses2
+    if (i==CC+1){
+      print("datos generales")
+    }else{
+      print(i)
+      print(m[["Empresa"]][i])
+      UTP_accesses<-
+        subset(UTP_accesses,
+               UTP_accesses["Empresa"]==m[["Empresa"]][i]
+        )
+    }
   #BAM O SERVICIOS DE TELEMETRÍA MOVISTAR
-  MovBAMm <- subset(usoplantjointipo,usoplantjointipo[["Tipo"]] == "BAM"
-                    &usoplantjointipo[["Proveedor"]]=="Movistar CL"
+  MovBAMm <- subset(UTP_accesses,UTP_accesses[["Tipo"]] == "BAM"
+                    &UTP_accesses[["Proveedor.x"]]=="Movistar CL"
   )
-  MovBAM <-as.numeric(length(MovBAMm[["Acceso fix"]]))
+  MovBAM[i] <-as.numeric(length(MovBAMm[["Acceso fix"]]))
   rm(MovBAMm)
   #BAM O SERVICIOS DE TELEMETRÍA ENTEL
-  EntBAMm <- subset(usoplantjointipo,usoplantjointipo[["Tipo"]] == "BAM"
-                    &usoplantjointipo[["Proveedor"]]=="Entel PCS (CL)")
-  EntBAM <-as.numeric(length(EntBAMm[["Acceso fix"]]))
+  EntBAMm <- subset(UTP_accesses,UTP_accesses[["Tipo"]] == "BAM"
+                    &UTP_accesses[["Proveedor.x"]]=="Entel PCS (CL)")
+  EntBAM[i] <-as.numeric(length(EntBAMm[["Acceso fix"]]))
   rm(EntBAMm)
+  }
+  print(MovBAM)
+  print(EntBAM)
   
 #Eleccion de Centro de Facturacion
 cdr_accesses <-
@@ -140,16 +183,19 @@ if (i==CC+1){
     subset(cdr_movistar,
            cdr_movistar["Tipo de llamada"] == "Voz" &
              cdr_movistar["Duracion"] > 0)
-  n<-as.numeric(length(unique(cdr_accesses[["Mes"]])))
-  MovTotMin[i] <- (sum(movistarvoz["Duracion"]) / 60) / n
+  nM[i]<-as.numeric(length(unique(cdr_movistar[["Mes"]])))
+  MovTotMin[i] <- (sum(movistarvoz["Duracion"]) / 60) / nM[[i]]
   print("MovTotMin")
   print(MovTotMin[[i]])
   #CONSUMO VOZ ENTRE USUARIOS SAAM SA
   movistarvozonnet <-
     subset(movistarvoz,
-           movistarvoz["NET"] == 1)
+           movistarvoz["NET"] == 1&
+             (movistarvoz["Geografia"] == "Local"|
+                movistarvoz["Geografia"]=="Nacional desconocido")
+           )
   
-  MovVozOnNet[i] <- (sum(movistarvozonnet["Duracion"]) / 60) / n
+  MovVozOnNet[i] <- (sum(movistarvozonnet["Duracion"]) / 60) / nM[[i]]
   rm(movistarvozonnet)
   print("MovVozOnNet")
   print(MovVozOnNet[[i]])
@@ -211,7 +257,7 @@ if (i==CC+1){
              mroam["Duracion"] > 0)
   datM2<-as.numeric(lengths(mroamvoz["Tipo de llamada"]))
   if(datM2!=0){
-  MovRoaVoz[i]<-(sum(mroamvoz["Duracion"]) / 60 / n)
+  MovRoaVoz[i]<-(sum(mroamvoz["Duracion"]) / 60 / nM[[i]])
   print(MovRoaVoz)
   }
   rm(mroamvoz)
@@ -221,7 +267,7 @@ if (i==CC+1){
                        mroam["Volumen"] > 0)
   datM2<-as.numeric(lengths(mroamdat["Tipo de llamada"]))
   if(datM2!=0){
-  MovRoaDat[i]<-(sum(mroamdat["Volumen"]) / 1024 / n)
+  MovRoaDat[i]<-(sum(mroamdat["Volumen"]) / 1024 / nM[[i]])
   print(MovRoaDat)
   }
   rm(mroamdat)
@@ -242,8 +288,8 @@ if (i==CC+1){
       movistarvoz["Precio"] > 0  &
         #movistarvoz["Mes"] == max(movistarvoz["Mes"]) &
         (
-          movistarvoz$Geografia == "Nacional desconocido" |
-            movistarvoz$Geografia == "Local"
+          movistarvoz["Geografia"] == "Nacional desconocido" |
+            movistarvoz["Geografia"] == "Local"
         )
     )
   
@@ -284,8 +330,8 @@ if (i==CC+1){
     subset(cdr_entel,
            cdr_entel["Tipo de llamada"] == "Voz" &
              cdr_entel["Duracion"] > 0)
-  
-  EntTotMin[i] <- (sum(entelvoz["Duracion"]) / 60) / n
+  nE[i]<-as.numeric(length(unique(cdr_entel[["Mes"]])))
+  EntTotMin[i] <- (sum(entelvoz["Duracion"]) / 60) / nE[[i]]
   print("EntTotMin")
   print(EntTotMin)
   
@@ -294,7 +340,7 @@ if (i==CC+1){
     subset(entelvoz,
            entelvoz["NET"] == 1)
   
-  EntVozOnNet[i] <- (sum(entelvozonnet["Duracion"]) / 60) / n
+  EntVozOnNet[i] <- (sum(entelvozonnet["Duracion"]) / 60) / nE[[i]]
   rm(entelvozonnet)
   print(EntVozOnNet)
   
@@ -347,7 +393,7 @@ if (i==CC+1){
            mroam["Tipo de llamada"] == "Voz" &
              mroam["Duracion"] > 0)
   
-  EntRoaVoz[i] <- (sum(mroamvoz["Duracion"]) / 60 / n)
+  EntRoaVoz[i] <- (sum(mroamvoz["Duracion"]) / 60 / nE[[i]])
   print(EntRoaVoz)
   rm(mroamvoz)
   #ROAMING DATOS
@@ -356,7 +402,7 @@ if (i==CC+1){
                        mroam["Volumen"] > 0)
   datM2<-as.numeric(lengths(mroamdat["Tipo de llamada"]))
   if(datM2!=0){
-  EntRoaDat[i] <- (sum(mroamdat["Volumen"]) / 1024 / n)
+  EntRoaDat[i] <- (sum(mroamdat["Volumen"]) / 1024 / nE[[i]])
   print(EntRoaDat)
   }
   rm(mroamdat)
@@ -412,4 +458,7 @@ if (i==CC+1){
 }
 }
 
-print(MovATodDes)
+print(m)
+print(datM)
+print(datEn)
+print(MovVozOnNet)
