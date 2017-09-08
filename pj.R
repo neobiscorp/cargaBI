@@ -1,3 +1,6 @@
+{
+#Preparacion de datos
+{
 cdr_accesses <-
   merge (cdr, ACCESSES, by.x = "Numero de llamada fix", by.y = "Acceso fix")
 
@@ -50,16 +53,20 @@ cdr_accesses[,"PdivV"] <- cdr_accesses[,"Precio"]/cdr_accesses[,"Volumen"]*1024
       by.y = "Producto",
       all.x = TRUE
     )
+  usoplantjointipo2<-usoplantjointipo
+  usoplantjointipo2["Proveedor.x"] <- NULL
+  usoplantjointipo2["Proveedor.y"] <- NULL
+  
   UTP_accesses<-
   merge (
-    usoplantjointipo,
+    usoplantjointipo2,
     ACCESSES,
     by.x = "Acceso fix",
     by.y = "Acceso fix",
     all.x = TRUE
   )
  
-  rm(uso2,usounicojoinPLANt,a,PLAN2)
+  rm(uso2,usounicojoinPLANt,a,PLAN2,usoplantjointipo2)
   #Datos a sacar
   nM<-c()
   nE<-c()
@@ -97,9 +104,7 @@ cdr_accesses[,"PdivV"] <- cdr_accesses[,"Precio"]/cdr_accesses[,"Volumen"]*1024
   
 
   
-  UTP_accesses["Proveedor.x"] <- NULL
-  UTP_accesses["Proveedor.y"] <- NULL
-  
+
   UTP_accesses <-
     merge (
       UTP_accesses,
@@ -109,6 +114,8 @@ cdr_accesses[,"PdivV"] <- cdr_accesses[,"Precio"]/cdr_accesses[,"Volumen"]*1024
       all.x = TRUE
     )
   UTP_accesses2<-UTP_accesses
+}
+#BAM por Empresa
   for(i in 0:CC+1){
     UTP_accesses<-UTP_accesses2
     if (i==CC+1){
@@ -137,6 +144,7 @@ cdr_accesses[,"PdivV"] <- cdr_accesses[,"Precio"]/cdr_accesses[,"Volumen"]*1024
   print(EntBAM)
   
 #Eleccion de Centro de Facturacion
+  {
 cdr_accesses <-
   merge (
     cdr_accesses,
@@ -153,9 +161,8 @@ m<-lapply(nomemp,as.character)
 CC<-as.numeric(lengths(nomemp))
 
 
-
-
-
+  }
+  #DATOS A SACAR
 for(i in 0:CC+1){
   cdr_accesses<-cdr_accesses2
 if (i==CC+1){
@@ -184,7 +191,7 @@ if (i==CC+1){
            cdr_movistar["Tipo de llamada"] == "Voz" &
              cdr_movistar["Duracion"] > 0)
   nM[i]<-as.numeric(length(unique(cdr_movistar[["Mes"]])))
-  MovTotMin[i] <- (sum(movistarvoz["Duracion"]) / 60) / nM[[i]]
+  MovTotMin[i] <- as.numeric((sum(movistarvoz["Duracion"]) / 60) / nM[[i]])
   print("MovTotMin")
   print(MovTotMin[[i]])
   #CONSUMO VOZ ENTRE USUARIOS SAAM SA
@@ -194,8 +201,10 @@ if (i==CC+1){
              (movistarvoz["Geografia"] == "Local"|
                 movistarvoz["Geografia"]=="Nacional desconocido")
            )
-  
-  MovVozOnNet[i] <- (sum(movistarvozonnet["Duracion"]) / 60) / nM[[i]]
+  datM2<-as.numeric(lengths(movistarvozonnet["Tipo de llamada"]))
+  if(datM2!=0){
+  MovVozOnNet[i] <- as.numeric((sum(movistarvozonnet["Duracion"]) / 60) / nM[[i]])
+  }else{MovVozOnNet[i]<-0}
   rm(movistarvozonnet)
   print("MovVozOnNet")
   print(MovVozOnNet[[i]])
@@ -204,7 +213,12 @@ if (i==CC+1){
   MovATodDes[i] <- MovTotMin[[i]] - MovVozOnNet[[i]]
   print("MovATodDes")
   print(MovATodDes[[i]])
- 
+  
+  
+
+  #"Pais destinatario","Duracion","Cantidad de llamadas"
+  
+  
   #SMARTPHONES GAMA ALTA
   #SMARTPHONES GAMA MEDIA
   #---
@@ -338,7 +352,9 @@ if (i==CC+1){
   #CONSUMO VOZ ENTRE USUARIOS SAAM SA
   entelvozonnet <-
     subset(entelvoz,
-           entelvoz["NET"] == 1)
+           entelvoz["NET"] == 1&
+             (entelvoz["Geografia"] == "Local" |
+                entelvoz["Geografia"] == "Nacional desconocido"))
   
   EntVozOnNet[i] <- (sum(entelvozonnet["Duracion"]) / 60) / nE[[i]]
   rm(entelvozonnet)
@@ -347,6 +363,7 @@ if (i==CC+1){
   #CONSUMO VOZ A TODO DESTINO
   EntATodDes[i] <- EntTotMin[[i]] - EntVozOnNet[[i]]
   print(EntATodDes)
+  #Paises mas llamados
   
   #SMARTPHONES GAMA ALTA
   #SMARTPHONES GAMA MEDIA
@@ -457,8 +474,64 @@ if (i==CC+1){
  print(i)
 }
 }
+#Paises mas llamados
+  {
+    cdr_movistar <-
+      subset(cdr_accesses, cdr_accesses[["Proveedor.x"]] == "Movistar CL")
+movistarpais<-
+  subset(cdr_movistar,
+         cdr_movistar["Tipo de llamada"]== "Voz"&
+           (cdr_movistar["Geografia"] == "A internacional"|
+              cdr_movistar["Geografia"]=="Roaming saliente")&
+           cdr_movistar["Duracion"]>0&
+           cdr_movistar["Pais destinatario"]!="Chile")
+PaisesMov<-as.character(unique(movistarpais[["Pais destinatario"]]))
+PaisesMov2<-c()
+PaisesMov3<-c()
+for(j in 1:length(PaisesMov)){
+  
+  MovPaisDur<-subset(movistarpais,movistarpais["Pais destinatario"]==PaisesMov[[j]])
+  
+  PaisesMov2[j]<-sum(MovPaisDur[["Duracion"]]/60)
+  PaisesMov3[j]<-length(MovPaisDur[["Geografia"]])
+}
 
-print(m)
-print(datM)
-print(datEn)
-print(MovVozOnNet)
+MovPais<-data.frame(PaisesMov)
+
+MovPais["Duracion"]<-PaisesMov2
+MovPais["Cantidad de llamadas"]<-PaisesMov3
+MovPais3<-MovPais
+MovPais<-MovPais3[order(-MovPais3[["Duracion"]]),]
+
+rm(PaisesMov,PaisesMov2,PaisesMov3,MovPaisDur,movistarpais,MovPais3)
+
+cdr_entel <-
+  subset(cdr_accesses, cdr_accesses[["Proveedor.x"]] == "Entel PCS (CL)")
+entelpais<-
+  subset(cdr_entel,
+         cdr_entel["Tipo de llamada"]== "Voz"&
+           (cdr_entel["Geografia"] == "A internacional"|
+              cdr_entel["Geografia"]=="Roaming saliente")&
+           cdr_entel["Duracion"]>0&
+           cdr_entel["Pais destinatario"]!="Chile")
+PaisesEnt<-as.character(unique(entelpais[["Pais destinatario"]]))
+PaisesEnt2<-c()
+PaisesEnt3<-c()
+for(j in 1:length(PaisesEnt)){
+  print(PaisesEnt[[j]])
+  EntPaisDur<-subset(entelpais,entelpais["Pais destinatario"]==PaisesEnt[[j]])
+  
+  PaisesEnt2[j]<-sum(EntPaisDur[["Duracion"]]/60)
+  PaisesEnt3[j]<-length(EntPaisDur[["Geografia"]])
+}
+
+EntPais<-data.frame(PaisesEnt)
+
+EntPais["Duracion"]<-PaisesEnt2
+EntPais["Cantidad de llamadas"]<-PaisesEnt3
+EntPais3<-EntPais
+EntPais<-EntPais3[order(-EntPais3[["Duracion"]]),]
+
+rm(PaisesEnt,PaisesEnt2,PaisesEnt3,EntPaisDur,entelpais,EntPais3)
+}
+}
