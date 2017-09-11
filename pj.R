@@ -22,7 +22,7 @@ cdr_accesses[, "NET"] <-
 mes1 <- sapply(cdr_accesses["Fecha de llamada"], substr, 6, 7)
 mes <- as.numeric(mes1)
 cdr_accesses["Mes"] <- mes
-n <- (length(unique(mes))) - 1 #número de meses
+
 rm(mes1, mes)
 
 cdr_accesses <-
@@ -117,7 +117,7 @@ cdr_accesses[,"PdivV"] <- cdr_accesses[,"Precio"]/cdr_accesses[,"Volumen"]*1024
 }
 #BAM por Empresa
   for(i in 0:CC+1){
-    UTP_accesses<-UTP_accesses2
+    UTP_accesses<-UTP_accesses2 #
     if (i==CC+1){
       print("datos generales")
     }else{
@@ -162,7 +162,7 @@ CC<-as.numeric(lengths(nomemp))
 
 
   }
-  #DATOS A SACAR
+#DATOS A SACAR
 for(i in 0:CC+1){
   cdr_accesses<-cdr_accesses2
 if (i==CC+1){
@@ -474,6 +474,8 @@ if (i==CC+1){
  print(i)
 }
 }
+  cdr_accesses<-cdr_accesses2
+  rm(cdr_accesses2)
 #Paises mas llamados
   {
     cdr_movistar <-
@@ -533,5 +535,55 @@ EntPais3<-EntPais
 EntPais<-EntPais3[order(-EntPais3[["Duracion"]]),]
 
 rm(PaisesEnt,PaisesEnt2,PaisesEnt3,EntPaisDur,entelpais,EntPais3)
-}
+  }
+  rm(cdr_entel,cdr_movistar)
+#Accesos unicos por tipo
+  uso2<-uso
+  mes1 <- sapply(uso2["Fecha"], substr, 6, 7)
+  mes <- as.numeric(mes1)
+  uso2["Mes"] <- mes
+  rm(mes1,mes)
+  Vnacional<-as.numeric(uso2[["N. Voz nacional"]])
+  Vnacional<-as.numeric(sapply(uso2["N. Voz nacional"], substr,1,nchar(uso2["N. Voz nacional"])))
+  uso2["Vnacional"] <- Vnacional
+  uso2[,"N. VozTotal"] <- uso2[["Vnacional"]] +as.numeric(uso2[,"N. Voz inter."])
+  accesosunicos2<-as.list(unique(uso2["Acceso"]))
+rm(Vnacional)
+
+  i<-1
+  Vtotal2<-c()
+  Vnacional2<-c()
+  Vinter2<-c()
+  VhaciaInt2<-c()
+  VRoam2<-c()
+  VRoamEnt2<-c()
+  VRoamSal2<-c()
+  nmeses<-c()
+  for(i in 1:lengths(accesosunicos2)){
+    AccMes<-subset(uso2,uso2["Acceso"] == as.character(accesosunicos2[["Acceso"]][i]))
+    nmeses[i]<-as.numeric(lengths(AccMes["Acceso"]))
+    Vtotal2[i]<-sum(AccMes["N. VozTotal"])/nmeses[[i]]/60
+    Vnacional2[i]<- sum(AccMes["Vnacional"])/nmeses[[i]]/60
+    Vinter2[i]<-sum(AccMes["N. Voz inter."])/nmeses[[i]]/60
+    VhaciaInt2[i]<-sum(AccMes["N. Voz hacia Int"])/nmeses[[i]]/60
+    VRoam2[i]<-sum(AccMes["N. Voz roaming"])/nmeses[[i]]/60
+    VRoamEnt2[i]<-sum(AccMes["N. Voz Roaming In"])/nmeses[[i]]/60
+    VRoamSal2[i]<-sum(AccMes["N. Voz Roaming Out"])/nmeses[[i]]/60
+   
+  }
+  accesosunicos<-(unique(uso2["Acceso"]))
+
+  accesosunicos["VTotal"]<-Vtotal2
+  accesosunicos["Vnacional"]<-Vnacional2
+  accesosunicos["Vinter"]<-Vinter2
+  accesosunicos["VhaciaInt"]<-VhaciaInt2
+  accesosunicos["VRoaming"]<-VRoam2
+  accesosunicos["VRoaming Entrante"]<-VRoamEnt2
+  accesosunicos["VRoaming Saliente"]<-VRoamSal2
+  accesosunicos["Cantidad Meses"]<-nmeses
+  
+  rm(Vtotal2,VRoamSal2,VRoamEnt2,VRoam2,Vnacional2,Vinter2,VhaciaInt2,nmeses,accesosunicos2)
+
+  
+  
 }
