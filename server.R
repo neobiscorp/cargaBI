@@ -6,6 +6,7 @@ library(DBI)        #Primary MySQL connection
 library(openxlsx)   #Read xlsx files
 library(data.table) #For merge, rbind and dataframe works
 
+#comentario vacío
 #Function to kill MySQL connections
 killDbConnections <- function () {
   all_cons <- dbListConnections(MySQL())
