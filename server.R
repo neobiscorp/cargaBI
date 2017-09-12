@@ -455,6 +455,12 @@ shinyServer(function(input, output, session) {
       #Delete the Column MES that its not needed now
       uso[, 'Periodo de'] <<- NULL
       
+      #Add the column month as numeric value from Fecha
+      uso[, 'Mes'] <<-
+        lapply(uso[, 'Fecha'], function(x)
+          as.numeric(substr(x, 6 , 7)))
+      
+      
       if (client == "pa") {
         #Upload to the Parque Arauco DB the data with those data type
         dbWriteTable(
@@ -583,7 +589,8 @@ shinyServer(function(input, output, session) {
               "N. SMS nac.",
               "N. SMS inter.",
               "Fecha",
-              "Acceso fix"
+              "Acceso fix",
+              "Mes"
             )
           )
         
@@ -624,7 +631,8 @@ shinyServer(function(input, output, session) {
             `N. SMS nac.` = "INT(10)",
             `N. SMS inter.` = "INT(10)",
             `Fecha` = "date",
-            `Acceso fix` = "varchar(255)"
+            `Acceso fix` = "varchar(255)",
+            `Mes` = "INT(10)"
           ),
           row.names = FALSE,
           overwrite = TRUE,
