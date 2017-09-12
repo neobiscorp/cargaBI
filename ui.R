@@ -24,17 +24,18 @@ shinyUI(fluidPage(
           "Parque Arauco",
           "Falabella",
           "Aguas Andinas",
-          "Licitacion Movil (Entel y Movistar)"
+          "Licitacion Movil (Entel y Movistar)",
+          "Informe Gestion Movil"
         ),
         selected = ""
       ),
       #Create conditional Panel with text input
-      conditionalPanel(condition = "input.Client == 'Licitacion Movil (Entel y Movistar)'",
+      conditionalPanel(condition = "input.Client == 'Licitacion Movil (Entel y Movistar)' ||input.Client == 'Informe Gestion Movil'",
                        textInput('nombre',
                                  'Nombre de la Empresa a Licitar')),
       #Create conditional Panel with text input
       conditionalPanel(
-        condition = "input.Client == 'Licitacion Movil (Entel y Movistar)'",
+        condition = "input.Client == 'Licitacion Movil (Entel y Movistar)' ||input.Client == 'Informe Gestion Movil'",
         textInput('link',
                   'Link de Imagen de la Empresa a Licitar')
       ),
@@ -115,7 +116,7 @@ shinyUI(fluidPage(
       ),
       #Create conditional Panel accepting one xlsx file
       conditionalPanel(
-        condition = "input.Client == 'Licitacion Movil (Entel y Movistar)'",
+        condition = "input.Client == 'Licitacion Movil (Entel y Movistar)' ||input.Client =='Informe Gestion Movil'",
         fileInput(
           'planes',
           'Elegir el Archivo xlsx que contiene el informe de los planes de los proveedores',
@@ -126,7 +127,7 @@ shinyUI(fluidPage(
       ),
       #Create conditional Panel accepting one xlsx file
       conditionalPanel(
-        condition = "input.Client == 'Licitacion Movil (Entel y Movistar)'",
+        condition = "input.Client == 'Licitacion Movil (Entel y Movistar)' ||input.Client == 'Informe Gestion Movil'",
         fileInput(
           'tipos',
           'Elegir el Archivo xlsx que contiene tipo planes de los proveedores',

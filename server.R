@@ -62,6 +62,9 @@ shinyServer(function(input, output, session) {
     if (client == "Licitacion Movil (Entel y Movistar)") {
       client <- "lmovil"
     }
+    if (client == "Informe Gestion Movil") {
+      client <- "igm"
+    }
     
     #Create DB connection variable
     DB <- dbConnect(
@@ -325,7 +328,7 @@ shinyServer(function(input, output, session) {
         
       }
       #If the client its not Parque Arauco and licitacion run the following
-      else if (client != "lmovil") {
+      else if (client != "lmovil" & client != "igm") {
         #Change the name of the columns
         names(uso)[names(uso) == 'ï..Acceso'] <<- 'Acceso'
         names(uso)[names(uso) == 'Proveedor'] <<- 'Proveedor'
@@ -430,7 +433,7 @@ shinyServer(function(input, output, session) {
       
       #If the client got printer access eliminate the thousand dot separator
       if (client != "hdc" &
-          client != "aguasandinas" & client != "lmovil") {
+          client != "aguasandinas" & client != "lmovil"& client != "igm") {
         uso[, c('N Copias', 'N Copias B/N', 'N Copias Color')] <<-
           lapply(uso[, c('N Copias', 'N Copias B/N', 'N Copias Color')], function(x)
             as.character(gsub("\\.", "", x)))
@@ -511,7 +514,7 @@ shinyServer(function(input, output, session) {
         
       }
       else if (client != "hdc" &
-               client != "aguasandinas" & client != "lmovil") {
+               client != "aguasandinas" & client != "lmovil"& client != "igm") {
         dbWriteTable(
           DB,
           "usos",
@@ -542,7 +545,7 @@ shinyServer(function(input, output, session) {
           allow.keywords = FALSE
         )
       }
-      else if (client == "lmovil") {
+      else if (client == "lmovil"| client == "igm") {
         #Only select the following columns, if there are more, do not use them
         uso <-
           subset(
@@ -671,7 +674,7 @@ shinyServer(function(input, output, session) {
       
       #######################################USERS############
       
-      if (client != "lmovil") {
+      if (client != "lmovil" & client != "igm") {
         #Read the xlsx file at the sheet USERS
         USERS <- read.xlsx(export$datapath,
                            sheet = "USERS",
@@ -1034,7 +1037,7 @@ shinyServer(function(input, output, session) {
           allow.keywords = FALSE
         )
       }
-      else if (client == "lmovil") {
+      else if (client == "lmovil"| client == "igm") {
         #Only select the columns with the following titles
         
         ACCESSES <-
@@ -1081,7 +1084,7 @@ shinyServer(function(input, output, session) {
       }
       file.remove("ACCESSES.txt")
       #######################################DEVICES############
-      if (client != "lmovil") {
+      if (client != "lmovil"& client != "igm") {
         DEVICES <- read.xlsx(export$datapath,
                              sheet = "DEVICES",
                              startRow = 1)
@@ -1181,7 +1184,7 @@ shinyServer(function(input, output, session) {
         )
       }
       #######################################ASSOCIATIONS############
-      if (client != "lmovil") {
+      if (client != "lmovil"& client != "igm") {
         ASSOCIATIONS <- read.xlsx(export$datapath,
                                   sheet = "ASSOCIATIONS",
                                   startRow = 1)
