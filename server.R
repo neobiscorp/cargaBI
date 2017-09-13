@@ -357,7 +357,7 @@ shinyServer(function(input, output, session) {
         
         #Change the name of the columns for the clients that got Printing services
         if (client != "hdc" &
-            client != "aguasandinas" & client != "LMovil") { 
+            client != "aguasandinas" & client != "lmovil") { 
           names(uso)[names(uso) == 'N.Â..Copias'] <<-
             'N Copias'
           names(uso)[names(uso) == 'N.Â..Copias.B.N'] <<-
