@@ -357,7 +357,7 @@ shinyServer(function(input, output, session) {
         
         #Change the name of the columns for the clients that got Printing services
         if (client != "hdc" &
-            client != "aguasandinas" & client != "LMovil") {
+            client != "aguasandinas" & client != "LMovil") { 
           names(uso)[names(uso) == 'N.Â..Copias'] <<-
             'N Copias'
           names(uso)[names(uso) == 'N.Â..Copias.B.N'] <<-
@@ -365,6 +365,29 @@ shinyServer(function(input, output, session) {
           names(uso)[names(uso) == 'N.Â..Copias.Color'] <<-
             'N Copias Color'
         }
+      }
+      else if(client == "igm"){
+      #Generate the name of the columns for Informe Gestion Movil
+        names(uso)[names(uso) == 'ï..Acceso'] <<- 'Acceso'
+        names(uso)[names(uso) == 'Usuario'] <<- 'Usuario'
+        names(uso)[names(uso) == 'Proveedor'] <<- 'Proveedor'
+        names(uso)[names(uso) == 'PerÃ.odo.de'] <<-  'Periodo de'
+        names(uso)[names(uso) == 'Total..CLP.'] <<- 'Total (CLP)'
+        names(uso)[names(uso) == 'Plano.tarifario..CLP.'] <<-
+          'Plano tarifario (CLP)'
+        names(uso)[names(uso) == 'Uso..CLP.'] <<- 'Uso (CLP)'
+        names(uso)[names(uso) == 'Servicios..CLP.'] <<-
+          'Servicios (CLP)'
+        names(uso)[names(uso) == 'Descuentos..CLP.'] <<-
+          'Descuentos (CLP)'
+        names(uso)[names(uso) == 'Voz..CLP.'] <<- 'Voz (CLP)'
+        names(uso)[names(uso) == 'Datos..CLP.'] <<- 'Datos (CLP)'
+        names(uso)[names(uso) == 'SMS.MMS..CLP.'] <<-
+          'SMS/MMS (CLP)'
+        #Create a column with the phone number without the 56 (Chile)
+        uso[, 'Acceso fix'] <<-
+          lapply(uso[, 'Acceso'], function(x)
+            substring(x, 3))
       }
       else {
         #Change the name of the columns for the Licitacion movil
@@ -551,7 +574,7 @@ shinyServer(function(input, output, session) {
           allow.keywords = FALSE
         )
       }
-      else if (client == "lmovil"| client == "igm") {
+      else if (client == "lmovil") {
         #Only select the following columns, if there are more, do not use them
         uso <-
           subset(
@@ -630,6 +653,55 @@ shinyServer(function(input, output, session) {
             `N. Voz Roaming Out` = "INT(10)",
             `N. SMS nac.` = "INT(10)",
             `N. SMS inter.` = "INT(10)",
+            `Fecha` = "date",
+            `Acceso fix` = "varchar(255)",
+            `Mes` = "INT(10)"
+          ),
+          row.names = FALSE,
+          overwrite = TRUE,
+          append = FALSE,
+          allow.keywords = FALSE
+        )
+      }
+      else if (client == "igm") {
+        #Only select the following columns, if there are more, do not use them
+        uso <-
+          subset(
+            uso,
+            select = c(
+              "Acceso",
+              "Usuario",
+              "Proveedor",
+              "Total (CLP)",
+              "Plano tarifario (CLP)",
+              "Uso (CLP)",
+              "Servicios (CLP)",
+              "Descuentos (CLP)",
+              "Voz (CLP)",
+              "Datos (CLP)",
+              "SMS/MMS (CLP)",
+              "Fecha",
+              "Acceso fix",
+              "Mes"
+            )
+          )
+        
+        dbWriteTable(
+          DB,
+          "usos",
+          uso,
+          field.types = list(
+            `Acceso` = "varchar(255)",
+            `Usuario` = "varchar(255)",
+            `Proveedor` = "varchar(255)",
+            `Total (CLP)` = "double(15,2)",
+            `Plano tarifario (CLP)` = "double(15,2)",
+            `Uso (CLP)` = "double(15,2)",
+            `Servicios (CLP)` = "double(15,2)",
+            `Descuentos (CLP)` = "double(15,2)",
+            `Voz (CLP)` = "double(15,2)",
+            `Datos (CLP)` = "double(15,2)",
+            `SMS/MMS (CLP)` = "double(15,2)",
             `Fecha` = "date",
             `Acceso fix` = "varchar(255)",
             `Mes` = "INT(10)"
