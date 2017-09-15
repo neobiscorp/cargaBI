@@ -61,14 +61,10 @@
     )
   rm(uso2,usounicojoinPLANt,a,PLAN2,usoplantjointipo,usoplantjointipo2)
 
-
-
-
-
 #Se quiere generar los consumos promedios mensuales por acceso
 
 accesosunicos<-as.list(unique(UTP_accesses[["Acceso.x"]]))
-i<-6
+i<-2
 Ptotal<-c()
 Pplanotarifario<-c()
 Pusos<-c()
@@ -92,7 +88,7 @@ for(i in 1:as.numeric(length(accesosunicos))){
   Psmsmms[i]<-sum(AccMes[["SMS/MMS (CLP)"]])/nmeses[[i]]
   
 }
-Acceso<-unique(uso[["Acceso"]])
+Acceso<-unique(UTP_accesses[["Acceso.x"]])
 accesosunicos<-as.data.frame(Acceso)
 #Se unen los datos recopilados a la nueva tabla accesosunicos
 accesosunicos["Ptotal"]<-Ptotal
