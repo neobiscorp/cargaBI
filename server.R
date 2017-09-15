@@ -752,7 +752,7 @@ shinyServer(function(input, output, session) {
       
       #######################################USERS############
       
-      if (client != "lmovil" & client != "igm") {
+      if (client != "lmovil") {
         #Read the xlsx file at the sheet USERS
         USERS <- read.xlsx(export$datapath,
                            sheet = "USERS",
@@ -781,6 +781,7 @@ shinyServer(function(input, output, session) {
           append = FALSE,
           allow.keywords = FALSE
         )
+        USERS <<- USERS
       }
       #######################################ACCESSES############
       
@@ -1262,7 +1263,7 @@ shinyServer(function(input, output, session) {
         )
       }
       #######################################ASSOCIATIONS############
-      if (client != "lmovil"& client != "igm") {
+      if (client != "lmovil") {
         ASSOCIATIONS <- read.xlsx(export$datapath,
                                   sheet = "ASSOCIATIONS",
                                   startRow = 1)
@@ -1284,6 +1285,7 @@ shinyServer(function(input, output, session) {
           append = FALSE,
           allow.keywords = FALSE
         )
+        ASSOCIATIONS <<- ASSOCIATIONS
       }
       #######################################PRODUCT_ASSOCIATIONS############
       if (client != "lmovil"& client != "igm") {
