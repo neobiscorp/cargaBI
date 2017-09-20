@@ -101,5 +101,5 @@ accesosunicos["Psmsmms"]<-Psmsmms
 accesosunicos["Cantidad Meses"]<-nmeses
 accesosunicos<-accesosunicos[order(-accesosunicos[["Ptotal"]]),]
 
-
+rm(Pvoz,Pusos,Ptotal,Psmsmms,Pservicios,Pplanotarifario,Pdescuentos,Pdatos,nmeses,Acceso,i)
 }
