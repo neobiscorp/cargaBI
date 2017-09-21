@@ -162,6 +162,7 @@ shinyServer(function(input, output, session) {
       #Clear and create variable and read CSV file
       dataFilesUF <<- NULL
       dataFilesUF <<- lapply(input$usos[['datapath']], read.csv2)
+      
       #Append all usos files to the same dataframe
       uso <<- rbindlist(dataFilesUF)
       
@@ -370,6 +371,7 @@ shinyServer(function(input, output, session) {
       #Generate the name of the columns for Informe Gestion Movil
 
         names(uso)[names(uso) == 'ï..Acceso'] <<- 'Acceso'
+        #names(uso)[names(uso) == 'Usuario'] <<- 'Usuario'
         names(uso)[names(uso) == 'Proveedor'] <<- 'Proveedor'
         names(uso)[names(uso) == 'PerÃ.odo.de'] <<-  'Periodo de'
         names(uso)[names(uso) == 'Total..CLP.'] <<- 'Total (CLP)'
@@ -670,6 +672,7 @@ shinyServer(function(input, output, session) {
             uso,
             select = c(
               "Acceso",
+              #"Usuario",
               "Proveedor",
               "Total (CLP)",
               "Plano tarifario (CLP)",
@@ -691,6 +694,7 @@ shinyServer(function(input, output, session) {
           uso,
           field.types = list(
             `Acceso` = "varchar(255)",
+            #`Usuario` = "varchar(255)",
             `Proveedor` = "varchar(255)",
             `Total (CLP)` = "double(15,2)",
             `Plano tarifario (CLP)` = "double(15,2)",
