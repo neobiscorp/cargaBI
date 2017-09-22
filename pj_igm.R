@@ -85,6 +85,7 @@ for(i in 1:as.numeric(length(accesosunicos))){
   Pservicios[i]<-sum(AccMes[["Servicios (CLP)"]])/nmeses[[i]]
   Pdescuentos[i]<-sum(AccMes[["Descuentos (CLP)"]])/nmeses[[i]]
   Pvoz[i]<-sum(AccMes[["Voz (CLP)"]])/nmeses[[i]]
+  Pdatos[i]<-sum(AccMes[["Datos (CLP)"]])/nmeses[[i]]
   Psmsmms[i]<-sum(AccMes[["SMS/MMS (CLP)"]])/nmeses[[i]]
   
 }
@@ -97,9 +98,12 @@ accesosunicos["Pusos"]<-Pusos
 accesosunicos["Pservicios"]<-Pservicios
 accesosunicos["Pdescuentos"]<-Pdescuentos
 accesosunicos["Pvoz"]<-Pvoz
+accesosunicos["Pdatos"]<-Pdatos
 accesosunicos["Psmsmms"]<-Psmsmms
 accesosunicos["Cantidad Meses"]<-nmeses
 accesosunicos<-accesosunicos[order(-accesosunicos[["Ptotal"]]),]
 
 rm(Pvoz,Pusos,Ptotal,Psmsmms,Pservicios,Pplanotarifario,Pdescuentos,Pdatos,nmeses,Acceso,i)
+print("LISTO")
 }
+
