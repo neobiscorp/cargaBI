@@ -1120,7 +1120,305 @@ shinyServer(function(input, output, session) {
           allow.keywords = FALSE
         )
       }
-      else if (client == "lmovil"| client == "igm") {
+      else if (client == "igm"){
+        #Only select the columns with the following titles
+        
+        ACCESSES <-
+          subset(
+            ACCESSES,
+            select = c(
+              "ACCESS.NUMBER",
+              "CARRIER_ORG:1",
+              "CARRIER_ORG:2",
+              "CARRIER_ORG:3",
+              if(is.null(ACCESSES[["MANAGEMENT_ORG:1"]])==FALSE)
+              {"MANAGEMENT_ORG:1"},
+              if(is.null(ACCESSES[["MANAGEMENT_ORG:2"]])==FALSE)
+              {"MANAGEMENT_ORG:2"},
+              if(is.null(ACCESSES[["MANAGEMENT_ORG:3"]])==FALSE)
+              {"MANAGEMENT_ORG:3"},
+              if(is.null(ACCESSES[["MANAGEMENT_ORG:4"]])==FALSE)
+              {"MANAGEMENT_ORG:4"},
+              if(is.null(ACCESSES[["MANAGEMENT_ORG:5"]])==FALSE)
+              {"MANAGEMENT_ORG:5"},
+              if(is.null(ACCESSES[["MANAGEMENT_ORG:6"]])==FALSE)
+              {"MANAGEMENT_ORG:6"},
+              if(is.null(ACCESSES[["MANAGEMENT_ORG:7"]])==FALSE)
+              {"MANAGEMENT_ORG:7"},
+              if(is.null(ACCESSES[["MANAGEMENT_ORG:8"]])==FALSE)
+              {"MANAGEMENT_ORG:8"}
+            )
+          )
+        write.table(ACCESSES, file = "ACCESSES.txt", fileEncoding = "UTF8")
+        ACCESSES <-
+          read.table(file = "ACCESSES.txt", encoding = "UTF8")
+        names(ACCESSES) <-
+          c("Acceso",
+            "Proveedor",
+            "Proveedor Nivel 2",
+            "Proveedor Nivel 3",
+            if(is.null(ACCESSES$MANAGEMENT_ORG.1)==FALSE)
+            {"MANAGEMENTORG1"},
+            if(is.null(ACCESSES$MANAGEMENT_ORG.2)==FALSE)
+            {"MANAGEMENTORG2"},
+            if(is.null(ACCESSES$MANAGEMENT_ORG.3)==FALSE)
+            {"MANAGEMENTORG3"},
+            if(is.null(ACCESSES$MANAGEMENT_ORG.4)==FALSE)
+            {"MANAGEMENTORG4"},
+            if(is.null(ACCESSES$MANAGEMENT_ORG.5)==FALSE)
+            {"MANAGEMENTORG5"},
+            if(is.null(ACCESSES$MANAGEMENT_ORG.6)==FALSE)
+            {"MANAGEMENTORG6"},
+            if(is.null(ACCESSES$MANAGEMENT_ORG.7)==FALSE)
+            {"MANAGEMENTORG7"},
+            if(is.null(ACCESSES$MANAGEMENT_ORG.8)==FALSE)
+            {"MANAGEMENTORG8"}
+            
+            )
+        #Create a column with the access number without the country code
+        ACCESSES[, 'Acceso fix'] <-
+          lapply(ACCESSES['Acceso'], function(x)
+            substring(x, 3))
+        if(is.null(ACCESSES[["MANAGEMENTORG8"]])==FALSE&
+           is.null(ACCESSES[["MANAGEMENTORG7"]])==FALSE&
+           is.null(ACCESSES[["MANAGEMENTORG6"]])==FALSE&
+           is.null(ACCESSES[["MANAGEMENTORG5"]])==FALSE&
+           is.null(ACCESSES[["MANAGEMENTORG4"]])==FALSE&
+           is.null(ACCESSES[["MANAGEMENTORG3"]])==FALSE&
+           is.null(ACCESSES[["MANAGEMENTORG2"]])==FALSE&
+           is.null(ACCESSES[["MANAGEMENTORG1"]])==FALSE)
+        {
+          dbWriteTable(
+            DB,
+            "accesses",
+            ACCESSES,
+            field.types = list(
+              Acceso = "varchar(255)",
+              Proveedor = "varchar(255)",
+              `Proveedor Nivel 2` = "varchar(255)",
+              `Proveedor Nivel 3` = "varchar(255)",
+              `MANAGEMENTORG1` = "varchar(255)",
+              `MANAGEMENTORG2` = "varchar(255)",
+              `MANAGEMENTORG3` = "varchar(255)",
+              `MANAGEMENTORG4` = "varchar(255)",
+              `MANAGEMENTORG5` = "varchar(255)",
+              `MANAGEMENTORG6` = "varchar(255)",
+              `MANAGEMENTORG7` = "varchar(255)",
+              `MANAGEMENTORG8` = "varchar(255)",
+              `Acceso fix` = "varchar(255)"
+            ) ,
+            row.names = FALSE,
+            overwrite = TRUE,
+            append = FALSE,
+            allow.keywords = FALSE
+          )
+        }
+        else if(is.null(ACCESSES[["MANAGEMENTORG7"]])==FALSE&
+                is.null(ACCESSES[["MANAGEMENTORG6"]])==FALSE&
+                is.null(ACCESSES[["MANAGEMENTORG5"]])==FALSE&
+                is.null(ACCESSES[["MANAGEMENTORG4"]])==FALSE&
+                is.null(ACCESSES[["MANAGEMENTORG3"]])==FALSE&
+                is.null(ACCESSES[["MANAGEMENTORG2"]])==FALSE&
+                is.null(ACCESSES[["MANAGEMENTORG1"]])==FALSE)
+        {
+          dbWriteTable(
+            DB,
+            "accesses",
+            ACCESSES,
+            field.types = list(
+              Acceso = "varchar(255)",
+              Proveedor = "varchar(255)",
+              `Proveedor Nivel 2` = "varchar(255)",
+              `Proveedor Nivel 3` = "varchar(255)",
+              `MANAGEMENTORG1` = "varchar(255)",
+              `MANAGEMENTORG2` = "varchar(255)",
+              `MANAGEMENTORG3` = "varchar(255)",
+              `MANAGEMENTORG4` = "varchar(255)",
+              `MANAGEMENTORG5` = "varchar(255)",
+              `MANAGEMENTORG6` = "varchar(255)",
+              `MANAGEMENTORG7` = "varchar(255)",
+              `Acceso fix` = "varchar(255)"
+            ) ,
+            row.names = FALSE,
+            overwrite = TRUE,
+            append = FALSE,
+            allow.keywords = FALSE
+          )
+        }
+        else if(is.null(ACCESSES[["MANAGEMENTORG6"]])==FALSE&
+                is.null(ACCESSES[["MANAGEMENTORG5"]])==FALSE&
+                is.null(ACCESSES[["MANAGEMENTORG4"]])==FALSE&
+                is.null(ACCESSES[["MANAGEMENTORG3"]])==FALSE&
+                is.null(ACCESSES[["MANAGEMENTORG2"]])==FALSE&
+                is.null(ACCESSES[["MANAGEMENTORG1"]])==FALSE)
+        {
+          dbWriteTable(
+            DB,
+            "accesses",
+            ACCESSES,
+            field.types = list(
+              Acceso = "varchar(255)",
+              Proveedor = "varchar(255)",
+              `Proveedor Nivel 2` = "varchar(255)",
+              `Proveedor Nivel 3` = "varchar(255)",
+              `MANAGEMENTORG1` = "varchar(255)",
+              `MANAGEMENTORG2` = "varchar(255)",
+              `MANAGEMENTORG3` = "varchar(255)",
+              `MANAGEMENTORG4` = "varchar(255)",
+              `MANAGEMENTORG5` = "varchar(255)",
+              `MANAGEMENTORG6` = "varchar(255)",
+              `Acceso fix` = "varchar(255)"
+            ) ,
+            row.names = FALSE,
+            overwrite = TRUE,
+            append = FALSE,
+            allow.keywords = FALSE
+          )
+        }
+        else if(is.null(ACCESSES[["MANAGEMENTORG5"]])==FALSE&
+                is.null(ACCESSES[["MANAGEMENTORG4"]])==FALSE&
+                is.null(ACCESSES[["MANAGEMENTORG3"]])==FALSE&
+                is.null(ACCESSES[["MANAGEMENTORG2"]])==FALSE&
+                is.null(ACCESSES[["MANAGEMENTORG1"]])==FALSE)
+        {
+          dbWriteTable(
+            DB,
+            "accesses",
+            ACCESSES,
+            field.types = list(
+              Acceso = "varchar(255)",
+              Proveedor = "varchar(255)",
+              `Proveedor Nivel 2` = "varchar(255)",
+              `Proveedor Nivel 3` = "varchar(255)",
+              `MANAGEMENTORG1` = "varchar(255)",
+              `MANAGEMENTORG2` = "varchar(255)",
+              `MANAGEMENTORG3` = "varchar(255)",
+              `MANAGEMENTORG4` = "varchar(255)",
+              `MANAGEMENTORG5` = "varchar(255)",
+              `Acceso fix` = "varchar(255)"
+            ) ,
+            row.names = FALSE,
+            overwrite = TRUE,
+            append = FALSE,
+            allow.keywords = FALSE
+          )
+        }
+        else if(is.null(ACCESSES[["MANAGEMENTORG4"]])==FALSE&
+                is.null(ACCESSES[["MANAGEMENTORG3"]])==FALSE&
+                is.null(ACCESSES[["MANAGEMENTORG2"]])==FALSE&
+                is.null(ACCESSES[["MANAGEMENTORG1"]])==FALSE)
+        {
+          dbWriteTable(
+            DB,
+            "accesses",
+            ACCESSES,
+            field.types = list(
+              Acceso = "varchar(255)",
+              Proveedor = "varchar(255)",
+              `Proveedor Nivel 2` = "varchar(255)",
+              `Proveedor Nivel 3` = "varchar(255)",
+              `MANAGEMENTORG1` = "varchar(255)",
+              `MANAGEMENTORG2` = "varchar(255)",
+              `MANAGEMENTORG3` = "varchar(255)",
+              `MANAGEMENTORG4` = "varchar(255)",
+              `Acceso fix` = "varchar(255)"
+            ) ,
+            row.names = FALSE,
+            overwrite = TRUE,
+            append = FALSE,
+            allow.keywords = FALSE
+          )
+        }
+        else if(is.null(ACCESSES[["MANAGEMENTORG3"]])==FALSE&
+                is.null(ACCESSES[["MANAGEMENTORG2"]])==FALSE&
+                is.null(ACCESSES[["MANAGEMENTORG1"]])==FALSE)
+        {
+          dbWriteTable(
+            DB,
+            "accesses",
+            ACCESSES,
+            field.types = list(
+              Acceso = "varchar(255)",
+              Proveedor = "varchar(255)",
+              `Proveedor Nivel 2` = "varchar(255)",
+              `Proveedor Nivel 3` = "varchar(255)",
+              `MANAGEMENTORG1` = "varchar(255)",
+              `MANAGEMENTORG2` = "varchar(255)",
+              `MANAGEMENTORG3` = "varchar(255)",
+              `Acceso fix` = "varchar(255)"
+            ) ,
+            row.names = FALSE,
+            overwrite = TRUE,
+            append = FALSE,
+            allow.keywords = FALSE
+          )
+        }
+        else if(is.null(ACCESSES[["MANAGEMENTORG2"]])==FALSE&
+                is.null(ACCESSES[["MANAGEMENTORG1"]])==FALSE)
+        {
+          dbWriteTable(
+            DB,
+            "accesses",
+            ACCESSES,
+            field.types = list(
+              Acceso = "varchar(255)",
+              Proveedor = "varchar(255)",
+              `Proveedor Nivel 2` = "varchar(255)",
+              `Proveedor Nivel 3` = "varchar(255)",
+              `MANAGEMENTORG1` = "varchar(255)",
+              `MANAGEMENTORG2` = "varchar(255)",
+              `Acceso fix` = "varchar(255)"
+            ) ,
+            row.names = FALSE,
+            overwrite = TRUE,
+            append = FALSE,
+            allow.keywords = FALSE
+          )
+        }
+        else if(is.null(ACCESSES[["MANAGEMENTORG1"]])==FALSE)
+        {
+          dbWriteTable(
+            DB,
+            "accesses",
+            ACCESSES,
+            field.types = list(
+              Acceso = "varchar(255)",
+              Proveedor = "varchar(255)",
+              `Proveedor Nivel 2` = "varchar(255)",
+              `Proveedor Nivel 3` = "varchar(255)",
+              `MANAGEMENTORG1` = "varchar(255)",
+              `Acceso fix` = "varchar(255)"
+            ) ,
+            row.names = FALSE,
+            overwrite = TRUE,
+            append = FALSE,
+            allow.keywords = FALSE
+          )
+        }
+        else 
+        {
+          dbWriteTable(
+            DB,
+            "accesses",
+            ACCESSES,
+            field.types = list(
+              Acceso = "varchar(255)",
+              Proveedor = "varchar(255)",
+              `Proveedor Nivel 2` = "varchar(255)",
+              `Proveedor Nivel 3` = "varchar(255)",
+              `Acceso fix` = "varchar(255)"
+            ) ,
+            row.names = FALSE,
+            overwrite = TRUE,
+            append = FALSE,
+            allow.keywords = FALSE
+          )
+        }
+        
+        ACCESSES <<- ACCESSES
+        
+      }
+      else if (client == "lmovil") {
         #Only select the columns with the following titles
         
         ACCESSES <-

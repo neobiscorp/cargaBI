@@ -190,7 +190,7 @@ if (i==CC+1){
        )
 }
 
-#MOVISTAR
+#######MOVISTAR######
   
 {
   cdr_movistar <-
@@ -337,7 +337,7 @@ if (i==CC+1){
 }
 }
 
-#ENTEL
+#######ENTEL######
   #Se usan los mismos fitros y formulas que en movistar a excepcion de "A internacional" que no se presenta en movistar y se presenta en la linea 444 - 450
 {
   cdr_entel <-
