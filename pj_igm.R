@@ -23,11 +23,13 @@
                      by.x = "UUI",
                      by.y = "UUI",
                      all.x = TRUE)
+DEVICES[,'Null']<-is.na(DEVICES[,'IMEI'])
   DEVICES <- subset(DEVICES,
-                    DEVICES[["Tipo"]] == "Smartphone")
+                    DEVICES[["Null"]] == FALSE)
   DEVICES["Tipo"]<-NULL
   DEVICES["REFNUM"]<-NULL
   DEVICES["Estado"]<-NULL
+  DEVICES["Null"]<-NULL
   UAAD_users <-merge(UAA_users,
                      DEVICES,
                      by.x = "IMEI",
@@ -85,6 +87,7 @@ Pdatos<-c()
 Psmsmms<-c()
 nmeses<-c()
 as.character(accesosunicos[6])
+
 for(i in 1:as.numeric(length(accesosunicos))){
   AccMes<-subset(uso,uso[["Acceso"]] == as.character(accesosunicos[[i]])) #Generamos un uso unico al cual le agregamos todos los datos de los distintos meses
   nmeses[i]<-as.numeric(length(AccMes[["Acceso"]])) #se ve cuantos meses ha sido ocupado el acceso correspondiente
@@ -97,7 +100,6 @@ for(i in 1:as.numeric(length(accesosunicos))){
   Pvoz[i]<-sum(AccMes[["Voz (CLP)"]])/nmeses[[i]]
   Pdatos[i]<-sum(AccMes[["Datos (CLP)"]])/nmeses[[i]]
   Psmsmms[i]<-sum(AccMes[["SMS/MMS (CLP)"]])/nmeses[[i]]
-  
 }
 Acceso<-unique(UTP_accesses[["Acceso.x"]])
 accesosunicos<-as.data.frame(Acceso)
@@ -115,5 +117,29 @@ accesosunicos<-accesosunicos[order(-accesosunicos[["Ptotal"]]),]
 
 rm(Pvoz,Pusos,Ptotal,Psmsmms,Pservicios,Pplanotarifario,Pdescuentos,Pdatos,nmeses,Acceso,i)
 print("LISTO")
+
+
+# #Anomalias
+# PLAN2<-subset(PLAN,
+#               PLAN[["Tipo de producto"]] == "Plano tarifario")
+# UAAD_users[["Acceso.y"]]<-NULL
+# UAAD_users[["Proveedor.y"]]<-NULL
+# UAAD_users[["Acceso.x"]]<-NULL
+# UAAD_users[["Proveedor.x"]]<-NULL
+# UAADP_usos <- merge(UAAD_users,
+#                     PLAN2,
+#                     by.x = "Acceso fix",
+#                     by.y = "Acceso fix",
+#                     all.x = TRUE)
+# 
+# ANOM_usos<-subset(UAADP_usos,
+#                   UAADP_usos[["Tipo de producto"]] == "Plano tarifario")
+# ANOM_usos[,"Diferencia"]<-ANOM_usos[[,"Plano tarifario (CLP)"]] - ANOM_usos[[,"Importe de las opciones descontadas (CLP)"]]
+# 
+# 
+
+
+
+
 }
 
