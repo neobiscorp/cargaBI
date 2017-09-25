@@ -1167,7 +1167,7 @@ shinyServer(function(input, output, session) {
       }
       file.remove("ACCESSES.txt")
       #######################################DEVICES############
-      if (client != "lmovil"& client != "igm") {
+      if (client != "lmovil") {
         DEVICES <- read.xlsx(export$datapath,
                              sheet = "DEVICES",
                              startRow = 1)
@@ -1255,6 +1255,18 @@ shinyServer(function(input, output, session) {
               "IMEI",
               "Estado")
         }
+        else if (client == "igm") {
+          DEVICES <- DEVICES[c(1, 2, 3, 4, 9)]
+          write.table(DEVICES, file = "DEVICES.txt", fileEncoding = "UTF8")
+          DEVICES <-
+            read.table(file = "DEVICES.txt", encoding = "UTF8")
+          names(DEVICES) <-
+            c("Tipo",
+              "Modelo",
+              "REFNUM",
+              "IMEI",
+              "Estado")
+        }
         dbWriteTable(
           DB,
           "devices",
@@ -1265,6 +1277,7 @@ shinyServer(function(input, output, session) {
           append = FALSE,
           allow.keywords = FALSE
         )
+        DEVICES<<-DEVICES
       }
       #######################################ASSOCIATIONS############
       if (client != "lmovil") {

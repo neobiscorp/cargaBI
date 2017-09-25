@@ -44,30 +44,31 @@
   )
   print("accesosunicos subidos")
   #####Tabla UAA_users #####
-  UAA_users2<-UAA_users
-  UAA_users2$UUI<-NULL
-  UAA_users2$`Acceso fix`<-NULL
-  UAA_users2$Acceso.y<-NULL
-  UAA_users2$Proveedor.y<-NULL
-  UAA_users2$Acceso<-NULL
-  UAA_users2$IMEI<-NULL
-  UAA_users2$REFNUM<-NULL
-  UAA_users2[,'Usuario']<- UAA_users2$Nombre
-  UAA_users2$Nombre<-NULL
-  UAA_users2[,'Acceso']<- UAA_users2$Acceso.x
-  UAA_users2$Acceso.x<-NULL
-  UAA_users2[,'Proveedor']<- UAA_users2$Proveedor.x
-  UAA_users2$Proveedor.x<-NULL
+  UAAD_users2<-UAAD_users
+  UAAD_users2$UUI<-NULL
+  UAAD_users2$`Acceso fix`<-NULL
+  UAAD_users2$Acceso.y<-NULL
+  UAAD_users2$Proveedor.y<-NULL
+  UAAD_users2$Acceso<-NULL
+  UAAD_users2$IMEI<-NULL
+  UAAD_users2$REFNUM<-NULL
+  UAAD_users2[,'Usuario']<- UAAD_users2$Nombre
+  UAAD_users2$Nombre<-NULL
+  UAAD_users2[,'Acceso']<- UAAD_users2$Acceso.x
+  UAAD_users2$Acceso.x<-NULL
+  UAAD_users2[,'Proveedor']<- UAAD_users2$Proveedor.x
+  UAAD_users2$Proveedor.x<-NULL
   
   
   dbWriteTable(
     DB,
     "usos",
-    UAA_users2,
+    UAAD_users2,
     field.types = list(
       
       `Acceso` = "varchar(255)",
       `Usuario` = "varchar(255)",
+      `Modelo` = "varchar(255)",
       `Proveedor` = "varchar(255)",
       `Total (CLP)` = "double(15,2)",
       `Plano tarifario (CLP)` = "double(15,2)",

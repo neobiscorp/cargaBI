@@ -23,6 +23,16 @@
                      by.x = "UUI",
                      by.y = "UUI",
                      all.x = TRUE)
+  DEVICES <- subset(DEVICES,
+                    DEVICES[["Tipo"]] == "Smartphone")
+  DEVICES["Tipo"]<-NULL
+  DEVICES["REFNUM"]<-NULL
+  DEVICES["Estado"]<-NULL
+  UAAD_users <-merge(UAA_users,
+                     DEVICES,
+                     by.x = "IMEI",
+                     by.y = "IMEI",
+                     all.x = TRUE)
   rm(U_accesses,UA_associations)
   
   
