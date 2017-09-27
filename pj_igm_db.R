@@ -1,25 +1,25 @@
 {
   ###########################CARGAR EL DATASET FINAL IGM
 
-  library(shiny)      #Dashboard
-  library(RMySQL)     #Secundary MySQL connection, Kill connections
-  library(DBI)        #Primary MySQL connection
-  library(openxlsx)   #Read xlsx files
-  library(data.table) #For merge, rbind and dataframe works
-  killDbConnections <- function () {
-    all_cons <- dbListConnections(MySQL())
-    print(all_cons)
-    for (con in all_cons)
-      +  dbDisconnect(con)
-    print(paste(length(all_cons), " connections killed."))
-  }
-  DB <- dbConnect(
-    MySQL(),
-    user = "root",
-    password = "",
-    dbname = paste0("igm")
-  )
-  print("Base de datos conectada")
+  # library(shiny)      #Dashboard
+  # library(RMySQL)     #Secundary MySQL connection, Kill connections
+  # library(DBI)        #Primary MySQL connection
+  # library(openxlsx)   #Read xlsx files
+  # library(data.table) #For merge, rbind and dataframe works
+  # killDbConnections <- function () {
+  #   all_cons <- dbListConnections(MySQL())
+  #   print(all_cons)
+  #   for (con in all_cons)
+  #     +  dbDisconnect(con)
+  #   print(paste(length(all_cons), " connections killed."))
+  # }
+  # DB <- dbConnect(
+  #   MySQL(),
+  #   user = "root",
+  #   password = "",
+  #   dbname = paste0("igm")
+  # )
+  # print("Base de datos conectada")
 
   
   
