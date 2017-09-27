@@ -3,7 +3,8 @@
 
     ACCESSES2<-subset(ACCESSES,
                        ACCESSES[["Proveedor"]]== "Movistar CL" |
-                       ACCESSES[["Proveedor"]] == "Entel PCS (CL)"
+                       ACCESSES[["Proveedor"]] == "Entel PCS (CL)"|
+                        ACCESSES[["Proveedor"]]== "Claro CL"
                      )
   ASSOCIATIONS["Acceso fix"]<-substr(ASSOCIATIONS[["Acceso"]],3,1000000L)
 
@@ -119,7 +120,7 @@ rm(Pvoz,Pusos,Ptotal,Psmsmms,Pservicios,Pplanotarifario,Pdescuentos,Pdatos,nmese
 print("LISTO")
 
 
-# #Anomalias
+#Anomalias
 # PLAN2<-subset(PLAN,
 #               PLAN[["Tipo de producto"]] == "Plano tarifario")
 # UAAD_users[["Acceso.y"]]<-NULL
@@ -135,8 +136,8 @@ print("LISTO")
 # ANOM_usos<-subset(UAADP_usos,
 #                   UAADP_usos[["Tipo de producto"]] == "Plano tarifario")
 # ANOM_usos[,"Diferencia"]<-ANOM_usos[[,"Plano tarifario (CLP)"]] - ANOM_usos[[,"Importe de las opciones descontadas (CLP)"]]
-# 
-# 
+
+
 
 
 

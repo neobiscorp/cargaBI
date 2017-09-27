@@ -386,6 +386,8 @@ shinyServer(function(input, output, session) {
         names(uso)[names(uso) == 'Datos..CLP.'] <<- 'Datos (CLP)'
         names(uso)[names(uso) == 'SMS.MMS..CLP.'] <<-
           'SMS/MMS (CLP)'
+        names(uso)[names(uso) == 'Descuento...Plano.tarifario..CLP.'] <<-
+          'Descuento de Plano tarifario (CLP)'
         #Create a column with the phone number without the 56 (Chile)
         uso[, 'Acceso fix'] <<-
           lapply(uso[, 'Acceso'], function(x)
@@ -672,13 +674,13 @@ shinyServer(function(input, output, session) {
             uso,
             select = c(
               "Acceso",
-              #"Usuario",
               "Proveedor",
               "Total (CLP)",
               "Plano tarifario (CLP)",
               "Uso (CLP)",
               "Servicios (CLP)",
               "Descuentos (CLP)",
+              "Descuento de Plano tarifario (CLP)",
               "Voz (CLP)",
               "Datos (CLP)",
               "SMS/MMS (CLP)",
@@ -694,13 +696,13 @@ shinyServer(function(input, output, session) {
           uso,
           field.types = list(
             `Acceso` = "varchar(255)",
-            #`Usuario` = "varchar(255)",
             `Proveedor` = "varchar(255)",
             `Total (CLP)` = "double(15,2)",
             `Plano tarifario (CLP)` = "double(15,2)",
             `Uso (CLP)` = "double(15,2)",
             `Servicios (CLP)` = "double(15,2)",
             `Descuentos (CLP)` = "double(15,2)",
+            `Descuento de Plano tarifario (CLP)` = "double(15,2)",
             `Voz (CLP)` = "double(15,2)",
             `Datos (CLP)` = "double(15,2)",
             `SMS/MMS (CLP)` = "double(15,2)",
@@ -1782,6 +1784,10 @@ shinyServer(function(input, output, session) {
       TIPO <<- TIPO
       
       file.remove("TIPO.txt")
+      if(client == "igm"){
+        source("pj_igm.r", local = TRUE)
+        source("pj_igm_db.r", local = TRUE)
+      }
     }
     #Run the following code if theres a file in the nombre and link text input
     if (!is.null(input$link) && !is.null(input$nombre)) {
@@ -2326,5 +2332,6 @@ shinyServer(function(input, output, session) {
                  "execute",
                  style = "success",
                  icon = icon("check"))
+    
   })
   })
