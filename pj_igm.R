@@ -75,49 +75,49 @@ DEVICES[,'Null']<-is.na(DEVICES[,'IMEI'])
   rm(uso2,usounicojoinPLANt,a,PLAN2,usoplantjointipo,usoplantjointipo2)
 
 #Se quiere generar los consumos promedios mensuales por acceso
-
-accesosunicos<-as.list(unique(UTP_accesses[["Acceso.x"]]))
-i<-2
-Ptotal<-c()
-Pplanotarifario<-c()
-Pusos<-c()
-Pservicios<-c()
-Pdescuentos<-c()
-Pvoz<-c()
-Pdatos<-c()
-Psmsmms<-c()
-nmeses<-c()
-as.character(accesosunicos[6])
-
-for(i in 1:as.numeric(length(accesosunicos))){
-  AccMes<-subset(uso,uso[["Acceso"]] == as.character(accesosunicos[[i]])) #Generamos un uso unico al cual le agregamos todos los datos de los distintos meses
-  nmeses[i]<-as.numeric(length(AccMes[["Acceso"]])) #se ve cuantos meses ha sido ocupado el acceso correspondiente
-  #Se obtienen los datos necesarios desde AccMes que contiene los mismos titulos de uso junto con los que se agregaron de 557 al 562
-  Ptotal[i]<-sum(AccMes[["Total (CLP)"]])/nmeses[[i]]
-  Pplanotarifario[i]<- sum(AccMes[["Plano tarifario (CLP)"]])/nmeses[[i]]
-  Pusos[i]<-sum(AccMes[["Uso (CLP)"]])/nmeses[[i]]
-  Pservicios[i]<-sum(AccMes[["Servicios (CLP)"]])/nmeses[[i]]
-  Pdescuentos[i]<-sum(AccMes[["Descuentos (CLP)"]])/nmeses[[i]]
-  Pvoz[i]<-sum(AccMes[["Voz (CLP)"]])/nmeses[[i]]
-  Pdatos[i]<-sum(AccMes[["Datos (CLP)"]])/nmeses[[i]]
-  Psmsmms[i]<-sum(AccMes[["SMS/MMS (CLP)"]])/nmeses[[i]]
-}
-Acceso<-unique(UTP_accesses[["Acceso.x"]])
-accesosunicos<-as.data.frame(Acceso)
-#Se unen los datos recopilados a la nueva tabla accesosunicos
-accesosunicos["Ptotal"]<-Ptotal
-accesosunicos["Pplanotarifario"]<-Pplanotarifario
-accesosunicos["Pusos"]<-Pusos
-accesosunicos["Pservicios"]<-Pservicios
-accesosunicos["Pdescuentos"]<-Pdescuentos
-accesosunicos["Pvoz"]<-Pvoz
-accesosunicos["Pdatos"]<-Pdatos
-accesosunicos["Psmsmms"]<-Psmsmms
-accesosunicos["Cantidad Meses"]<-nmeses
-accesosunicos<-accesosunicos[order(-accesosunicos[["Ptotal"]]),]
-
-rm(Pvoz,Pusos,Ptotal,Psmsmms,Pservicios,Pplanotarifario,Pdescuentos,Pdatos,nmeses,Acceso,i)
-print("LISTO")
+# 
+# accesosunicos<-as.list(unique(UTP_accesses[["Acceso.x"]]))
+# i<-2
+# Ptotal<-c()
+# Pplanotarifario<-c()
+# Pusos<-c()
+# Pservicios<-c()
+# Pdescuentos<-c()
+# Pvoz<-c()
+# Pdatos<-c()
+# Psmsmms<-c()
+# nmeses<-c()
+# as.character(accesosunicos[6])
+# 
+# for(i in 1:as.numeric(length(accesosunicos))){
+#   AccMes<-subset(uso,uso[["Acceso"]] == as.character(accesosunicos[[i]])) #Generamos un uso unico al cual le agregamos todos los datos de los distintos meses
+#   nmeses[i]<-as.numeric(length(AccMes[["Acceso"]])) #se ve cuantos meses ha sido ocupado el acceso correspondiente
+#   #Se obtienen los datos necesarios desde AccMes que contiene los mismos titulos de uso junto con los que se agregaron de 557 al 562
+#   Ptotal[i]<-sum(AccMes[["Total (CLP)"]])/nmeses[[i]]
+#   Pplanotarifario[i]<- sum(AccMes[["Plano tarifario (CLP)"]])/nmeses[[i]]
+#   Pusos[i]<-sum(AccMes[["Uso (CLP)"]])/nmeses[[i]]
+#   Pservicios[i]<-sum(AccMes[["Servicios (CLP)"]])/nmeses[[i]]
+#   Pdescuentos[i]<-sum(AccMes[["Descuentos (CLP)"]])/nmeses[[i]]
+#   Pvoz[i]<-sum(AccMes[["Voz (CLP)"]])/nmeses[[i]]
+#   Pdatos[i]<-sum(AccMes[["Datos (CLP)"]])/nmeses[[i]]
+#   Psmsmms[i]<-sum(AccMes[["SMS/MMS (CLP)"]])/nmeses[[i]]
+# }
+# Acceso<-unique(UTP_accesses[["Acceso.x"]])
+# accesosunicos<-as.data.frame(Acceso)
+# #Se unen los datos recopilados a la nueva tabla accesosunicos
+# accesosunicos["Ptotal"]<-Ptotal
+# accesosunicos["Pplanotarifario"]<-Pplanotarifario
+# accesosunicos["Pusos"]<-Pusos
+# accesosunicos["Pservicios"]<-Pservicios
+# accesosunicos["Pdescuentos"]<-Pdescuentos
+# accesosunicos["Pvoz"]<-Pvoz
+# accesosunicos["Pdatos"]<-Pdatos
+# accesosunicos["Psmsmms"]<-Psmsmms
+# accesosunicos["Cantidad Meses"]<-nmeses
+# accesosunicos<-accesosunicos[order(-accesosunicos[["Ptotal"]]),]
+# 
+# rm(Pvoz,Pusos,Ptotal,Psmsmms,Pservicios,Pplanotarifario,Pdescuentos,Pdatos,nmeses,Acceso,i)
+# print("LISTO")
 
 
 #Anomalias

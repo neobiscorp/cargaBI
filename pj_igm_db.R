@@ -24,27 +24,27 @@
   
   
   #####Tabla accesosunicos#####
-  dbWriteTable(
-    DB,
-    "accesosunicos",
-    accesosunicos,
-    field.types = list(
-      `Acceso` = "varchar(255)",
-      `Ptotal` = "double(15,2)",
-      `Pplanotarifario` = "double(15,2)",
-      `Pusos` = "double(15,2)",
-      `Pservicios` = "double(15,2)",
-      `Pdescuentos` = "double(15,2)",
-      `Pvoz` = "double(15,2)",
-      `Pdatos` = "double(15,2)",
-      `Psmsmms` = "double(15,2)",
-      `Cantidad Meses` = "INT(10)"
-    ),
-    row.names = FALSE,
-    overwrite = TRUE,
-    append = FALSE,
-    allow.keywords = FALSE
-  )
+  # dbWriteTable(
+  #   DB,
+  #   "accesosunicos",
+  #   accesosunicos,
+  #   field.types = list(
+  #     `Acceso` = "varchar(255)",
+  #     `Ptotal` = "double(15,2)",
+  #     `Pplanotarifario` = "double(15,2)",
+  #     `Pusos` = "double(15,2)",
+  #     `Pservicios` = "double(15,2)",
+  #     `Pdescuentos` = "double(15,2)",
+  #     `Pvoz` = "double(15,2)",
+  #     `Pdatos` = "double(15,2)",
+  #     `Psmsmms` = "double(15,2)",
+  #     `Cantidad Meses` = "INT(10)"
+  #   ),
+  #   row.names = FALSE,
+  #   overwrite = TRUE,
+  #   append = FALSE,
+  #   allow.keywords = FALSE
+  # )
   print("accesosunicos subidos")
   #####Tabla UAA_users #####
   UAAD_users2<-UAAD_users
