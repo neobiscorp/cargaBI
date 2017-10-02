@@ -689,32 +689,32 @@ shinyServer(function(input, output, session) {
               "Mes"
             )
           )
-        
-        dbWriteTable(
-          DB,
-          "usos",
-          uso,
-          field.types = list(
-            `Acceso` = "varchar(255)",
-            `Proveedor` = "varchar(255)",
-            `Total (CLP)` = "double(15,2)",
-            `Plano tarifario (CLP)` = "double(15,2)",
-            `Uso (CLP)` = "double(15,2)",
-            `Servicios (CLP)` = "double(15,2)",
-            `Descuentos (CLP)` = "double(15,2)",
-            `Descuento de Plano tarifario (CLP)` = "double(15,2)",
-            `Voz (CLP)` = "double(15,2)",
-            `Datos (CLP)` = "double(15,2)",
-            `SMS/MMS (CLP)` = "double(15,2)",
-            `Fecha` = "date",
-            `Acceso fix` = "varchar(255)",
-            `Mes` = "INT(10)"
-          ),
-          row.names = FALSE,
-          overwrite = TRUE,
-          append = FALSE,
-          allow.keywords = FALSE
-        )
+        # 
+        # dbWriteTable(
+        #   DB,
+        #   "usos",
+        #   uso,
+        #   field.types = list(
+        #     `Acceso` = "varchar(255)",
+        #     `Proveedor` = "varchar(255)",
+        #     `Total (CLP)` = "double(15,2)",
+        #     `Plano tarifario (CLP)` = "double(15,2)",
+        #     `Uso (CLP)` = "double(15,2)",
+        #     `Servicios (CLP)` = "double(15,2)",
+        #     `Descuentos (CLP)` = "double(15,2)",
+        #     `Descuento de Plano tarifario (CLP)` = "double(15,2)",
+        #     `Voz (CLP)` = "double(15,2)",
+        #     `Datos (CLP)` = "double(15,2)",
+        #     `SMS/MMS (CLP)` = "double(15,2)",
+        #     `Fecha` = "date",
+        #     `Acceso fix` = "varchar(255)",
+        #     `Mes` = "INT(10)"
+        #   ),
+        #   row.names = FALSE,
+        #   overwrite = TRUE,
+        #   append = FALSE,
+        #   allow.keywords = FALSE
+        # )
       }
       else {
        
