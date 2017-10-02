@@ -38,41 +38,41 @@ DEVICES[,'Null']<-is.na(DEVICES[,'IMEI'])
                      all.x = TRUE)
   rm(U_accesses,UA_associations)
   
-  
-  uso2 <- uso
-  a<-duplicated(uso2[["Acceso"]],fromLast = TRUE )
-  uso2[["duplicado"]] <-a
-  uso2<-subset(uso2,uso2[["duplicado"]] == FALSE)
-  PLAN2 <-subset(PLAN,PLAN["Tipo de producto"]=="Plano tarifario")
-  usounicojoinPLANt <-
-    merge(
-      uso2,
-      PLAN2,
-      by.x = "Acceso fix",
-      by.y = "Acceso fix",
-      all.x = TRUE
-    )
-  usoplantjointipo <-
-    merge(
-      usounicojoinPLANt,
-      TIPO,
-      by.x = "Producto",
-      by.y = "Producto",
-      all.x = TRUE
-    )
-  usoplantjointipo2<-usoplantjointipo
-  usoplantjointipo2["Proveedor.x"] <- NULL
-  usoplantjointipo2["Proveedor.y"] <- NULL
-  
-  UTP_accesses<-
-    merge (
-      usoplantjointipo2,
-      ACCESSES,
-      by.x = "Acceso fix",
-      by.y = "Acceso fix",
-      all.x = TRUE
-    )
-  rm(uso2,usounicojoinPLANt,a,PLAN2,usoplantjointipo,usoplantjointipo2)
+  # 
+  # uso2 <- uso
+  # a<-duplicated(uso2[["Acceso"]],fromLast = TRUE )
+  # uso2[["duplicado"]] <-a
+  # uso2<-subset(uso2,uso2[["duplicado"]] == FALSE)
+  # PLAN2 <-subset(PLAN,PLAN["Tipo de producto"]=="Plano tarifario")
+  # usounicojoinPLANt <-
+  #   merge(
+  #     uso2,
+  #     PLAN2,
+  #     by.x = "Acceso fix",
+  #     by.y = "Acceso fix",
+  #     all.x = TRUE
+  #   )
+  # usoplantjointipo <-
+  #   merge(
+  #     usounicojoinPLANt,
+  #     TIPO,
+  #     by.x = "Producto",
+  #     by.y = "Producto",
+  #     all.x = TRUE
+  #   )
+  # usoplantjointipo2<-usoplantjointipo
+  # usoplantjointipo2["Proveedor.x"] <- NULL
+  # usoplantjointipo2["Proveedor.y"] <- NULL
+  # 
+  # UTP_accesses<-
+  #   merge (
+  #     usoplantjointipo2,
+  #     ACCESSES,
+  #     by.x = "Acceso fix",
+  #     by.y = "Acceso fix",
+  #     all.x = TRUE
+  #   )
+  # rm(uso2,usounicojoinPLANt,a,PLAN2,usoplantjointipo,usoplantjointipo2)
 
 #Se quiere generar los consumos promedios mensuales por acceso
 # 
@@ -120,22 +120,24 @@ DEVICES[,'Null']<-is.na(DEVICES[,'IMEI'])
 # print("LISTO")
 
 
-#Anomalias
-# PLAN2<-subset(PLAN,
-#               PLAN[["Tipo de producto"]] == "Plano tarifario")
-# UAAD_users[["Acceso.y"]]<-NULL
-# UAAD_users[["Proveedor.y"]]<-NULL
-# UAAD_users[["Acceso.x"]]<-NULL
-# UAAD_users[["Proveedor.x"]]<-NULL
-# UAADP_usos <- merge(UAAD_users,
-#                     PLAN2,
-#                     by.x = "Acceso fix",
-#                     by.y = "Acceso fix",
-#                     all.x = TRUE)
-# 
-# ANOM_usos<-subset(UAADP_usos,
-#                   UAADP_usos[["Tipo de producto"]] == "Plano tarifario")
-# ANOM_usos[,"Diferencia"]<-ANOM_usos[[,"Plano tarifario (CLP)"]] - ANOM_usos[[,"Importe de las opciones descontadas (CLP)"]]
+############Anomalias
+PLAN2<-subset(PLAN,
+              PLAN[["Tipo de producto"]] == "Plano tarifario")
+UAAD_users[["Acceso.y"]]<-NULL
+UAAD_users[["Proveedor.y"]]<-NULL
+UAAD_users[["Acceso.x"]]<-NULL
+UAAD_users[["Proveedor.x"]]<-NULL
+UAADP_usos <- merge(UAAD_users,
+                    PLAN2,
+                    by.x = "Acceso fix",
+                    by.y = "Acceso fix",
+                    all.x = TRUE)
+UAADPT_usos <- merge(UAADP_usos,
+                     TIPO,
+                     by.x = "Producto",
+                     by.y = "Producto",
+                     all.x = TRUE)
+rm(ACCESSES2,UAAD_users,UAA_users,UAADP_usos)
 
 
 
