@@ -7,18 +7,22 @@
                         ACCESSES[["Proveedor"]]== "Claro CL"
                      )
   ASSOCIATIONS["Acceso fix"]<-substr(ASSOCIATIONS[["Acceso"]],3,1000000L)
-
+ACCESSES2[["Acceso"]]<-NULL
+ACCESSES2[["Proveedor"]]<-NULL
   U_accesses <- merge(uso,
                       ACCESSES2,
                       by.x = "Acceso fix",
                       by.y = "Acceso fix",
                       all.x = TRUE)
+  ASSOCIATIONS2 <- ASSOCIATIONS
+  ASSOCIATIONS2[["Acceso"]]<-NULL
   UA_associations<- merge(U_accesses,
-                          ASSOCIATIONS,
+                          ASSOCIATIONS2,
                           by.x = "Acceso fix",
                           by.y = "Acceso fix",
                           all.x = TRUE
                           )
+  rm(ASSOCIATIONS2)
   UAA_users <- merge(UA_associations,
                      USERS,
                      by.x = "UUI",
@@ -121,23 +125,25 @@ DEVICES[,'Null']<-is.na(DEVICES[,'IMEI'])
 
 
 ############Anomalias
-PLAN2<-subset(PLAN,
-              PLAN[["Tipo de producto"]] == "Plano tarifario")
-UAAD_users[["Acceso.y"]]<-NULL
-UAAD_users[["Proveedor.y"]]<-NULL
-UAAD_users[["Acceso.x"]]<-NULL
-UAAD_users[["Proveedor.x"]]<-NULL
+
+PLAN2<-PLAN
+PLAN2[["Acceso"]]<-NULL
+PLAN2[["Proveedor"]]<-NULL
+PLAN2<-subset(PLAN2,
+              PLAN2[["Tipo de producto"]] == "Plano tarifario")
 UAADP_usos <- merge(UAAD_users,
                     PLAN2,
                     by.x = "Acceso fix",
                     by.y = "Acceso fix",
                     all.x = TRUE)
+TIPO2<-TIPO
+TIPO2[["Proveedor"]]<-NULL
 UAADPT_usos <- merge(UAADP_usos,
-                     TIPO,
+                     TIPO2,
                      by.x = "Producto",
                      by.y = "Producto",
                      all.x = TRUE)
-rm(ACCESSES2,UAAD_users,UAA_users,UAADP_usos)
+rm(ACCESSES2,UAAD_users,UAA_users,UAADP_usos,PLAN2,TIPO2)
 
 
 

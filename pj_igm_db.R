@@ -48,19 +48,12 @@
   #print("accesosunicos subidos")
   #####Tabla UAA_users #####
   UAADPT_users2<-UAADPT_usos
-  UAADPT_users2[["UUI"]]<-NULL
-  UAADPT_users2[["Acceso fix"]]<-NULL
-  UAADPT_users2[["Acceso.y"]]<-NULL
-  UAADPT_users2[["Proveedor.y"]]<-NULL
-  UAADPT_users2[["Acceso"]]<-NULL
-  UAADPT_users2[["IMEI"]]<-NULL
-  UAADPT_users2[["REFNUM"]]<-NULL
   UAADPT_users2[,'Usuario']<- UAADPT_users2[["Nombre"]]
   UAADPT_users2[["Nombre"]]<-NULL
-  UAADPT_users2[,'Acceso']<- UAADPT_users2[["Acceso.x"]]
-  UAADPT_users2[["Acceso.x"]]<-NULL
-  UAADPT_users2[,'Proveedor']<- UAADPT_users2[["Proveedor.x"]]
-  UAADPT_users2[["Proveedor.x"]]<-NULL
+  UAADPT_users2[["UUI"]]<-NULL
+  UAADPT_users2[["Acceso fix"]]<-NULL
+  UAADPT_users2[["IMEI"]]<-NULL
+  UAADPT_users2[["REFNUM"]]<-NULL
   UAADPT_users2[["Estado"]]<-NULL
   UAADPT_users2[["Mes"]]<-NULL
   UAADPT_users2[["Centro de facturacion"]]<-NULL

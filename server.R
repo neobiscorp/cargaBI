@@ -371,7 +371,7 @@ shinyServer(function(input, output, session) {
       #Generate the name of the columns for Informe Gestion Movil
 
         names(uso)[names(uso) == 'ï..Acceso'] <<- 'Acceso'
-        #names(uso)[names(uso) == 'Usuario'] <<- 'Usuario'
+        names(uso)[names(uso) == 'Nombre'] <<- 'Acceso'
         names(uso)[names(uso) == 'Proveedor'] <<- 'Proveedor'
         names(uso)[names(uso) == 'PerÃ.odo.de'] <<-  'Periodo de'
         names(uso)[names(uso) == 'Total..CLP.'] <<- 'Total (CLP)'
@@ -746,8 +746,9 @@ shinyServer(function(input, output, session) {
         )
       }
       #Send an MySQL Query that delete spaces inside Accesos
+      if (client != "igm"){
       dbSendQuery(DB, "update `usos` set ACCESO = replace(ACCESO, ' ', '')")
-      
+      }
       uso <<- uso
     }
     #Run the following code if theres a file in the export file input
