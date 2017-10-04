@@ -127,7 +127,7 @@ shinyUI(fluidPage(
       ),
       #Create conditional Panel accepting one xlsx file
       conditionalPanel(
-        condition = "input.Client == 'Licitacion Movil (Entel y Movistar)' ||input.Client == 'Informe Gestion Movil'",
+        condition = "input.Client == 'Licitacion Movil (Entel y Movistar)'",
         fileInput(
           'tipos',
           'Elegir el Archivo xlsx que contiene tipo planes de los proveedores',

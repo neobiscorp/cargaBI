@@ -1,27 +1,27 @@
 {
   ###########################CARGAR EL DATASET FINAL IGM
-# 
-#   library(shiny)      #Dashboard
-#   library(RMySQL)     #Secundary MySQL connection, Kill connections
-#   library(DBI)        #Primary MySQL connection
-#   library(openxlsx)   #Read xlsx files
-#   library(data.table) #For merge, rbind and dataframe works
-#   killDbConnections <- function () {
-#     all_cons <- dbListConnections(MySQL())
-#     print(all_cons)
-#     for (con in all_cons)
-#       +  dbDisconnect(con)
-#     print(paste(length(all_cons), " connections killed."))
-#   }
-#   DB <- dbConnect(
-#     MySQL(),
-#     user = "root",
-#     password = "",
-#     dbname = paste0("igm")
-#   )
-#   print("Base de datos conectada")
-# 
-#   
+
+  library(shiny)      #Dashboard
+  library(RMySQL)     #Secundary MySQL connection, Kill connections
+  library(DBI)        #Primary MySQL connection
+  library(openxlsx)   #Read xlsx files
+  library(data.table) #For merge, rbind and dataframe works
+  killDbConnections <- function () {
+    all_cons <- dbListConnections(MySQL())
+    print(all_cons)
+    for (con in all_cons)
+      +  dbDisconnect(con)
+    print(paste(length(all_cons), " connections killed."))
+  }
+  DB <- dbConnect(
+    MySQL(),
+    user = "root",
+    password = "",
+    dbname = paste0("igm")
+  )
+  print("Base de datos conectada")
+
+
   
   #####Tabla accesosunicos#####
   # dbWriteTable(
@@ -47,7 +47,7 @@
   # )
   #print("accesosunicos subidos")
   #####Tabla UAA_users #####
-  UAADPT_users2<-UAADPT_usos
+  UAADPT_users2<-UAADP_usos
   UAADPT_users2[,'Usuario']<- UAADPT_users2[["Nombre"]]
   UAADPT_users2[["Nombre"]]<-NULL
   UAADPT_users2[["UUI"]]<-NULL
@@ -59,6 +59,37 @@
   UAADPT_users2[["Centro de facturacion"]]<-NULL
   UAADPT_users2[["Tipo de producto"]]<- NULL
   summary(UAADPT_users2)
+  # select = c(
+  #   "Acceso",
+  #   "Proveedor",
+  #   "Total (CLP)",
+  #   "Plano tarifario (CLP)",
+  #   "Uso (CLP)",
+  #   "Servicios (CLP)",
+  #   "Descuentos (CLP)",
+  #   "Descuento de Plano tarifario (CLP)",
+  #   "Voz (CLP)",
+  #   "Voz nacional (CLP)",
+  #   "Voz inter (CLP)",
+  #   "Datos (CLP)",
+  #   "Datos nacional (CLP)",
+  #   "Datos inter (CLP)",
+  #   "SMS/MMS (CLP)",
+  #   "SMS/MMS nacional (CLP)",
+  #   "SMS/MMS inter (CLP)",
+  #   "Voz (seg)",
+  #   "Voz nacional (seg)",
+  #   "Voz inter (seg)",
+  #   "Datos (KB)",
+  #   "Datos nacional (KB)",
+  #   "Datos inter (KB)",
+  #   "N. SMS/MMS",
+  #   "Fecha",
+  #   "Acceso fix",
+  #   "Mes"
+  # )
+  
+  
   
   if (is.null(UAADPT_users2[["MANAGEMENTORG1"]])==TRUE){
   dbWriteTable(
@@ -69,8 +100,13 @@
       
       `Acceso` = "varchar(255)",
       `Usuario` = "varchar(255)",
+      `Producto` = "varchar(255)",
       `Modelo` = "varchar(255)",
+      `Tipo` = "varchar(255)",
+      `Importe de las opciones descontadas (CLP)` = "double(15,2)",
       `Proveedor` = "varchar(255)",
+      `Proveedor Nivel 2` = "varchar(255)",
+      `Proveedor Nivel 3` = "varchar(255)",
       `Total (CLP)` = "double(15,2)",
       `Plano tarifario (CLP)` = "double(15,2)",
       `Uso (CLP)` = "double(15,2)",
@@ -78,14 +114,21 @@
       `Descuentos (CLP)` = "double(15,2)",
       `Descuento de Plano tarifario (CLP)` = "double(15,2)",
       `Voz (CLP)` = "double(15,2)",
+      `Voz nacional (CLP)` = "double(15,2)",
+      `Voz inter (CLP)` = "double(15,2)",
       `Datos (CLP)` = "double(15,2)",
+      `Datos nacional (CLP)` = "double(15,2)",
+      `Datos inter (CLP)` = "double(15,2)",
       `SMS/MMS (CLP)` = "double(15,2)",
-      `Proveedor Nivel 2` = "varchar(255)",
-      `Proveedor Nivel 3` = "varchar(255)",
-      `Producto` = "varchar(255)",
-      `Descripcion Plan` = "varchar(255)",
-      `Importe de las opciones descontadas (CLP)` = "double(15,2)",
-      `Tipo` = "varchar(255)",
+      `SMS/MMS nacional (CLP)` = "double(15,2)",
+      `SMS/MMS inter (CLP)` = "double(15,2)",
+      `Voz (seg)` = "double(15,2)",
+      `Voz nacional (seg)` = "double(15,2)",
+      `Voz inter (seg)` = "double(15,2)",
+      `Datos (KB)` = "double(15,2)",
+      `Datos nacional (KB)` = "double(15,2)",
+      `Datos inter (KB)` = "double(15,2)",
+      `N. SMS/MMS` = "double(15,2)",
       `Fecha` = "varchar(255)"
       
       
@@ -104,10 +147,17 @@
       UAADPT_users2,
       field.types = list(
         
+        
         `Acceso` = "varchar(255)",
         `Usuario` = "varchar(255)",
+        `Producto` = "varchar(255)",
         `Modelo` = "varchar(255)",
+        `Tipo` = "varchar(255)",
+        `Importe de las opciones descontadas (CLP)` = "double(15,2)",
         `Proveedor` = "varchar(255)",
+        `Proveedor Nivel 2` = "varchar(255)",
+        `Proveedor Nivel 3` = "varchar(255)",
+        `MANAGEMENTORG1` = "varchar(255)",
         `Total (CLP)` = "double(15,2)",
         `Plano tarifario (CLP)` = "double(15,2)",
         `Uso (CLP)` = "double(15,2)",
@@ -115,15 +165,21 @@
         `Descuentos (CLP)` = "double(15,2)",
         `Descuento de Plano tarifario (CLP)` = "double(15,2)",
         `Voz (CLP)` = "double(15,2)",
+        `Voz nacional (CLP)` = "double(15,2)",
+        `Voz inter (CLP)` = "double(15,2)",
         `Datos (CLP)` = "double(15,2)",
+        `Datos nacional (CLP)` = "double(15,2)",
+        `Datos inter (CLP)` = "double(15,2)",
         `SMS/MMS (CLP)` = "double(15,2)",
-        `Proveedor Nivel 2` = "varchar(255)",
-        `Proveedor Nivel 3` = "varchar(255)",
-        `MANAGEMENTORG1` = "varchar(255)",
-        `Producto` = "varchar(255)",
-        `Descripcion Plan` = "varchar(255)",
-        `Importe de las opciones descontadas (CLP)` = "double(15,2)",
-        `Tipo` = "varchar(255)",
+        `SMS/MMS nacional (CLP)` = "double(15,2)",
+        `SMS/MMS inter (CLP)` = "double(15,2)",
+        `Voz (seg)` = "double(15,2)",
+        `Voz nacional (seg)` = "double(15,2)",
+        `Voz inter (seg)` = "double(15,2)",
+        `Datos (KB)` = "double(15,2)",
+        `Datos nacional (KB)` = "double(15,2)",
+        `Datos inter (KB)` = "double(15,2)",
+        `N. SMS/MMS` = "double(15,2)",
         `Fecha` = "varchar(255)"
       ),
       row.names = FALSE,
@@ -142,8 +198,15 @@
         
         `Acceso` = "varchar(255)",
         `Usuario` = "varchar(255)",
+        `Producto` = "varchar(255)",
         `Modelo` = "varchar(255)",
+        `Tipo` = "varchar(255)",
+        `Importe de las opciones descontadas (CLP)` = "double(15,2)",
         `Proveedor` = "varchar(255)",
+        `Proveedor Nivel 2` = "varchar(255)",
+        `Proveedor Nivel 3` = "varchar(255)",
+        `MANAGEMENTORG1` = "varchar(255)",
+        `MANAGEMENTORG2` = "varchar(255)",
         `Total (CLP)` = "double(15,2)",
         `Plano tarifario (CLP)` = "double(15,2)",
         `Uso (CLP)` = "double(15,2)",
@@ -151,16 +214,21 @@
         `Descuentos (CLP)` = "double(15,2)",
         `Descuento de Plano tarifario (CLP)` = "double(15,2)",
         `Voz (CLP)` = "double(15,2)",
+        `Voz nacional (CLP)` = "double(15,2)",
+        `Voz inter (CLP)` = "double(15,2)",
         `Datos (CLP)` = "double(15,2)",
+        `Datos nacional (CLP)` = "double(15,2)",
+        `Datos inter (CLP)` = "double(15,2)",
         `SMS/MMS (CLP)` = "double(15,2)",
-        `Proveedor Nivel 2` = "varchar(255)",
-        `Proveedor Nivel 3` = "varchar(255)",
-        `MANAGEMENTORG1` = "varchar(255)",
-        `MANAGEMENTORG2` = "varchar(255)",
-        `Producto` = "varchar(255)",
-        `Descripcion Plan` = "varchar(255)",
-        `Importe de las opciones descontadas (CLP)` = "double(15,2)",
-        `Tipo` = "varchar(255)",
+        `SMS/MMS nacional (CLP)` = "double(15,2)",
+        `SMS/MMS inter (CLP)` = "double(15,2)",
+        `Voz (seg)` = "double(15,2)",
+        `Voz nacional (seg)` = "double(15,2)",
+        `Voz inter (seg)` = "double(15,2)",
+        `Datos (KB)` = "double(15,2)",
+        `Datos nacional (KB)` = "double(15,2)",
+        `Datos inter (KB)` = "double(15,2)",
+        `N. SMS/MMS` = "double(15,2)",
         `Fecha` = "varchar(255)"
       ),
       row.names = FALSE,
@@ -179,8 +247,16 @@
         
         `Acceso` = "varchar(255)",
         `Usuario` = "varchar(255)",
+        `Producto` = "varchar(255)",
         `Modelo` = "varchar(255)",
+        `Tipo` = "varchar(255)",
+        `Importe de las opciones descontadas (CLP)` = "double(15,2)",
         `Proveedor` = "varchar(255)",
+        `Proveedor Nivel 2` = "varchar(255)",
+        `Proveedor Nivel 3` = "varchar(255)",
+        `MANAGEMENTORG1` = "varchar(255)",
+        `MANAGEMENTORG2` = "varchar(255)",
+        `MANAGEMENTORG3` = "varchar(255)",
         `Total (CLP)` = "double(15,2)",
         `Plano tarifario (CLP)` = "double(15,2)",
         `Uso (CLP)` = "double(15,2)",
@@ -188,17 +264,21 @@
         `Descuentos (CLP)` = "double(15,2)",
         `Descuento de Plano tarifario (CLP)` = "double(15,2)",
         `Voz (CLP)` = "double(15,2)",
+        `Voz nacional (CLP)` = "double(15,2)",
+        `Voz inter (CLP)` = "double(15,2)",
         `Datos (CLP)` = "double(15,2)",
+        `Datos nacional (CLP)` = "double(15,2)",
+        `Datos inter (CLP)` = "double(15,2)",
         `SMS/MMS (CLP)` = "double(15,2)",
-        `Proveedor Nivel 2` = "varchar(255)",
-        `Proveedor Nivel 3` = "varchar(255)",
-        `MANAGEMENTORG1` = "varchar(255)",
-        `MANAGEMENTORG2` = "varchar(255)",
-        `MANAGEMENTORG3` = "varchar(255)",
-        `Producto` = "varchar(255)",
-        `Descripcion Plan` = "varchar(255)",
-        `Importe de las opciones descontadas (CLP)` = "double(15,2)",
-        `Tipo` = "varchar(255)",
+        `SMS/MMS nacional (CLP)` = "double(15,2)",
+        `SMS/MMS inter (CLP)` = "double(15,2)",
+        `Voz (seg)` = "double(15,2)",
+        `Voz nacional (seg)` = "double(15,2)",
+        `Voz inter (seg)` = "double(15,2)",
+        `Datos (KB)` = "double(15,2)",
+        `Datos nacional (KB)` = "double(15,2)",
+        `Datos inter (KB)` = "double(15,2)",
+        `N. SMS/MMS` = "double(15,2)",
         `Fecha` = "varchar(255)"
       ),
       row.names = FALSE,
@@ -208,209 +288,260 @@
     )  
   }
   if (is.null(UAADPT_users2[["MANAGEMENTORG5"]])==TRUE&
-      is.null(UAADPT_users2[["MANAGEMENTORG4"]])==FALSE){
-    dbWriteTable(
-      DB,
-      "usos",
-      UAADPT_users2,
-      field.types = list(
-        
-        `Acceso` = "varchar(255)",
-        `Usuario` = "varchar(255)",
-        `Modelo` = "varchar(255)",
-        `Proveedor` = "varchar(255)",
-        `Total (CLP)` = "double(15,2)",
-        `Plano tarifario (CLP)` = "double(15,2)",
-        `Uso (CLP)` = "double(15,2)",
-        `Servicios (CLP)` = "double(15,2)",
-        `Descuentos (CLP)` = "double(15,2)",
-        `Descuento de Plano tarifario (CLP)` = "double(15,2)",
-        `Voz (CLP)` = "double(15,2)",
-        `Datos (CLP)` = "double(15,2)",
-        `SMS/MMS (CLP)` = "double(15,2)",
-        `Proveedor Nivel 2` = "varchar(255)",
-        `Proveedor Nivel 3` = "varchar(255)",
-        `MANAGEMENTORG1` = "varchar(255)",
-        `MANAGEMENTORG2` = "varchar(255)",
-        `MANAGEMENTORG3` = "varchar(255)",
-        `MANAGEMENTORG4` = "varchar(255)",
-        `Producto` = "varchar(255)",
-        `Descripcion Plan` = "varchar(255)",
-        `Importe de las opciones descontadas (CLP)` = "double(15,2)",
-        `Tipo` = "varchar(255)",
-        `Fecha` = "varchar(255)"
-      ),
-      row.names = FALSE,
-      overwrite = TRUE,
-      append = FALSE,
-      allow.keywords = FALSE
-    )  
-  }
+      is.null(UAADPT_users2[["MANAGEMENTORG4"]])==FALSE){dbWriteTable(
+        DB,
+        "usos",
+        UAADPT_users2,
+        field.types = list(
+          
+          `Acceso` = "varchar(255)",
+          `Usuario` = "varchar(255)",
+          `Producto` = "varchar(255)",
+          `Modelo` = "varchar(255)",
+          `Tipo` = "varchar(255)",
+          `Importe de las opciones descontadas (CLP)` = "double(15,2)",
+          `Proveedor` = "varchar(255)",
+          `Proveedor Nivel 2` = "varchar(255)",
+          `Proveedor Nivel 3` = "varchar(255)",
+          `MANAGEMENTORG1` = "varchar(255)",
+          `MANAGEMENTORG2` = "varchar(255)",
+          `MANAGEMENTORG3` = "varchar(255)",
+          `MANAGEMENTORG4` = "varchar(255)",
+          `Total (CLP)` = "double(15,2)",
+          `Plano tarifario (CLP)` = "double(15,2)",
+          `Uso (CLP)` = "double(15,2)",
+          `Servicios (CLP)` = "double(15,2)",
+          `Descuentos (CLP)` = "double(15,2)",
+          `Descuento de Plano tarifario (CLP)` = "double(15,2)",
+          `Voz (CLP)` = "double(15,2)",
+          `Voz nacional (CLP)` = "double(15,2)",
+          `Voz inter (CLP)` = "double(15,2)",
+          `Datos (CLP)` = "double(15,2)",
+          `Datos nacional (CLP)` = "double(15,2)",
+          `Datos inter (CLP)` = "double(15,2)",
+          `SMS/MMS (CLP)` = "double(15,2)",
+          `SMS/MMS nacional (CLP)` = "double(15,2)",
+          `SMS/MMS inter (CLP)` = "double(15,2)",
+          `Voz (seg)` = "double(15,2)",
+          `Voz nacional (seg)` = "double(15,2)",
+          `Voz inter (seg)` = "double(15,2)",
+          `Datos (KB)` = "double(15,2)",
+          `Datos nacional (KB)` = "double(15,2)",
+          `Datos inter (KB)` = "double(15,2)",
+          `N. SMS/MMS` = "double(15,2)",
+          `Fecha` = "varchar(255)"
+        ),
+        row.names = FALSE,
+        overwrite = TRUE,
+        append = FALSE,
+        allow.keywords = FALSE
+      )  }
   if (is.null(UAADPT_users2[["MANAGEMENTORG6"]])==TRUE&
-      is.null(UAADPT_users2[["MANAGEMENTORG5"]])==FALSE){
-    dbWriteTable(
-      DB,
-      "usos",
-      UAADPT_users2,
-      field.types = list(
-        
-        `Acceso` = "varchar(255)",
-        `Usuario` = "varchar(255)",
-        `Modelo` = "varchar(255)",
-        `Proveedor` = "varchar(255)",
-        `Total (CLP)` = "double(15,2)",
-        `Plano tarifario (CLP)` = "double(15,2)",
-        `Uso (CLP)` = "double(15,2)",
-        `Servicios (CLP)` = "double(15,2)",
-        `Descuentos (CLP)` = "double(15,2)",
-        `Descuento de Plano tarifario (CLP)` = "double(15,2)",
-        `Voz (CLP)` = "double(15,2)",
-        `Datos (CLP)` = "double(15,2)",
-        `SMS/MMS (CLP)` = "double(15,2)",
-        `Proveedor Nivel 2` = "varchar(255)",
-        `Proveedor Nivel 3` = "varchar(255)",
-        `MANAGEMENTORG1` = "varchar(255)",
-        `MANAGEMENTORG2` = "varchar(255)",
-        `MANAGEMENTORG3` = "varchar(255)",
-        `MANAGEMENTORG4` = "varchar(255)",
-        `MANAGEMENTORG5` = "varchar(255)",
-        `Producto` = "varchar(255)",
-        `Descripcion Plan` = "varchar(255)",
-        `Importe de las opciones descontadas (CLP)` = "double(15,2)",
-        `Tipo` = "varchar(255)",
-        `Fecha` = "varchar(255)"
-      ),
-      row.names = FALSE,
-      overwrite = TRUE,
-      append = FALSE,
-      allow.keywords = FALSE
-    )  
-  }
+      is.null(UAADPT_users2[["MANAGEMENTORG5"]])==FALSE){dbWriteTable(
+        DB,
+        "usos",
+        UAADPT_users2,
+        field.types = list(
+          
+          `Acceso` = "varchar(255)",
+          `Usuario` = "varchar(255)",
+          `Producto` = "varchar(255)",
+          `Modelo` = "varchar(255)",
+          `Tipo` = "varchar(255)",
+          `Importe de las opciones descontadas (CLP)` = "double(15,2)",
+          `Proveedor` = "varchar(255)",
+          `Proveedor Nivel 2` = "varchar(255)",
+          `Proveedor Nivel 3` = "varchar(255)",
+          `MANAGEMENTORG1` = "varchar(255)",
+          `MANAGEMENTORG2` = "varchar(255)",
+          `MANAGEMENTORG3` = "varchar(255)",
+          `MANAGEMENTORG4` = "varchar(255)",
+          `MANAGEMENTORG5` = "varchar(255)",
+          `Total (CLP)` = "double(15,2)",
+          `Plano tarifario (CLP)` = "double(15,2)",
+          `Uso (CLP)` = "double(15,2)",
+          `Servicios (CLP)` = "double(15,2)",
+          `Descuentos (CLP)` = "double(15,2)",
+          `Descuento de Plano tarifario (CLP)` = "double(15,2)",
+          `Voz (CLP)` = "double(15,2)",
+          `Voz nacional (CLP)` = "double(15,2)",
+          `Voz inter (CLP)` = "double(15,2)",
+          `Datos (CLP)` = "double(15,2)",
+          `Datos nacional (CLP)` = "double(15,2)",
+          `Datos inter (CLP)` = "double(15,2)",
+          `SMS/MMS (CLP)` = "double(15,2)",
+          `SMS/MMS nacional (CLP)` = "double(15,2)",
+          `SMS/MMS inter (CLP)` = "double(15,2)",
+          `Voz (seg)` = "double(15,2)",
+          `Voz nacional (seg)` = "double(15,2)",
+          `Voz inter (seg)` = "double(15,2)",
+          `Datos (KB)` = "double(15,2)",
+          `Datos nacional (KB)` = "double(15,2)",
+          `Datos inter (KB)` = "double(15,2)",
+          `N. SMS/MMS` = "double(15,2)",
+          `Fecha` = "varchar(255)"
+        ),
+        row.names = FALSE,
+        overwrite = TRUE,
+        append = FALSE,
+        allow.keywords = FALSE
+      )  }
   if (is.null(UAADPT_users2[["MANAGEMENTORG7"]])==TRUE&
-      is.null(UAADPT_users2[["MANAGEMENTORG6"]])==FALSE){
-    dbWriteTable(
-      DB,
-      "usos",
-      UAADPT_users2,
-      field.types = list(
-        
-        `Acceso` = "varchar(255)",
-        `Usuario` = "varchar(255)",
-        `Modelo` = "varchar(255)",
-        `Proveedor` = "varchar(255)",
-        `Total (CLP)` = "double(15,2)",
-        `Plano tarifario (CLP)` = "double(15,2)",
-        `Uso (CLP)` = "double(15,2)",
-        `Servicios (CLP)` = "double(15,2)",
-        `Descuentos (CLP)` = "double(15,2)",
-        `Descuento de Plano tarifario (CLP)` = "double(15,2)",
-        `Voz (CLP)` = "double(15,2)",
-        `Datos (CLP)` = "double(15,2)",
-        `SMS/MMS (CLP)` = "double(15,2)",
-        `Proveedor Nivel 2` = "varchar(255)",
-        `Proveedor Nivel 3` = "varchar(255)",
-        `MANAGEMENTORG1` = "varchar(255)",
-        `MANAGEMENTORG2` = "varchar(255)",
-        `MANAGEMENTORG3` = "varchar(255)",
-        `MANAGEMENTORG4` = "varchar(255)",
-        `MANAGEMENTORG5` = "varchar(255)",
-        `MANAGEMENTORG6` = "varchar(255)",
-        `Producto` = "varchar(255)",
-        `Descripcion Plan` = "varchar(255)",
-        `Importe de las opciones descontadas (CLP)` = "double(15,2)",
-        `Tipo` = "varchar(255)",
-        `Fecha` = "varchar(255)"
-      ),
-      row.names = FALSE,
-      overwrite = TRUE,
-      append = FALSE,
-      allow.keywords = FALSE
-    )  
-  }
+      is.null(UAADPT_users2[["MANAGEMENTORG6"]])==FALSE){dbWriteTable(
+        DB,
+        "usos",
+        UAADPT_users2,
+        field.types = list(
+          
+          `Acceso` = "varchar(255)",
+          `Usuario` = "varchar(255)",
+          `Producto` = "varchar(255)",
+          `Modelo` = "varchar(255)",
+          `Tipo` = "varchar(255)",
+          `Importe de las opciones descontadas (CLP)` = "double(15,2)",
+          `Proveedor` = "varchar(255)",
+          `Proveedor Nivel 2` = "varchar(255)",
+          `Proveedor Nivel 3` = "varchar(255)",
+          `MANAGEMENTORG1` = "varchar(255)",
+          `MANAGEMENTORG2` = "varchar(255)",
+          `MANAGEMENTORG3` = "varchar(255)",
+          `MANAGEMENTORG4` = "varchar(255)",
+          `MANAGEMENTORG5` = "varchar(255)",
+          `MANAGEMENTORG6` = "varchar(255)",
+          `Total (CLP)` = "double(15,2)",
+          `Plano tarifario (CLP)` = "double(15,2)",
+          `Uso (CLP)` = "double(15,2)",
+          `Servicios (CLP)` = "double(15,2)",
+          `Descuentos (CLP)` = "double(15,2)",
+          `Descuento de Plano tarifario (CLP)` = "double(15,2)",
+          `Voz (CLP)` = "double(15,2)",
+          `Voz nacional (CLP)` = "double(15,2)",
+          `Voz inter (CLP)` = "double(15,2)",
+          `Datos (CLP)` = "double(15,2)",
+          `Datos nacional (CLP)` = "double(15,2)",
+          `Datos inter (CLP)` = "double(15,2)",
+          `SMS/MMS (CLP)` = "double(15,2)",
+          `SMS/MMS nacional (CLP)` = "double(15,2)",
+          `SMS/MMS inter (CLP)` = "double(15,2)",
+          `Voz (seg)` = "double(15,2)",
+          `Voz nacional (seg)` = "double(15,2)",
+          `Voz inter (seg)` = "double(15,2)",
+          `Datos (KB)` = "double(15,2)",
+          `Datos nacional (KB)` = "double(15,2)",
+          `Datos inter (KB)` = "double(15,2)",
+          `N. SMS/MMS` = "double(15,2)",
+          `Fecha` = "varchar(255)"
+        ),
+        row.names = FALSE,
+        overwrite = TRUE,
+        append = FALSE,
+        allow.keywords = FALSE
+      )  }
   if (is.null(UAADPT_users2[["MANAGEMENTORG8"]])==TRUE&
-      is.null(UAADPT_users2[["MANAGEMENTORG7"]])==FALSE){
-    dbWriteTable(
-      DB,
-      "usos",
-      UAADPT_users2,
-      field.types = list(
-        
-        `Acceso` = "varchar(255)",
-        `Usuario` = "varchar(255)",
-        `Modelo` = "varchar(255)",
-        `Proveedor` = "varchar(255)",
-        `Total (CLP)` = "double(15,2)",
-        `Plano tarifario (CLP)` = "double(15,2)",
-        `Uso (CLP)` = "double(15,2)",
-        `Servicios (CLP)` = "double(15,2)",
-        `Descuentos (CLP)` = "double(15,2)",
-        `Descuento de Plano tarifario (CLP)` = "double(15,2)",
-        `Voz (CLP)` = "double(15,2)",
-        `Datos (CLP)` = "double(15,2)",
-        `SMS/MMS (CLP)` = "double(15,2)",
-        `Proveedor Nivel 2` = "varchar(255)",
-        `Proveedor Nivel 3` = "varchar(255)",
-        `MANAGEMENTORG1` = "varchar(255)",
-        `MANAGEMENTORG2` = "varchar(255)",
-        `MANAGEMENTORG3` = "varchar(255)",
-        `MANAGEMENTORG4` = "varchar(255)",
-        `MANAGEMENTORG5` = "varchar(255)",
-        `MANAGEMENTORG6` = "varchar(255)",
-        `MANAGEMENTORG7` = "varchar(255)",
-        `Producto` = "varchar(255)",
-        `Descripcion Plan` = "varchar(255)",
-        `Importe de las opciones descontadas (CLP)` = "double(15,2)",
-        `Tipo` = "varchar(255)",
-        `Fecha` = "varchar(255)"
-      ),
-      row.names = FALSE,
-      overwrite = TRUE,
-      append = FALSE,
-      allow.keywords = FALSE
-    )  
-  }
-  if (is.null(UAADPT_users2[["MANAGEMENTORG8"]])==FALSE){
-    dbWriteTable(
-      DB,
-      "usos",
-      UAADPT_users2,
-      field.types = list(
-        
-        `Acceso` = "varchar(255)",
-        `Usuario` = "varchar(255)",
-        `Modelo` = "varchar(255)",
-        `Proveedor` = "varchar(255)",
-        `Total (CLP)` = "double(15,2)",
-        `Plano tarifario (CLP)` = "double(15,2)",
-        `Uso (CLP)` = "double(15,2)",
-        `Servicios (CLP)` = "double(15,2)",
-        `Descuentos (CLP)` = "double(15,2)",
-        `Descuento de Plano tarifario (CLP)` = "double(15,2)",
-        `Voz (CLP)` = "double(15,2)",
-        `Datos (CLP)` = "double(15,2)",
-        `SMS/MMS (CLP)` = "double(15,2)",
-        `Proveedor Nivel 2` = "varchar(255)",
-        `Proveedor Nivel 3` = "varchar(255)",
-        `MANAGEMENTORG1` = "varchar(255)",
-        `MANAGEMENTORG2` = "varchar(255)",
-        `MANAGEMENTORG3` = "varchar(255)",
-        `MANAGEMENTORG4` = "varchar(255)",
-        `MANAGEMENTORG5` = "varchar(255)",
-        `MANAGEMENTORG6` = "varchar(255)",
-        `MANAGEMENTORG7` = "varchar(255)",
-        `MANAGEMENTORG8` = "varchar(255)",
-        `Producto` = "varchar(255)",
-        `Descripcion Plan` = "varchar(255)",
-        `Importe de las opciones descontadas (CLP)` = "double(15,2)",
-        `Tipo` = "varchar(255)",
-        `Fecha` = "varchar(255)"
-      ),
-      row.names = FALSE,
-      overwrite = TRUE,
-      append = FALSE,
-      allow.keywords = FALSE
-    )  
-  }
+      is.null(UAADPT_users2[["MANAGEMENTORG7"]])==FALSE){dbWriteTable(
+        DB,
+        "usos",
+        UAADPT_users2,
+        field.types = list(
+          
+          `Acceso` = "varchar(255)",
+          `Usuario` = "varchar(255)",
+          `Producto` = "varchar(255)",
+          `Modelo` = "varchar(255)",
+          `Tipo` = "varchar(255)",
+          `Importe de las opciones descontadas (CLP)` = "double(15,2)",
+          `Proveedor` = "varchar(255)",
+          `Proveedor Nivel 2` = "varchar(255)",
+          `Proveedor Nivel 3` = "varchar(255)",
+          `MANAGEMENTORG1` = "varchar(255)",
+          `MANAGEMENTORG2` = "varchar(255)",
+          `MANAGEMENTORG3` = "varchar(255)",
+          `MANAGEMENTORG4` = "varchar(255)",
+          `MANAGEMENTORG5` = "varchar(255)",
+          `MANAGEMENTORG6` = "varchar(255)",
+          `MANAGEMENTORG7` = "varchar(255)",
+          `Total (CLP)` = "double(15,2)",
+          `Plano tarifario (CLP)` = "double(15,2)",
+          `Uso (CLP)` = "double(15,2)",
+          `Servicios (CLP)` = "double(15,2)",
+          `Descuentos (CLP)` = "double(15,2)",
+          `Descuento de Plano tarifario (CLP)` = "double(15,2)",
+          `Voz (CLP)` = "double(15,2)",
+          `Voz nacional (CLP)` = "double(15,2)",
+          `Voz inter (CLP)` = "double(15,2)",
+          `Datos (CLP)` = "double(15,2)",
+          `Datos nacional (CLP)` = "double(15,2)",
+          `Datos inter (CLP)` = "double(15,2)",
+          `SMS/MMS (CLP)` = "double(15,2)",
+          `SMS/MMS nacional (CLP)` = "double(15,2)",
+          `SMS/MMS inter (CLP)` = "double(15,2)",
+          `Voz (seg)` = "double(15,2)",
+          `Voz nacional (seg)` = "double(15,2)",
+          `Voz inter (seg)` = "double(15,2)",
+          `Datos (KB)` = "double(15,2)",
+          `Datos nacional (KB)` = "double(15,2)",
+          `Datos inter (KB)` = "double(15,2)",
+          `N. SMS/MMS` = "double(15,2)",
+          `Fecha` = "varchar(255)"
+        ),
+        row.names = FALSE,
+        overwrite = TRUE,
+        append = FALSE,
+        allow.keywords = FALSE
+      )  }
+  if (is.null(UAADPT_users2[["MANAGEMENTORG8"]])==FALSE){dbWriteTable(
+    DB,
+    "usos",
+    UAADPT_users2,
+    field.types = list(
+      
+      `Acceso` = "varchar(255)",
+      `Usuario` = "varchar(255)",
+      `Producto` = "varchar(255)",
+      `Modelo` = "varchar(255)",
+      `Tipo` = "varchar(255)",
+      `Importe de las opciones descontadas (CLP)` = "double(15,2)",
+      `Proveedor` = "varchar(255)",
+      `Proveedor Nivel 2` = "varchar(255)",
+      `Proveedor Nivel 3` = "varchar(255)",
+      `MANAGEMENTORG1` = "varchar(255)",
+      `MANAGEMENTORG2` = "varchar(255)",
+      `MANAGEMENTORG3` = "varchar(255)",
+      `MANAGEMENTORG4` = "varchar(255)",
+      `MANAGEMENTORG5` = "varchar(255)",
+      `MANAGEMENTORG6` = "varchar(255)",
+      `MANAGEMENTORG7` = "varchar(255)",
+      `MANAGEMENTORG8` = "varchar(255)",
+      `Total (CLP)` = "double(15,2)",
+      `Plano tarifario (CLP)` = "double(15,2)",
+      `Uso (CLP)` = "double(15,2)",
+      `Servicios (CLP)` = "double(15,2)",
+      `Descuentos (CLP)` = "double(15,2)",
+      `Descuento de Plano tarifario (CLP)` = "double(15,2)",
+      `Voz (CLP)` = "double(15,2)",
+      `Voz nacional (CLP)` = "double(15,2)",
+      `Voz inter (CLP)` = "double(15,2)",
+      `Datos (CLP)` = "double(15,2)",
+      `Datos nacional (CLP)` = "double(15,2)",
+      `Datos inter (CLP)` = "double(15,2)",
+      `SMS/MMS (CLP)` = "double(15,2)",
+      `SMS/MMS nacional (CLP)` = "double(15,2)",
+      `SMS/MMS inter (CLP)` = "double(15,2)",
+      `Voz (seg)` = "double(15,2)",
+      `Voz nacional (seg)` = "double(15,2)",
+      `Voz inter (seg)` = "double(15,2)",
+      `Datos (KB)` = "double(15,2)",
+      `Datos nacional (KB)` = "double(15,2)",
+      `Datos inter (KB)` = "double(15,2)",
+      `N. SMS/MMS` = "double(15,2)",
+      `Fecha` = "varchar(255)"
+    ),
+    row.names = FALSE,
+    overwrite = TRUE,
+    append = FALSE,
+    allow.keywords = FALSE
+  )  }
+  usofinal<<-UAADPT_users2
   print("UAA_users subido")
   
   ######Tabla UTP_accesses######

@@ -136,14 +136,11 @@ UAADP_usos <- merge(UAAD_users,
                     by.x = "Acceso fix",
                     by.y = "Acceso fix",
                     all.x = TRUE)
-TIPO2<-TIPO
-TIPO2[["Proveedor"]]<-NULL
-UAADPT_usos <- merge(UAADP_usos,
-                     TIPO2,
-                     by.x = "Producto",
-                     by.y = "Producto",
-                     all.x = TRUE)
-rm(ACCESSES2,UAAD_users,UAA_users,UAADP_usos,PLAN2,TIPO2)
+UAADP_usos<- subset(UAADP_usos,
+                    UAADP_usos[["Proveedor"]]== "Movistar CL" |
+                      UAADP_usos[["Proveedor"]] == "Entel PCS (CL)"|
+                      UAADP_usos[["Proveedor"]]== "Claro CL")
+rm(ACCESSES2,UAAD_users,UAA_users,PLAN2)
 
 
 

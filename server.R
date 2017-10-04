@@ -66,6 +66,7 @@ shinyServer(function(input, output, session) {
       client <- "igm"
     }
     
+    
     #Create DB connection variable
     DB <- dbConnect(
       MySQL(),
@@ -162,7 +163,7 @@ shinyServer(function(input, output, session) {
       #Clear and create variable and read CSV file
       dataFilesUF <<- NULL
       dataFilesUF <<- lapply(input$usos[['datapath']], read.csv2)
-      
+     
       #Append all usos files to the same dataframe
       uso <<- rbindlist(dataFilesUF)
       
@@ -329,7 +330,7 @@ shinyServer(function(input, output, session) {
         
       }
       #If the client its not Parque Arauco and licitacion run the following
-      else if (client != "lmovil" & client != "igm") {
+      else if (client != "lmovil" & client != "igm" & client != "igm2") {
         #Change the name of the columns
         names(uso)[names(uso) == 'ï..Acceso'] <<- 'Acceso'
         names(uso)[names(uso) == 'Proveedor'] <<- 'Proveedor'
@@ -369,7 +370,7 @@ shinyServer(function(input, output, session) {
       }
       else if(client == "igm"){
       #Generate the name of the columns for Informe Gestion Movil
-
+       
         names(uso)[names(uso) == 'ï..Acceso'] <<- 'Acceso'
         names(uso)[names(uso) == 'Nombre'] <<- 'Acceso'
         names(uso)[names(uso) == 'Proveedor'] <<- 'Proveedor'
@@ -386,8 +387,21 @@ shinyServer(function(input, output, session) {
         names(uso)[names(uso) == 'Datos..CLP.'] <<- 'Datos (CLP)'
         names(uso)[names(uso) == 'SMS.MMS..CLP.'] <<-
           'SMS/MMS (CLP)'
+        names(uso)[names(uso) == 'Voz.nacional..CLP.'] <<-'Voz nacional (CLP)'
+        names(uso)[names(uso) == 'Voz.inter...CLP.'] <<-'Voz inter (CLP)'
+        names(uso)[names(uso) == 'Datos.nac...CLP.'] <<-'Datos nacional (CLP)'
+        names(uso)[names(uso) == 'Datos.inter...CLP.'] <<-'Datos inter (CLP)'
+        names(uso)[names(uso) == 'SMS.MMS.nac...CLP.'] <<-'SMS/MMS nacional (CLP)'
+        names(uso)[names(uso) == 'SMS.MMS.inter...CLP.'] <<-'SMS/MMS inter (CLP)'
+        names(uso)[names(uso) == 'Voz..sec.'] <<-'Voz (seg)'
+        names(uso)[names(uso) == 'Voz.nac...sec.'] <<-'Voz nacional (seg)'
+        names(uso)[names(uso) == 'Voz.inter...sec.'] <<-'Voz inter (seg)'
         names(uso)[names(uso) == 'Descuento...Plano.tarifario..CLP.'] <<-
           'Descuento de Plano tarifario (CLP)'
+        names(uso)[names(uso) == 'Datos..KB.'] <<-'Datos (KB)'
+        names(uso)[names(uso) == 'Datos.nac...KB.'] <<-'Datos nacional (KB)'
+        names(uso)[names(uso) == 'Datos.inter...KB.'] <<-'Datos inter (KB)'
+        names(uso)[names(uso) == 'N.Â..SMS.MMS'] <<-'N. SMS/MMS'
         #Create a column with the phone number without the 56 (Chile)
         uso[, 'Acceso fix'] <<-
           lapply(uso[, 'Acceso'], function(x)
@@ -472,7 +486,7 @@ shinyServer(function(input, output, session) {
           lapply(uso[, 'Periodo de'], function(x)
             gsub(names(y[k]), y[[k]], x))
       }
-      
+      {
       uso[, 'Fecha'] <<-
         lapply(uso[, 'Periodo de'], function(x)
           paste(substr(x , 3 , 6),
@@ -487,7 +501,7 @@ shinyServer(function(input, output, session) {
         lapply(uso[, 'Fecha'], function(x)
           as.numeric(substr(x, 6 , 7)))
       
-      
+      }
       if (client == "pa") {
         #Upload to the Parque Arauco DB the data with those data type
         dbWriteTable(
@@ -669,6 +683,7 @@ shinyServer(function(input, output, session) {
       }
       else if (client == "igm") {
         #Only select the following columns, if there are more, do not use them
+        
         uso <-
           subset(
             uso,
@@ -682,14 +697,28 @@ shinyServer(function(input, output, session) {
               "Descuentos (CLP)",
               "Descuento de Plano tarifario (CLP)",
               "Voz (CLP)",
+              "Voz nacional (CLP)",
+              "Voz inter (CLP)",
               "Datos (CLP)",
+              "Datos nacional (CLP)",
+              "Datos inter (CLP)",
               "SMS/MMS (CLP)",
+              "SMS/MMS nacional (CLP)",
+              "SMS/MMS inter (CLP)",
+              "Voz (seg)",
+              "Voz nacional (seg)",
+              "Voz inter (seg)",
+              "Datos (KB)",
+              "Datos nacional (KB)",
+              "Datos inter (KB)",
+              "N. SMS/MMS",
               "Fecha",
               "Acceso fix",
               "Mes"
             )
           )
-        # 
+
+
         # dbWriteTable(
         #   DB,
         #   "usos",
@@ -704,6 +733,10 @@ shinyServer(function(input, output, session) {
         #     `Descuentos (CLP)` = "double(15,2)",
         #     `Descuento de Plano tarifario (CLP)` = "double(15,2)",
         #     `Voz (CLP)` = "double(15,2)",
+        #     `Voz nacional (CLP)` = "double(15,2)",
+        #     `Voz inter (CLP)` = "double(15,2)",
+        #     `Datos (CLP)` = "double(15,2)",
+        #     `Datos (CLP)` = "double(15,2)",
         #     `Datos (CLP)` = "double(15,2)",
         #     `SMS/MMS (CLP)` = "double(15,2)",
         #     `Fecha` = "date",
@@ -1131,6 +1164,7 @@ shinyServer(function(input, output, session) {
             ACCESSES,
             select = c(
               "ACCESS.NUMBER",
+              "TYPE",
               "CARRIER_ORG:1",
               "CARRIER_ORG:2",
               "CARRIER_ORG:3",
@@ -1157,6 +1191,7 @@ shinyServer(function(input, output, session) {
           read.table(file = "ACCESSES.txt", encoding = "UTF8")
         names(ACCESSES) <-
           c("Acceso",
+            "Tipo",
             "Proveedor",
             "Proveedor Nivel 2",
             "Proveedor Nivel 3",
@@ -1198,6 +1233,7 @@ shinyServer(function(input, output, session) {
             field.types = list(
               Acceso = "varchar(255)",
               Proveedor = "varchar(255)",
+              Tipo = "varchar(255)",
               `Proveedor Nivel 2` = "varchar(255)",
               `Proveedor Nivel 3` = "varchar(255)",
               `MANAGEMENTORG1` = "varchar(255)",
@@ -1231,6 +1267,7 @@ shinyServer(function(input, output, session) {
             field.types = list(
               Acceso = "varchar(255)",
               Proveedor = "varchar(255)",
+              Tipo = "varchar(255)",
               `Proveedor Nivel 2` = "varchar(255)",
               `Proveedor Nivel 3` = "varchar(255)",
               `MANAGEMENTORG1` = "varchar(255)",
@@ -1262,6 +1299,7 @@ shinyServer(function(input, output, session) {
             field.types = list(
               Acceso = "varchar(255)",
               Proveedor = "varchar(255)",
+              Tipo = "varchar(255)",
               `Proveedor Nivel 2` = "varchar(255)",
               `Proveedor Nivel 3` = "varchar(255)",
               `MANAGEMENTORG1` = "varchar(255)",
@@ -1291,6 +1329,7 @@ shinyServer(function(input, output, session) {
             field.types = list(
               Acceso = "varchar(255)",
               Proveedor = "varchar(255)",
+              Tipo = "varchar(255)",
               `Proveedor Nivel 2` = "varchar(255)",
               `Proveedor Nivel 3` = "varchar(255)",
               `MANAGEMENTORG1` = "varchar(255)",
@@ -1318,6 +1357,7 @@ shinyServer(function(input, output, session) {
             field.types = list(
               Acceso = "varchar(255)",
               Proveedor = "varchar(255)",
+              Tipo = "varchar(255)",
               `Proveedor Nivel 2` = "varchar(255)",
               `Proveedor Nivel 3` = "varchar(255)",
               `MANAGEMENTORG1` = "varchar(255)",
@@ -1343,6 +1383,7 @@ shinyServer(function(input, output, session) {
             field.types = list(
               Acceso = "varchar(255)",
               Proveedor = "varchar(255)",
+              Tipo = "varchar(255)",
               `Proveedor Nivel 2` = "varchar(255)",
               `Proveedor Nivel 3` = "varchar(255)",
               `MANAGEMENTORG1` = "varchar(255)",
@@ -1366,6 +1407,7 @@ shinyServer(function(input, output, session) {
             field.types = list(
               Acceso = "varchar(255)",
               Proveedor = "varchar(255)",
+              Tipo = "varchar(255)",
               `Proveedor Nivel 2` = "varchar(255)",
               `Proveedor Nivel 3` = "varchar(255)",
               `MANAGEMENTORG1` = "varchar(255)",
@@ -1387,6 +1429,7 @@ shinyServer(function(input, output, session) {
             field.types = list(
               Acceso = "varchar(255)",
               Proveedor = "varchar(255)",
+              Tipo = "varchar(255)",
               `Proveedor Nivel 2` = "varchar(255)",
               `Proveedor Nivel 3` = "varchar(255)",
               `MANAGEMENTORG1` = "varchar(255)",
@@ -1407,6 +1450,7 @@ shinyServer(function(input, output, session) {
             field.types = list(
               Acceso = "varchar(255)",
               Proveedor = "varchar(255)",
+              Tipo = "varchar(255)",
               `Proveedor Nivel 2` = "varchar(255)",
               `Proveedor Nivel 3` = "varchar(255)",
               `Acceso fix` = "varchar(255)"
@@ -1744,6 +1788,10 @@ shinyServer(function(input, output, session) {
       PLAN <<- PLAN
       
       file.remove("Planes.txt")
+      if(client == "igm"){
+        source("pj_igm.r", local = TRUE)
+        source("pj_igm_db.r", local = TRUE)
+      }
     }
     #Run the following code if theres a file in the tipos file input
     if (!is.null(tipos)) {
@@ -1785,10 +1833,7 @@ shinyServer(function(input, output, session) {
       TIPO <<- TIPO
       
       file.remove("TIPO.txt")
-      if(client == "igm"){
-        source("pj_igm.r", local = TRUE)
-        source("pj_igm_db.r", local = TRUE)
-      }
+      
     }
     #Run the following code if theres a file in the nombre and link text input
     if (!is.null(input$link) && !is.null(input$nombre)) {
