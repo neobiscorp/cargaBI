@@ -137,22 +137,30 @@ ACCESSES2[["Tipo"]]<-NULL
 
 ############Anomalias
 
-PLAN2<-PLAN
-PLAN2[["Acceso"]]<-NULL
-PLAN2[["Proveedor"]]<-NULL
-PLAN2[["Centro de facturacion"]]<-NULL
-PLAN2<-subset(PLAN2,
-              PLAN2[["Tipo de producto"]] == "Plano tarifario")
-UAADP_usos <- merge(UAAD_users,
-                    PLAN2,
-                    by.x = "Acceso fix",
-                    by.y = "Acceso fix",
-                    all.x = TRUE)
-UAADP_usos<- subset(UAADP_usos,
-                    UAADP_usos[["Proveedor"]]== "Movistar CL" |
-                      UAADP_usos[["Proveedor"]] == "Entel PCS (CL)"|
-                      UAADP_usos[["Proveedor"]]== "Claro CL")
-rm(ACCESSES2,UAAD_users,PLAN2)
+  PLAN2 <- PLAN
+  PLAN2[["Acceso"]] <- NULL
+  PLAN2[, 'Proveedor2'] <- PLAN2[["Proveedor"]]
+  PLAN2[["Proveedor"]] <- NULL
+  PLAN2[["Centro de facturacion"]] <- NULL
+  PLAN2 <- subset(PLAN2,
+                  PLAN2[["Tipo de producto"]] == "Plano tarifario")
+  UAADP_usos <- merge(
+    UAAD_users,
+    PLAN2,
+    #by.x = "Acceso fix",
+    #by.y = "Acceso fix",
+    by.x = c("Acceso fix", "Proveedor"),
+    by.y = c("Acceso fix", "Proveedor2"),
+    all.x = TRUE
+  )
+  UAADP_usos[["Proveedor2"]]<-NULL
+  UAADP_usos <- subset(
+    UAADP_usos,
+    UAADP_usos[["Proveedor"]] == "Movistar CL" |
+      UAADP_usos[["Proveedor"]] == "Entel PCS (CL)" |
+      UAADP_usos[["Proveedor"]] == "Claro CL"
+  )
+  rm(ACCESSES2, UAAD_users, PLAN2)
 
 
 
