@@ -1,6 +1,15 @@
 {
- 
-uso[["Nombre"]]<-NULL
+  
+  for(i in 1:length(uso[["Acceso"]])){
+    if (is.na(uso[["Acceso"]][i])==TRUE){
+      uso[["Acceso"]][i]<-uso[["Nombre"]][i]
+      uso[["Centro de facturacion"]][i]<-uso[["Nombre"]][i]
+      uso[["Acceso fix"]][i]<-uso[["Nombre"]][i]
+      
+    }
+  }
+  
+  uso[["Nombre"]]<-NULL
     ACCESSES2<-subset(ACCESSES,
                        ACCESSES[["Proveedor"]]== "Movistar CL" |
                        ACCESSES[["Proveedor"]] == "Entel PCS (CL)"|
@@ -144,16 +153,6 @@ UAADP_usos<- subset(UAADP_usos,
                       UAADP_usos[["Proveedor"]] == "Entel PCS (CL)"|
                       UAADP_usos[["Proveedor"]]== "Claro CL")
 rm(ACCESSES2,UAAD_users,PLAN2)
-
-for(i in 1:length(UAADP_usos[["Acceso"]])){
-  if (is.na(UAADP_usos[["Acceso"]][i])==TRUE){
-    UAADP_usos[["Acceso"]][i]<-UAADP_usos[["Nombre"]][i]
-    UAADP_usos[["Centro de facturacion"]][i]<-UAADP_usos[["Nombre"]][i]
-    UAADP_usos[["Acceso fix"]][i]<-UAADP_usos[["Nombre"]][i]
-    UAADP_usos[["Proveedor Nivel 3"]][i]<-UAADP_usos[["Nombre"]][i]
-    
-  }
-}
 
 
 
