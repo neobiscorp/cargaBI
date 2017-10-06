@@ -1,6 +1,6 @@
 {
-
-
+ 
+uso[["Nombre"]]<-NULL
     ACCESSES2<-subset(ACCESSES,
                        ACCESSES[["Proveedor"]]== "Movistar CL" |
                        ACCESSES[["Proveedor"]] == "Entel PCS (CL)"|
@@ -9,6 +9,7 @@
   ASSOCIATIONS["Acceso fix"]<-substr(ASSOCIATIONS[["Acceso"]],3,1000000L)
 ACCESSES2[["Acceso"]]<-NULL
 ACCESSES2[["Proveedor"]]<-NULL
+ACCESSES2[["Tipo"]]<-NULL
   U_accesses <- merge(uso,
                       ACCESSES2,
                       by.x = "Acceso fix",
@@ -16,31 +17,32 @@ ACCESSES2[["Proveedor"]]<-NULL
                       all.x = TRUE)
   ASSOCIATIONS2 <- ASSOCIATIONS
   ASSOCIATIONS2[["Acceso"]]<-NULL
-  UA_associations<- merge(U_accesses,
+  UAAD_users<- merge(U_accesses,
                           ASSOCIATIONS2,
                           by.x = "Acceso fix",
                           by.y = "Acceso fix",
                           all.x = TRUE
                           )
   rm(ASSOCIATIONS2)
-  UAA_users <- merge(UA_associations,
-                     USERS,
-                     by.x = "UUI",
-                     by.y = "UUI",
-                     all.x = TRUE)
-DEVICES[,'Null']<-is.na(DEVICES[,'IMEI'])
-  DEVICES <- subset(DEVICES,
-                    DEVICES[["Null"]] == FALSE)
-  DEVICES["Tipo"]<-NULL
-  DEVICES["REFNUM"]<-NULL
-  DEVICES["Estado"]<-NULL
-  DEVICES["Null"]<-NULL
-  UAAD_users <-merge(UAA_users,
-                     DEVICES,
-                     by.x = "IMEI",
-                     by.y = "IMEI",
-                     all.x = TRUE)
-  rm(U_accesses,UA_associations)
+  
+  # UAA_users <- merge(UA_associations,
+  #                    USERS,
+  #                    by.x = "UUI",
+  #                    by.y = "UUI",
+  #                    all.x = TRUE)
+# DEVICES[,'Null']<-is.na(DEVICES[,'IMEI'])
+#   DEVICES <- subset(DEVICES,
+#                     DEVICES[["Null"]] == FALSE)
+#   DEVICES["Tipo"]<-NULL
+#   DEVICES["REFNUM"]<-NULL
+#   DEVICES["Estado"]<-NULL
+#   DEVICES["Null"]<-NULL
+#   UAAD_users <-merge(UAA_users,
+#                      DEVICES,
+#                      by.x = "IMEI",
+#                      by.y = "IMEI",
+#                      all.x = TRUE)
+  rm(U_accesses)
   
   # 
   # uso2 <- uso
@@ -129,6 +131,7 @@ DEVICES[,'Null']<-is.na(DEVICES[,'IMEI'])
 PLAN2<-PLAN
 PLAN2[["Acceso"]]<-NULL
 PLAN2[["Proveedor"]]<-NULL
+PLAN2[["Centro de facturacion"]]<-NULL
 PLAN2<-subset(PLAN2,
               PLAN2[["Tipo de producto"]] == "Plano tarifario")
 UAADP_usos <- merge(UAAD_users,
@@ -140,9 +143,17 @@ UAADP_usos<- subset(UAADP_usos,
                     UAADP_usos[["Proveedor"]]== "Movistar CL" |
                       UAADP_usos[["Proveedor"]] == "Entel PCS (CL)"|
                       UAADP_usos[["Proveedor"]]== "Claro CL")
-rm(ACCESSES2,UAAD_users,UAA_users,PLAN2)
+rm(ACCESSES2,UAAD_users,PLAN2)
 
-
+for(i in 1:length(UAADP_usos[["Acceso"]])){
+  if (is.na(UAADP_usos[["Acceso"]][i])==TRUE){
+    UAADP_usos[["Acceso"]][i]<-UAADP_usos[["Nombre"]][i]
+    UAADP_usos[["Centro de facturacion"]][i]<-UAADP_usos[["Nombre"]][i]
+    UAADP_usos[["Acceso fix"]][i]<-UAADP_usos[["Nombre"]][i]
+    UAADP_usos[["Proveedor Nivel 3"]][i]<-UAADP_usos[["Nombre"]][i]
+    
+  }
+}
 
 
 

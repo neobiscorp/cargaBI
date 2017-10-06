@@ -165,8 +165,8 @@ shinyServer(function(input, output, session) {
       dataFilesUF <<- lapply(input$usos[['datapath']], read.csv2)
      
       #Append all usos files to the same dataframe
-      uso <<- rbindlist(dataFilesUF)
-      
+      uso <<- rbindlist(dataFilesUF,fill = TRUE)
+     
       #For Parque arauco clear and create variables with PEN and COP currency, and append files
       if (!is.null(input$usosPEN)) {
         dataFilesPEN <<- NULL
@@ -330,7 +330,7 @@ shinyServer(function(input, output, session) {
         
       }
       #If the client its not Parque Arauco and licitacion run the following
-      else if (client != "lmovil" & client != "igm" & client != "igm2") {
+      else if (client != "lmovil" & client != "igm") {
         #Change the name of the columns
         names(uso)[names(uso) == 'ï..Acceso'] <<- 'Acceso'
         names(uso)[names(uso) == 'Proveedor'] <<- 'Proveedor'
@@ -372,9 +372,13 @@ shinyServer(function(input, output, session) {
       #Generate the name of the columns for Informe Gestion Movil
        
         names(uso)[names(uso) == 'ï..Acceso'] <<- 'Acceso'
-        names(uso)[names(uso) == 'Nombre'] <<- 'Acceso'
+        names(uso)[names(uso) == 'ï..Nombre'] <<- 'Nombre'
         names(uso)[names(uso) == 'Proveedor'] <<- 'Proveedor'
+        names(uso)[names(uso) == 'Tipo'] <<- 'Tipo'
+        names(uso)[names(uso) == 'Usuario'] <<- 'Usuario'
+        names(uso)[names(uso) == 'Equipo'] <<- 'Equipo'
         names(uso)[names(uso) == 'PerÃ.odo.de'] <<-  'Periodo de'
+        names(uso)[names(uso) == 'Centro.de.facturaciÃ³n'] <<-  'Centro de facturacion'
         names(uso)[names(uso) == 'Total..CLP.'] <<- 'Total (CLP)'
         names(uso)[names(uso) == 'Plano.tarifario..CLP.'] <<-
           'Plano tarifario (CLP)'
@@ -403,9 +407,11 @@ shinyServer(function(input, output, session) {
         names(uso)[names(uso) == 'Datos.inter...KB.'] <<-'Datos inter (KB)'
         names(uso)[names(uso) == 'N.Â..SMS.MMS'] <<-'N. SMS/MMS'
         #Create a column with the phone number without the 56 (Chile)
+      
         uso[, 'Acceso fix'] <<-
           lapply(uso[, 'Acceso'], function(x)
             substring(x, 3))
+        
       }
       else {
         #Change the name of the columns for the Licitacion movil
@@ -690,6 +696,10 @@ shinyServer(function(input, output, session) {
             select = c(
               "Acceso",
               "Proveedor",
+              "Usuario",
+              "Equipo",
+              "Tipo",
+              "Centro de facturacion",
               "Total (CLP)",
               "Plano tarifario (CLP)",
               "Uso (CLP)",
@@ -714,6 +724,7 @@ shinyServer(function(input, output, session) {
               "N. SMS/MMS",
               "Fecha",
               "Acceso fix",
+              "Nombre",
               "Mes"
             )
           )
@@ -792,7 +803,7 @@ shinyServer(function(input, output, session) {
       
       #######################################USERS############
       
-      if (client != "lmovil") {
+      if (client != "lmovil" & client != "igm") {
         #Read the xlsx file at the sheet USERS
         USERS <- read.xlsx(export$datapath,
                            sheet = "USERS",
@@ -1512,7 +1523,7 @@ shinyServer(function(input, output, session) {
       }
       file.remove("ACCESSES.txt")
       #######################################DEVICES############
-      if (client != "lmovil") {
+      if (client != "lmovil" & client != "igm") {
         DEVICES <- read.xlsx(export$datapath,
                              sheet = "DEVICES",
                              startRow = 1)

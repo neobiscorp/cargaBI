@@ -1,24 +1,24 @@
 {
   ###########################CARGAR EL DATASET FINAL IGM
-
-  library(shiny)      #Dashboard
-  library(RMySQL)     #Secundary MySQL connection, Kill connections
-  library(DBI)        #Primary MySQL connection
-  library(openxlsx)   #Read xlsx files
-  library(data.table) #For merge, rbind and dataframe works
-  killDbConnections <- function () {
-    all_cons <- dbListConnections(MySQL())
-    print(all_cons)
-    for (con in all_cons)
-      +  dbDisconnect(con)
-    print(paste(length(all_cons), " connections killed."))
-  }
-  DB <- dbConnect(
-    MySQL(),
-    user = "root",
-    password = "",
-    dbname = paste0("igm")
-  )
+# 
+#   library(shiny)      #Dashboard
+#   library(RMySQL)     #Secundary MySQL connection, Kill connections
+#   library(DBI)        #Primary MySQL connection
+#   library(openxlsx)   #Read xlsx files
+#   library(data.table) #For merge, rbind and dataframe works
+#   killDbConnections <- function () {
+#     all_cons <- dbListConnections(MySQL())
+#     print(all_cons)
+#     for (con in all_cons)
+#       +  dbDisconnect(con)
+#     print(paste(length(all_cons), " connections killed."))
+#   }
+#   DB <- dbConnect(
+#     MySQL(),
+#     user = "root",
+#     password = "",
+#     dbname = paste0("igm")
+#   )
   print("Base de datos conectada")
 
 
@@ -48,15 +48,14 @@
   #print("accesosunicos subidos")
   #####Tabla UAA_users #####
   UAADPT_users2<-UAADP_usos
-  UAADPT_users2[,'Usuario']<- UAADPT_users2[["Nombre"]]
-  UAADPT_users2[["Nombre"]]<-NULL
+  UAADPT_users2[,'Modelo']<- UAADPT_users2[["Equipo"]]
+  UAADPT_users2[["Equipo"]]<-NULL
   UAADPT_users2[["UUI"]]<-NULL
   UAADPT_users2[["Acceso fix"]]<-NULL
   UAADPT_users2[["IMEI"]]<-NULL
   UAADPT_users2[["REFNUM"]]<-NULL
   UAADPT_users2[["Estado"]]<-NULL
   UAADPT_users2[["Mes"]]<-NULL
-  UAADPT_users2[["Centro de facturacion"]]<-NULL
   UAADPT_users2[["Tipo de producto"]]<- NULL
   summary(UAADPT_users2)
   # select = c(
@@ -101,6 +100,7 @@
       `Acceso` = "varchar(255)",
       `Usuario` = "varchar(255)",
       `Producto` = "varchar(255)",
+      `Centro de facturacion` = "varchar(255)",
       `Modelo` = "varchar(255)",
       `Tipo` = "varchar(255)",
       `Importe de las opciones descontadas (CLP)` = "double(15,2)",
@@ -151,6 +151,7 @@
         `Acceso` = "varchar(255)",
         `Usuario` = "varchar(255)",
         `Producto` = "varchar(255)",
+        `Centro de facturacion` = "varchar(255)",
         `Modelo` = "varchar(255)",
         `Tipo` = "varchar(255)",
         `Importe de las opciones descontadas (CLP)` = "double(15,2)",
@@ -199,6 +200,7 @@
         `Acceso` = "varchar(255)",
         `Usuario` = "varchar(255)",
         `Producto` = "varchar(255)",
+        `Centro de facturacion` = "varchar(255)",
         `Modelo` = "varchar(255)",
         `Tipo` = "varchar(255)",
         `Importe de las opciones descontadas (CLP)` = "double(15,2)",
@@ -248,6 +250,7 @@
         `Acceso` = "varchar(255)",
         `Usuario` = "varchar(255)",
         `Producto` = "varchar(255)",
+        `Centro de facturacion` = "varchar(255)",
         `Modelo` = "varchar(255)",
         `Tipo` = "varchar(255)",
         `Importe de las opciones descontadas (CLP)` = "double(15,2)",
@@ -297,6 +300,7 @@
           `Acceso` = "varchar(255)",
           `Usuario` = "varchar(255)",
           `Producto` = "varchar(255)",
+          `Centro de facturacion` = "varchar(255)",
           `Modelo` = "varchar(255)",
           `Tipo` = "varchar(255)",
           `Importe de las opciones descontadas (CLP)` = "double(15,2)",
@@ -346,6 +350,7 @@
           `Acceso` = "varchar(255)",
           `Usuario` = "varchar(255)",
           `Producto` = "varchar(255)",
+          `Centro de facturacion` = "varchar(255)",
           `Modelo` = "varchar(255)",
           `Tipo` = "varchar(255)",
           `Importe de las opciones descontadas (CLP)` = "double(15,2)",
@@ -396,6 +401,7 @@
           `Acceso` = "varchar(255)",
           `Usuario` = "varchar(255)",
           `Producto` = "varchar(255)",
+          `Centro de facturacion` = "varchar(255)",
           `Modelo` = "varchar(255)",
           `Tipo` = "varchar(255)",
           `Importe de las opciones descontadas (CLP)` = "double(15,2)",
@@ -447,6 +453,7 @@
           `Acceso` = "varchar(255)",
           `Usuario` = "varchar(255)",
           `Producto` = "varchar(255)",
+          `Centro de facturacion` = "varchar(255)",
           `Modelo` = "varchar(255)",
           `Tipo` = "varchar(255)",
           `Importe de las opciones descontadas (CLP)` = "double(15,2)",
@@ -498,6 +505,7 @@
       `Acceso` = "varchar(255)",
       `Usuario` = "varchar(255)",
       `Producto` = "varchar(255)",
+      `Centro de facturacion` = "varchar(255)",
       `Modelo` = "varchar(255)",
       `Tipo` = "varchar(255)",
       `Importe de las opciones descontadas (CLP)` = "double(15,2)",
