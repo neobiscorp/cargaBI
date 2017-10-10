@@ -47,6 +47,7 @@
   # )
   #print("accesosunicos subidos")
   #####Tabla UAA_users #####
+  
   UAADPT_users2<-UAADP_usos
   UAADPT_users2[,'Modelo']<- UAADPT_users2[["Equipo"]]
   UAADPT_users2[["Equipo"]]<-NULL
@@ -57,7 +58,7 @@
   UAADPT_users2[["Estado"]]<-NULL
   UAADPT_users2[["Mes"]]<-NULL
   UAADPT_users2[["Tipo de producto"]]<- NULL
-  summary(UAADPT_users2)
+
   # select = c(
   #   "Acceso",
   #   "Proveedor",
