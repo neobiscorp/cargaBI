@@ -69,26 +69,8 @@ ACCESSES2[["Tipo"]]<-NULL
   )
   rm(ACCESSES2, UAAD_users, PLAN2) #Se borran las tablas que no aportan
   
-  Meses<-function(i,x){ #Meses(i,x) donde x es una columna de Fechas ordenadas por YYYY/MM/DD e "i" es una fila en especifica de la columna, el resultado obtenido es la cantidad de meses transcurridos desde el mes inicial hasta el mes del dato "i"
-    month1 <- sapply(x, substr, 6, 7)
-    month <- as.numeric(month1)
-    rm(month1)
-    year1<-sapply(x,substr,1,4)
-    year<-as.numeric(year1)
-    rm(year1)
-    AAA<-data.frame(x)
-    AAA[,'month']<-month
-    AAA[,'year']<-year
-    BBB<-subset(AAA,
-                AAA["year"]==max(year))
-    rm(month,year)
-    fin1<-max(BBB[["month"]])
-    fin2<-max(BBB[["year"]])
-    rm(BBB)
-    return((fin2-AAA[["year"]][i])*12+fin1-AAA[["month"]][i]+1)
-    rm(AAA)
-  }
-  SinUsos<<-UAADP_usos
+
+  SinUsos<-UAADP_usos
   SinUsos<-subset(SinUsos,SinUsos[["Acceso"]]!=SinUsos[["Centro de facturacion"]])
   SinUsos[,'usocant']<-SinUsos[,'Voz (seg)']+SinUsos[,'Datos (KB)']+SinUsos[,'N. SMS/MMS']
   SinUsos <-
@@ -102,9 +84,28 @@ ACCESSES2[["Tipo"]]<-NULL
       )
     )
   SinUsos<-subset(SinUsos,SinUsos[["usocant"]]==0)
+  month1 <- sapply(SinUsos[,'Fecha'], substr, 6, 7)
+    month <- as.numeric(month1)
+    rm(month1)
+    year1<-sapply(SinUsos[,'Fecha'],substr,1,4)
+    year<-as.numeric(year1)
+    rm(year1)
+    AAA<-data.frame(SinUsos[,'Fecha'])
+    AAA[,'month']<-month
+    AAA[,'year']<-year
+    BBB<-subset(AAA,
+                AAA["year"]==max(year))
+    rm(month,year)
+    fin1<-max(BBB[["month"]])
+    fin2<-max(BBB[["year"]])
+    rm(BBB)
+    
+    
+  
   for (i in 1:length(SinUsos[["Acceso"]])){
-  SinUsos[["Meses"]][i]<-Meses(i,SinUsos[,'Fecha'])
+  SinUsos[["Meses"]][i]<-(fin2-AAA[["year"]][i])*12+fin1-AAA[["month"]][i]+1
   }
+    rm(AAA)
   SinUsos<-subset(SinUsos,SinUsos[["Meses"]]<=3)
 
 }

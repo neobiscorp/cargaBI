@@ -20,27 +20,34 @@
 #     dbname = paste0("igm")
 #   )
   print("Base de datos conectada")
+
+SinUsos <-
+  subset(
+    SinUsos,
+    select = c(
+      "Acceso",
+      "Fecha",
+      "Total (CLP)",
+      "Meses",
+      "usocant"
+    )
+  )
   dbWriteTable(
     DB,
-    "Sinusos",
+    "sinusos",
     SinUsos,
     field.types = list(
-      
       `Acceso` = "varchar(255)",
       `Total (CLP)` = "double(15,2)",
       `usocant` = "double(15,2)",
       `Meses` = "double(15,2)",
       `Fecha` = "varchar(255)"
-      
-      
-      
     ),
     row.names = FALSE,
     overwrite = TRUE,
     append = FALSE,
     allow.keywords = FALSE
   )
-
 
   #####Tabla UAA_users #####
   #Se eliminan las columnas sobrantes y se cambia el nombre de la columna modelo por equipo
