@@ -20,7 +20,26 @@
 #     dbname = paste0("igm")
 #   )
   print("Base de datos conectada")
-
+  dbWriteTable(
+    DB,
+    "Sinusos",
+    SinUsos,
+    field.types = list(
+      
+      `Acceso` = "varchar(255)",
+      `Total (CLP)` = "double(15,2)",
+      `usocant` = "double(15,2)",
+      `Meses` = "double(15,2)",
+      `Fecha` = "varchar(255)"
+      
+      
+      
+    ),
+    row.names = FALSE,
+    overwrite = TRUE,
+    append = FALSE,
+    allow.keywords = FALSE
+  )
 
 
   #####Tabla UAA_users #####
