@@ -32,17 +32,17 @@ shinyUI(fluidPage(
       #Create conditional Panel with text input
       conditionalPanel(condition = "input.Client == 'Licitacion Movil (Entel y Movistar)' ||input.Client == 'Informe Gestion Movil'",
                        textInput('nombre',
-                                 'Nombre de la Empresa a Licitar')),
+                                 'Nombre de la Empresa')),
       #Create conditional Panel with text input
       conditionalPanel(
         condition = "input.Client == 'Licitacion Movil (Entel y Movistar)' ||input.Client == 'Informe Gestion Movil'",
         textInput('link',
-                  'Link de Imagen de la Empresa a Licitar')
+                  'Link de Imagen de la Empresa')
       ),
       #Create file upload accepting multiple csv files
       fileInput(
         'usos',
-        'Elegir los Archivos CSV que contenga los Usos del cliente en UF (Licitacion en CLP)',
+        'Elegir los Archivos CSV que contenga los Usos del cliente en UF (en CLP)',
         multiple = T,
         accept = c('text/csv',
                    'text/comma-separated-values,text/plain',
