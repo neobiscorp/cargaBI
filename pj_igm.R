@@ -1,5 +1,6 @@
 {
   #Se busca rellenar los campos vacios de los centros de facturacion con informacion relevante
+  uso2<<-uso
   for(i in 1:length(uso[["Acceso"]])){
     if (is.na(uso[["Acceso"]][i])==TRUE){ #Forma de identificar a los centros de facturacion en uso
       uso[["Acceso"]][i]<-uso[["Nombre"]][i] #se le pone el nombre del centro a la columna Acceso (puede quedar mal pero sirve que no quede vacia)
@@ -7,6 +8,7 @@
       uso[["Acceso fix"]][i]<-uso[["Nombre"]][i] #se le pone el nombre del centro a la columna Acceso fix
       
     }
+    else{}
   }
   
   uso[["Nombre"]]<-NULL #Eliminamos la columna Nombre que es innecesaria
@@ -30,6 +32,12 @@ ACCESSES2[["Tipo"]]<-NULL
   ASSOCIATIONS2 <- ASSOCIATIONS
   ASSOCIATIONS2[["Acceso"]]<-NULL
   #SE une Uso y ACCESSES con ASSOCIATIONS
+  
+  
+  a<-duplicated(ASSOCIATIONS2[["Acceso fix"]],fromLast = TRUE )
+  ASSOCIATIONS2[["duplicado"]] <-a
+  ASSOCIATIONS2<-subset(ASSOCIATIONS2,ASSOCIATIONS2[["duplicado"]] == FALSE)
+  ASSOCIATIONS2[["duplicado"]]<-NULL
   UAAD_users<- merge(U_accesses,
                           ASSOCIATIONS2,
                           by.x = "Acceso fix",
@@ -70,7 +78,12 @@ ACCESSES2[["Tipo"]]<-NULL
   rm(ACCESSES2, UAAD_users, PLAN2) #Se borran las tablas que no aportan
   
 
-  SinUsos<-UAADP_usos
+UAADP_usos[,'N. SMS/MMS2']<-as.double(as.character(UAADP_usos[["N. SMS/MMS"]]))
+UAADP_usos[["N. SMS/MMS"]]<- NULL
+UAADP_usos[,'N. SMS/MMS']<-UAADP_usos[["N. SMS/MMS2"]]
+UAADP_usos[["N. SMS/MMS2"]]<-NULL
+summary(UAADP_usos)  
+SinUsos<-UAADP_usos
   SinUsos<-subset(SinUsos,SinUsos[["Acceso"]]!=SinUsos[["Centro de facturacion"]])
   SinUsos[,'usocant']<-SinUsos[,'Voz (seg)']+SinUsos[,'Datos (KB)']+SinUsos[,'N. SMS/MMS']
   SinUsos <-
