@@ -20,7 +20,7 @@
 #     dbname = paste0("igm")
 #   )
   print("Base de datos conectada")
-
+#Se crea la tabla sinusos que contiene los datos que no tienen uso de los tres ultimos periodos
 SinUsos <-
   subset(
     SinUsos,
@@ -32,6 +32,7 @@ SinUsos <-
       "usocant"
     )
   )
+#Se sube a la base de datos
   dbWriteTable(
     DB,
     "sinusos",
@@ -54,10 +55,7 @@ SinUsos <-
   UAADPT_users2<-UAADP_usos
   UAADPT_users2[,'Modelo']<- UAADPT_users2[["Equipo"]]
   UAADPT_users2[["Equipo"]]<-NULL
-  UAADPT_users2[["UUI"]]<-NULL
   UAADPT_users2[["Acceso fix"]]<-NULL
-  UAADPT_users2[["IMEI"]]<-NULL
-  UAADPT_users2[["REFNUM"]]<-NULL
   UAADPT_users2[["Estado"]]<-NULL
   UAADPT_users2[["Mes"]]<-NULL
   UAADPT_users2[["Tipo de producto"]]<- NULL

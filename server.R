@@ -1636,7 +1636,7 @@ shinyServer(function(input, output, session) {
         DEVICES<<-DEVICES
       }
       #######################################ASSOCIATIONS############
-      if (client != "lmovil") {
+      if (client != "lmovil"& client != "igm") {
         ASSOCIATIONS <- read.xlsx(export$datapath,
                                   sheet = "ASSOCIATIONS",
                                   startRow = 1)

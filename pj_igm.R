@@ -1,16 +1,17 @@
 {
   #Se busca rellenar los campos vacios de los centros de facturacion con informacion relevante
   uso2<<-uso
+  uso<-uso2
   for(i in 1:length(uso[["Acceso"]])){
     if (is.na(uso[["Acceso"]][i])==TRUE){ #Forma de identificar a los centros de facturacion en uso
-      uso[["Acceso"]][i]<-uso[["Nombre"]][i] #se le pone el nombre del centro a la columna Acceso (puede quedar mal pero sirve que no quede vacia)
-      uso[["Centro de facturacion"]][i]<-uso[["Nombre"]][i] #se le pone el nombre del centro a la columna Centro de facturacion 
-      uso[["Acceso fix"]][i]<-uso[["Nombre"]][i] #se le pone el nombre del centro a la columna Acceso fix
+      uso[["Acceso"]][i]<-as.character(uso[["Nombre"]][i]) #se le pone el nombre del centro a la columna Acceso (puede quedar mal pero sirve que no quede vacia)
+      uso[["Centro de facturacion"]][i]<-as.character(uso[["Nombre"]][i]) #se le pone el nombre del centro a la columna Centro de facturacion 
+      uso[["Acceso fix"]][i]<-as.character(uso[["Nombre"]][i]) #se le pone el nombre del centro a la columna Acceso fix
       
     }
     else{}
   }
-  
+
   uso[["Nombre"]]<-NULL #Eliminamos la columna Nombre que es innecesaria
   #Dejamos los proveedores relevantes para conseguir la informacion necesaria de ACCESSES
     ACCESSES2<-subset(ACCESSES,
@@ -18,33 +19,33 @@
                        ACCESSES[["Proveedor"]] == "Entel PCS (CL)"|
                         ACCESSES[["Proveedor"]]== "Claro CL"
                      )
-  ASSOCIATIONS["Acceso fix"]<-substr(ASSOCIATIONS[["Acceso"]],3,1000000L) #Se crea Acceso fix como parametro para unir
+ # ASSOCIATIONS["Acceso fix"]<-substr(ASSOCIATIONS[["Acceso"]],3,1000000L) #Se crea Acceso fix como parametro para unir
   #Se borran las columnas innecesarias que causaran distorcion sobre los nombres finales de las columnas
 ACCESSES2[["Acceso"]]<-NULL
 ACCESSES2[["Proveedor"]]<-NULL
 ACCESSES2[["Tipo"]]<-NULL
 # se une uso con ACCESSES 
-  U_accesses <- merge(uso,
+UAAD_users <- merge(uso,
                       ACCESSES2,
                       by.x = "Acceso fix",
                       by.y = "Acceso fix",
                       all.x = TRUE)
-  ASSOCIATIONS2 <- ASSOCIATIONS
-  ASSOCIATIONS2[["Acceso"]]<-NULL
-  #SE une Uso y ACCESSES con ASSOCIATIONS
-  
-  
-  a<-duplicated(ASSOCIATIONS2[["Acceso fix"]],fromLast = TRUE )
-  ASSOCIATIONS2[["duplicado"]] <-a
-  ASSOCIATIONS2<-subset(ASSOCIATIONS2,ASSOCIATIONS2[["duplicado"]] == FALSE)
-  ASSOCIATIONS2[["duplicado"]]<-NULL
-  UAAD_users<- merge(U_accesses,
-                          ASSOCIATIONS2,
-                          by.x = "Acceso fix",
-                          by.y = "Acceso fix",
-                          all.x = TRUE
-                          )
-  rm(ASSOCIATIONS2,U_accesses) #Se borran las tablas que no aportan
+  # ASSOCIATIONS2 <- ASSOCIATIONS
+  # ASSOCIATIONS2[["Acceso"]]<-NULL
+  # #SE une Uso y ACCESSES con ASSOCIATIONS
+  # 
+  # 
+  # a<-duplicated(ASSOCIATIONS2[["Acceso fix"]],fromLast = TRUE )
+  # ASSOCIATIONS2[["duplicado"]] <-a
+  # ASSOCIATIONS2<-subset(ASSOCIATIONS2,ASSOCIATIONS2[["duplicado"]] == FALSE)
+  # ASSOCIATIONS2[["duplicado"]]<-NULL
+  # UAAD_users<- merge(U_accesses,
+  #                         ASSOCIATIONS2,
+  #                         by.x = "Acceso fix",
+  #                         by.y = "Acceso fix",
+  #                         all.x = TRUE
+  #                         )
+ 
   
 
 #Anomalias pueden ser detectadas si se compara el importe de las opciones descontadas con el plano tarifario rebajado
@@ -82,7 +83,7 @@ UAADP_usos[,'N. SMS/MMS2']<-as.double(as.character(UAADP_usos[["N. SMS/MMS"]]))
 UAADP_usos[["N. SMS/MMS"]]<- NULL
 UAADP_usos[,'N. SMS/MMS']<-UAADP_usos[["N. SMS/MMS2"]]
 UAADP_usos[["N. SMS/MMS2"]]<-NULL
-summary(UAADP_usos)  
+
 SinUsos<-UAADP_usos
   SinUsos<-subset(SinUsos,SinUsos[["Acceso"]]!=SinUsos[["Centro de facturacion"]])
   SinUsos[,'usocant']<-SinUsos[,'Voz (seg)']+SinUsos[,'Datos (KB)']+SinUsos[,'N. SMS/MMS']
