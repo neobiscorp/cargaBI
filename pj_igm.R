@@ -1,7 +1,6 @@
 {
   #Se busca rellenar los campos vacios de los centros de facturacion con informacion relevante
   uso2<<-uso
-  uso<-uso2
   for(i in 1:length(uso[["Acceso"]])){
     if (is.na(uso[["Acceso"]][i])==TRUE){ #Forma de identificar a los centros de facturacion en uso
       uso[["Acceso"]][i]<-as.character(uso[["Nombre"]][i]) #se le pone el nombre del centro a la columna Acceso (puede quedar mal pero sirve que no quede vacia)
