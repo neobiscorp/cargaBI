@@ -15,7 +15,7 @@ shinyUI(fluidPage(
       #Create a Selection for the type of data to upload
       selectInput(
         "Client",
-        label = h4("Cliente"),
+        label = h4("Tipo de Informe"),
         choices = c(
           "Walmart",
           "Copec",
@@ -29,16 +29,26 @@ shinyUI(fluidPage(
         ),
         selected = ""
       ),
-      #Create conditional Panel with text input
-      conditionalPanel(condition = "input.Client == 'Licitacion Movil (Entel y Movistar)' ||input.Client == 'Informe Gestion Movil'",
-                       textInput('nombre',
-                                 'Nombre de la Empresa')),
-      #Create conditional Panel with text input
-      conditionalPanel(
-        condition = "input.Client == 'Licitacion Movil (Entel y Movistar)' ||input.Client == 'Informe Gestion Movil'",
-        textInput('link',
-                  'Link de Imagen de la Empresa')
-      ),
+      #Create conditional select input with text input
+      selectInput(
+        "nombre",
+        label = h4("Nombre de la Empresa"),
+        choices = c(
+          "Aguas Andinas",
+          "Carabineros de Chile",
+          "Claro",
+          "Copec",
+          "Enap",
+          "Hogar de Cristo",
+          "Nueva Pudahuel",
+          "Parque Arauco",
+          "Rhona",
+          "SAAM",
+          "Subsole",
+          "Walmart"
+        ),
+        selected = ""
+        ),
       #Create file upload accepting multiple csv files
       fileInput(
         'usos',

@@ -6,6 +6,7 @@ library(DBI)        #Primary MySQL connection
 library(openxlsx)   #Read xlsx files
 library(data.table) #For merge, rbind and dataframe works
 
+
 #comentario vacío
 #Function to kill MySQL connections
 killDbConnections <- function () {
@@ -1799,10 +1800,8 @@ shinyServer(function(input, output, session) {
       PLAN <<- PLAN
       
       file.remove("Planes.txt")
-      if(client == "igm"){
-        source("pj_igm.r", local = TRUE)
-        source("pj_igm_db.r", local = TRUE)
-      }
+      
+      
     }
     #Run the following code if theres a file in the tipos file input
     if (!is.null(tipos)) {
@@ -1847,11 +1846,46 @@ shinyServer(function(input, output, session) {
       
     }
     #Run the following code if theres a file in the nombre and link text input
-    if (!is.null(input$link) && !is.null(input$nombre)) {
+    if (!is.null(input$nombre)) {
       #Set variable names
-      link <<- input$link
-      nombre <<- input$nombre
       
+      nombre <<- input$nombre
+      if (nombre=="Aguas Andinas"){
+      link<<-"https://neobiscorp-my.sharepoint.com/personal/operaciones_neobiscorp_com/_layouts/15/guestaccess.aspx?docid=14b87c7347d134ae0a8a84a9bde4255be&authkey=Ab-4yKE7QBg5097G1OprHaQ"}
+      else if (nombre =="Carabineros de Chile"){
+        link<<-"https://neobiscorp-my.sharepoint.com/personal/operaciones_neobiscorp_com/_layouts/15/guestaccess.aspx?docid=1c35c8ab1c41a429389c07e884e040ca2&authkey=Ab0PSPo46qtYDU94ifFMPB8"
+      }
+      else if (nombre =="Claro"){
+        link<<-"https://neobiscorp-my.sharepoint.com/personal/operaciones_neobiscorp_com/_layouts/15/guestaccess.aspx?docid=1e613dce9bc4a4671ab408bbca6fa3beb&authkey=Ab6bBHuUbCP_8rL8dOFjDhs"
+      }
+      else if (nombre =="Copec"){
+        link<<-"https://neobiscorp-my.sharepoint.com/personal/operaciones_neobiscorp_com/_layouts/15/guestaccess.aspx?docid=1c57bedd6c69f48e091fe4e0e816fc80e&authkey=ASmc9Ircbj5yqX3di51nYO4"
+      }
+      else if (nombre =="Enap"){
+        link<<-"https://neobiscorp-my.sharepoint.com/personal/operaciones_neobiscorp_com/_layouts/15/guestaccess.aspx?docid=124606522a3044ca7a17d46c2e5026828&authkey=AR8wwSbdcTcjhlnT0ucklUA"
+      }
+      else if (nombre =="Hogar de Cristo"){
+        link<<-"https://neobiscorp-my.sharepoint.com/personal/operaciones_neobiscorp_com/_layouts/15/guestaccess.aspx?docid=158d4400c454a43479500d15fbf4f4a43&authkey=AVwEEx6zRTUuGhrTxCvjj50"
+      }
+      else if (nombre =="Nuevo Pudahuel"){
+        link<<-"https://neobiscorp-my.sharepoint.com/personal/operaciones_neobiscorp_com/_layouts/15/guestaccess.aspx?docid=1709d2b397dbf44cc811dc1613a23b710&authkey=AYjZ7GMugvEUibRKcLrAvuw"
+      }
+      else if (nombre =="Parque Arauco"){
+        link<<-"https://neobiscorp-my.sharepoint.com/personal/operaciones_neobiscorp_com/_layouts/15/guestaccess.aspx?docid=1b110a53917b24f729ef51c2aa6de61ad&authkey=AXux97gNnwiwy4pp3FP2cuY"
+      }
+      else if (nombre =="Rhona"){
+        link<<-"https://neobiscorp-my.sharepoint.com/personal/operaciones_neobiscorp_com/_layouts/15/guestaccess.aspx?docid=1d33b6087010841f5b53fbd5cf3ebe755&authkey=AWbKk_eNSR-nB7mimj43BWU"
+      }
+      else if (nombre =="SAAM"){
+        link<<-"https://neobiscorp-my.sharepoint.com/personal/operaciones_neobiscorp_com/_layouts/15/guestaccess.aspx?docid=1ec4824c380334d28804b71200ef0543a&authkey=AdEpYF88JcJs6RpyKn5TjjQ"
+      }
+      else if (nombre =="Subsole"){
+        link<<-"https://neobiscorp-my.sharepoint.com/personal/operaciones_neobiscorp_com/_layouts/15/guestaccess.aspx?docid=113e709ea78e0423db1533856df55d846&authkey=ATjB3RtTKoEMNCvNPrhRmNM"
+      }
+      else if (nombre =="Walmart"){
+        link<<-"https://neobiscorp-my.sharepoint.com/personal/operaciones_neobiscorp_com/_layouts/15/guestaccess.aspx?docid=1389f1fbaf84e4045ba36f75994562ab0&authkey=AdG5V8ZPsu3rxxDNZV9TsKw"
+      }
+      else{print("No se encontro un link Para el nombre seleccionado")}
       #Create table logo_cliente if doesnt exist
       dbSendQuery(
         DB,
@@ -1878,6 +1912,10 @@ shinyServer(function(input, output, session) {
           sep = '\''
         )
       )
+      if(client == "igm"){
+        source("pj_igm.r", local = TRUE)
+        source("pj_igm_db.r", local = TRUE)
+      }
     }
     #Run the following code if theres a file in the cuentas file input
     if (!is.null(cuentas)) {

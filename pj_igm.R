@@ -1,6 +1,5 @@
 {
   #Se busca rellenar los campos vacios de los centros de facturacion con informacion relevante
-  uso2<<-uso
   for(i in 1:length(uso[["Acceso"]])){
     if (is.na(uso[["Acceso"]][i])==TRUE){ #Forma de identificar a los centros de facturacion en uso
       uso[["Acceso"]][i]<-as.character(uso[["Nombre"]][i]) #se le pone el nombre del centro a la columna Acceso (puede quedar mal pero sirve que no quede vacia)
@@ -29,25 +28,6 @@ UAAD_users <- merge(uso,
                       by.x = "Acceso fix",
                       by.y = "Acceso fix",
                       all.x = TRUE)
-  # ASSOCIATIONS2 <- ASSOCIATIONS
-  # ASSOCIATIONS2[["Acceso"]]<-NULL
-  # #SE une Uso y ACCESSES con ASSOCIATIONS
-  # 
-  # 
-  # a<-duplicated(ASSOCIATIONS2[["Acceso fix"]],fromLast = TRUE )
-  # ASSOCIATIONS2[["duplicado"]] <-a
-  # ASSOCIATIONS2<-subset(ASSOCIATIONS2,ASSOCIATIONS2[["duplicado"]] == FALSE)
-  # ASSOCIATIONS2[["duplicado"]]<-NULL
-  # UAAD_users<- merge(U_accesses,
-  #                         ASSOCIATIONS2,
-  #                         by.x = "Acceso fix",
-  #                         by.y = "Acceso fix",
-  #                         all.x = TRUE
-  #                         )
- 
-  
-
-#Anomalias pueden ser detectadas si se compara el importe de las opciones descontadas con el plano tarifario rebajado
 #se modifica plan eliminando las columnas innecesarias
   PLAN2 <- PLAN
   PLAN2[["Acceso"]] <- NULL
@@ -61,8 +41,6 @@ UAAD_users <- merge(uso,
   UAADP_usos <- merge(
     UAAD_users,
     PLAN2,
-    #by.x = "Acceso fix",
-    #by.y = "Acceso fix",
     by.x = c("Acceso fix", "Proveedor"),
     by.y = c("Acceso fix", "Proveedor2"),
     all.x = TRUE
@@ -120,6 +98,19 @@ SinUsos<-UAADP_usos
   }
     rm(AAA)
   SinUsos<-subset(SinUsos,SinUsos[["Meses"]]<=3)
-
+########Excepciones############
+  if(!is.null(nombre)){
+    if(nombre == "Aguas Andinas"){
+  probar<<-subset(UAADP_usos,UAADP_usos[["Centro de facturacion"]] == '-')
+  UAADP_usos2<-subset(UAADP_usos,UAADP_usos[["Centro de facturacion"]]!='-')
+  probar[["Centro de facturacion"]]<-NULL
+  probar[,'Centro de facturacion']<-probar[,'Proveedor Nivel 3']
+  UAADP_usos<-rbind(probar,UAADP_usos2)
+  rm(probar,UAADP_usos2)
+  }
+  }
+  
+  
+  
 }
 
