@@ -1179,6 +1179,7 @@ shinyServer(function(input, output, session) {
             select = c(
               "ACCESS.NUMBER",
               "TYPE",
+              "STATUS",
               "CARRIER_ORG:1",
               "CARRIER_ORG:2",
               "CARRIER_ORG:3",
@@ -1207,6 +1208,7 @@ shinyServer(function(input, output, session) {
         names(ACCESSES) <-
           c("Acceso",
             "Tipo",
+            "Estado",
             "Proveedor",
             "Proveedor Nivel 2",
             "Proveedor Nivel 3",
@@ -1249,6 +1251,7 @@ shinyServer(function(input, output, session) {
             field.types = list(
               Acceso = "varchar(255)",
               Proveedor = "varchar(255)",
+              Estado = "varchar(255)",
               `Fecha Renovacion` = "date",
               Tipo = "varchar(255)",
               `Proveedor Nivel 2` = "varchar(255)",
@@ -1284,6 +1287,7 @@ shinyServer(function(input, output, session) {
             field.types = list(
               Acceso = "varchar(255)",
               Proveedor = "varchar(255)",
+              Estado = "varchar(255)",
               `Fecha Renovacion` = "date",
               Tipo = "varchar(255)",
               `Proveedor Nivel 2` = "varchar(255)",
@@ -1317,6 +1321,7 @@ shinyServer(function(input, output, session) {
             field.types = list(
               Acceso = "varchar(255)",
               Proveedor = "varchar(255)",
+              Estado = "varchar(255)",
               `Fecha Renovacion` = "date",
               Tipo = "varchar(255)",
               `Proveedor Nivel 2` = "varchar(255)",
@@ -1348,6 +1353,7 @@ shinyServer(function(input, output, session) {
             field.types = list(
               Acceso = "varchar(255)",
               Proveedor = "varchar(255)",
+              Estado = "varchar(255)",
               `Fecha Renovacion` = "date",
               Tipo = "varchar(255)",
               `Proveedor Nivel 2` = "varchar(255)",
@@ -1377,6 +1383,7 @@ shinyServer(function(input, output, session) {
             field.types = list(
               Acceso = "varchar(255)",
               Proveedor = "varchar(255)",
+              Estado = "varchar(255)",
               `Fecha Renovacion` = "date",
               Tipo = "varchar(255)",
               `Proveedor Nivel 2` = "varchar(255)",
@@ -1404,6 +1411,7 @@ shinyServer(function(input, output, session) {
             field.types = list(
               Acceso = "varchar(255)",
               Proveedor = "varchar(255)",
+              Estado = "varchar(255)",
               `Fecha Renovacion` = "date",
               Tipo = "varchar(255)",
               `Proveedor Nivel 2` = "varchar(255)",
@@ -1429,6 +1437,7 @@ shinyServer(function(input, output, session) {
             field.types = list(
               Acceso = "varchar(255)",
               Proveedor = "varchar(255)",
+              Estado = "varchar(255)",
               `Fecha Renovacion` = "date",
               Tipo = "varchar(255)",
               `Proveedor Nivel 2` = "varchar(255)",
@@ -1452,6 +1461,7 @@ shinyServer(function(input, output, session) {
             field.types = list(
               Acceso = "varchar(255)",
               Proveedor = "varchar(255)",
+              Estado = "varchar(255)",
               `Fecha Renovacion` = "date",
               Tipo = "varchar(255)",
               `Proveedor Nivel 2` = "varchar(255)",
@@ -1474,6 +1484,7 @@ shinyServer(function(input, output, session) {
             field.types = list(
               Acceso = "varchar(255)",
               Proveedor = "varchar(255)",
+              Estado = "varchar(255)",
               `Fecha Renovacion` = "date",
               Tipo = "varchar(255)",
               `Proveedor Nivel 2` = "varchar(255)",

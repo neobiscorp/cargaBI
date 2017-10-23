@@ -22,6 +22,7 @@
 ACCESSES2[["Acceso"]]<-NULL
 ACCESSES2[["Proveedor"]]<-NULL
 ACCESSES2[["Tipo"]]<-NULL
+ACCESSES2[["Estado"]]<-NULL
 # se une uso con ACCESSES 
 UAAD_users <- merge(uso,
                       ACCESSES2,
