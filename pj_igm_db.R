@@ -153,6 +153,7 @@ SinUsos <-
         `Datos nacional (KB)` = "double(15,2)",
         `Datos inter (KB)` = "double(15,2)",
         `N. SMS/MMS` = "double(15,2)",
+        `Fecha Renovacion` = "date",
         `Fecha` = "varchar(255)"
       ),
       row.names = FALSE,
@@ -204,6 +205,7 @@ SinUsos <-
         `Datos nacional (KB)` = "double(15,2)",
         `Datos inter (KB)` = "double(15,2)",
         `N. SMS/MMS` = "double(15,2)",
+        `Fecha Renovacion` = "date",
         `Fecha` = "varchar(255)"
       ),
       row.names = FALSE,
@@ -255,6 +257,7 @@ SinUsos <-
         `Datos nacional (KB)` = "double(15,2)",
         `Datos inter (KB)` = "double(15,2)",
         `N. SMS/MMS` = "double(15,2)",
+        `Fecha Renovacion` = "date",
         `Fecha` = "varchar(255)"
       ),
       row.names = FALSE,
@@ -306,6 +309,7 @@ SinUsos <-
           `Datos nacional (KB)` = "double(15,2)",
           `Datos inter (KB)` = "double(15,2)",
           `N. SMS/MMS` = "double(15,2)",
+          `Fecha Renovacion` = "date",
           `Fecha` = "varchar(255)"
         ),
         row.names = FALSE,
@@ -357,6 +361,7 @@ SinUsos <-
           `Datos nacional (KB)` = "double(15,2)",
           `Datos inter (KB)` = "double(15,2)",
           `N. SMS/MMS` = "double(15,2)",
+          `Fecha Renovacion` = "date",
           `Fecha` = "varchar(255)"
         ),
         row.names = FALSE,
@@ -409,6 +414,7 @@ SinUsos <-
           `Datos nacional (KB)` = "double(15,2)",
           `Datos inter (KB)` = "double(15,2)",
           `N. SMS/MMS` = "double(15,2)",
+          `Fecha Renovacion` = "date",
           `Fecha` = "varchar(255)"
         ),
         row.names = FALSE,
@@ -462,6 +468,7 @@ SinUsos <-
           `Datos nacional (KB)` = "double(15,2)",
           `Datos inter (KB)` = "double(15,2)",
           `N. SMS/MMS` = "double(15,2)",
+          `Fecha Renovacion` = "date",
           `Fecha` = "varchar(255)"
         ),
         row.names = FALSE,
@@ -515,6 +522,7 @@ SinUsos <-
       `Datos nacional (KB)` = "double(15,2)",
       `Datos inter (KB)` = "double(15,2)",
       `N. SMS/MMS` = "double(15,2)",
+      `Fecha Renovacion` = "date",
       `Fecha` = "varchar(255)"
     ),
     row.names = FALSE,
