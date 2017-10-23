@@ -1905,7 +1905,7 @@ shinyServer(function(input, output, session) {
           "INSERT INTO `logo_cliente`(`id`, `Nombre Cliente`, `Link`) VALUES (1,",
           input$nombre,
           ",",
-          input$link,
+          link,
           ")
           on duplicate key update
           `Nombre Cliente` = values(`Nombre Cliente`), `Link` = values(`Link`);",
