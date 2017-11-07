@@ -49,6 +49,7 @@ shinyServer(function(input, output, session) {
     tipos <- input$tipos
     presupuesto <- input$presupuesto
     cuentas <- input$cuentas
+    contrato <- input$contrato
     
     #Change name of client input to the same name of the database
     if (client == "Parque Arauco") {
@@ -65,6 +66,9 @@ shinyServer(function(input, output, session) {
     }
     if (client == "Informe Gestion Movil") {
       client <- "igm"
+    }
+    if (client == "Anomalias de Gestion Movil") {
+      client <- "agm"
     }
     
     
@@ -166,7 +170,10 @@ shinyServer(function(input, output, session) {
       dataFilesUF <<- lapply(input$usos[['datapath']], read.csv2)
      
       #Append all usos files to the same dataframe
-      uso <<- rbindlist(dataFilesUF,fill = TRUE)
+      if (client == "igm" | client == "agm"){
+      uso <<- rbindlist(dataFilesUF,fill = TRUE)}
+      else{
+      uso <<- rbindlist(dataFilesUF)}
      
       #For Parque arauco clear and create variables with PEN and COP currency, and append files
       if (!is.null(input$usosPEN)) {
@@ -331,7 +338,7 @@ shinyServer(function(input, output, session) {
         
       }
       #If the client its not Parque Arauco and licitacion run the following
-      else if (client != "lmovil" & client != "igm") {
+      else if (client != "lmovil" & client != "igm" & client!= "agm") {
         #Change the name of the columns
         names(uso)[names(uso) == 'ï..Acceso'] <<- 'Acceso'
         names(uso)[names(uso) == 'Proveedor'] <<- 'Proveedor'
@@ -414,6 +421,40 @@ shinyServer(function(input, output, session) {
             substring(x, 3))
         
       }
+      else if(client == "agm"){
+        #Generate the name of the columns for Informe Gestion Movil
+
+        names(uso)[names(uso) == 'ï..Acceso'] <<- 'Acceso'
+        names(uso)[names(uso) == 'Proveedor'] <<- 'Proveedor'
+        names(uso)[names(uso) == 'Tipo'] <<- 'Tipo'
+        names(uso)[names(uso) == 'PerÃ.odo.de'] <<-  'Periodo de'
+        names(uso)[names(uso) == 'Centro.de.facturaciÃ³n'] <<-  'Centro de facturacion'
+        names(uso)[names(uso) == 'Total..CLP.'] <<- 'Total (CLP)'
+        names(uso)[names(uso) == 'Plano.tarifario..CLP.'] <<- 'Plano tarifario (CLP)'
+        names(uso)[names(uso) == 'Uso..rebajado...CLP.'] <<- 'Uso rebajado (CLP)'
+        names(uso)[names(uso) == 'Servicios..CLP.'] <<- 'Servicios (CLP)'
+        names(uso)[names(uso) == 'Servicios...Opciones..CLP.'] <<-'Servicios opciones (CLP)'
+        names(uso)[names(uso) == 'Servicios...Otros..CLP.'] <<-'Servicios otros (CLP)'
+        names(uso)[names(uso) == 'Descuentos..CLP.'] <<-'Descuentos (CLP)'
+        names(uso)[names(uso) == 'Descuento...Opciones..CLP.'] <<-'Descuentos opciones (CLP)'
+        names(uso)[names(uso) == 'Descuento...Otros..CLP.'] <<- 'Descuentos otros (CLP)'
+        names(uso)[names(uso) == 'Voz..CLP.'] <<- 'Voz (CLP)'
+        names(uso)[names(uso) == 'Datos..CLP.'] <<- 'Datos (CLP)'
+        names(uso)[names(uso) == 'Voz.nacional..CLP.'] <<-'Voz nacional (CLP)'
+        names(uso)[names(uso) == 'Voz.roaming..CLP.'] <<-'Voz roaming (CLP)'
+        names(uso)[names(uso) == 'Datos.nac...CLP.'] <<-'Datos nacional (CLP)'
+        names(uso)[names(uso) == 'Datos.inter...CLP.'] <<-'Datos inter (CLP)'
+        names(uso)[names(uso) == 'Voz.nac...sec.'] <<-'Voz nacional (seg)'
+        names(uso)[names(uso) == 'Voz.roaming..sec.'] <<-'Voz roaming (seg)'
+        names(uso)[names(uso) == 'Datos.inter...KB.'] <<-'Datos inter (KB)'
+        names(uso)[names(uso) == 'N.Â..Voz.nacional'] <<-'N. Voz nacional'
+        #Create a column with the phone number without the 56 (Chile)
+        
+        uso[, 'Acceso fix'] <<-
+          lapply(uso[, 'Acceso'], function(x)
+            substring(x, 3))
+        
+      }
       else {
         #Change the name of the columns for the Licitacion movil
         names(uso)[names(uso) == 'ï..Acceso'] <<- 'Acceso'
@@ -481,7 +522,7 @@ shinyServer(function(input, output, session) {
       
       #If the client got printer access eliminate the thousand dot separator
       if (client != "hdc" &
-          client != "aguasandinas" & client != "lmovil"& client != "igm") {
+          client != "aguasandinas" & client != "lmovil"& client != "igm"& client != "agm") {
         uso[, c('N Copias', 'N Copias B/N', 'N Copias Color')] <<-
           lapply(uso[, c('N Copias', 'N Copias B/N', 'N Copias Color')], function(x)
             as.character(gsub("\\.", "", x)))
@@ -568,7 +609,7 @@ shinyServer(function(input, output, session) {
         
       }
       else if (client != "hdc" &
-               client != "aguasandinas" & client != "lmovil"& client != "igm") {
+               client != "aguasandinas" & client != "lmovil"& client != "igm"& client != "agm") {
         dbWriteTable(
           DB,
           "usos",
@@ -761,6 +802,79 @@ shinyServer(function(input, output, session) {
         #   allow.keywords = FALSE
         # )
       }
+      else if (client == "agm") {
+        #Only select the following columns, if there are more, do not use them
+        
+        uso <-
+          subset(
+            uso,
+            select = c(
+              "Acceso",
+              "Proveedor",
+              "Tipo",
+              "Centro de facturacion",
+              "Total (CLP)",
+              "Plano tarifario (CLP)",
+              "Uso rebajado (CLP)",
+              "Servicios (CLP)",
+              "Servicios opciones (CLP)",
+              "Servicios otros (CLP)",
+              "Descuentos (CLP)",
+              "Descuentos opciones (CLP)",
+              "Descuentos otros (CLP)",
+              "Voz (CLP)",
+              "Voz nacional (CLP)",
+              "Voz roaming (CLP)",
+              "Datos (CLP)",
+              "Datos nacional (CLP)",
+              "Datos inter (CLP)",
+              "Voz nacional (seg)",
+              "Voz roaming (seg)",
+              "N. Voz nacional",
+              "Datos inter (KB)",
+              "Fecha",
+              "Acceso fix"
+            )
+          )
+        
+        
+        dbWriteTable(
+          DB,
+          "usos",
+          uso,
+          field.types = list(
+            `Acceso` = "varchar(255)",
+            `Proveedor` = "varchar(255)",
+            `Tipo` = "varchar(255)",
+            `Centro de facturacion` = "varchar(255)",
+            `Total (CLP)` = "double(15,2)",
+            `Plano tarifario (CLP)` = "double(15,2)",
+            `Uso rebajado (CLP)` = "double(15,2)",
+            `Servicios (CLP)` = "double(15,2)",
+            `Servicios opciones (CLP)` = "double(15,2)",
+            `Servicios otros (CLP)` = "double(15,2)",
+            `Descuentos (CLP)` = "double(15,2)",
+            `Descuentos opciones (CLP)` = "double(15,2)",
+            `Descuentos otros (CLP)` = "double(15,2)",
+            `Voz (CLP)` = "double(15,2)",
+            `Voz nacional (CLP)` = "double(15,2)",
+            `Voz roaming (CLP)` = "double(15,2)",
+            `Datos (CLP)` = "double(15,2)",
+            `Datos nacional (CLP)` = "double(15,2)",
+            `Datos inter (CLP)` = "double(15,2)",
+            `Voz nacional (seg)` = "double(15,2)",
+            `Voz roaming (seg)` = "double(15,2)",
+            `N. Voz nacional` = "double(15,2)",
+            `Datos inter (KB)` = "double(15,2)",
+            `Fecha` = "date",
+            `Acceso fix` = "varchar(255)"
+          ),
+          row.names = FALSE,
+          overwrite = TRUE,
+          append = FALSE,
+          allow.keywords = FALSE
+        )
+      }
       else {
        
         dbWriteTable(
@@ -791,7 +905,7 @@ shinyServer(function(input, output, session) {
         )
       }
       #Send an MySQL Query that delete spaces inside Accesos
-      if (client != "igm"){
+      if (client != "igm" & client != "agm"){
       dbSendQuery(DB, "update `usos` set ACCESO = replace(ACCESO, ' ', '')")
       }
       uso <<- uso
@@ -1763,6 +1877,7 @@ shinyServer(function(input, output, session) {
     }
     #Run the following code if theres a file in the planes file input
     if (!is.null(planes)) {
+      if (client !="agm"){
       file.copy(planes$datapath,
                 paste(planes$datapath, ".xlsx", sep = ""))
       
@@ -1824,8 +1939,79 @@ shinyServer(function(input, output, session) {
       PLAN <<- PLAN
       
       file.remove("Planes.txt")
-      
-      
+      }
+      else if (client == "agm"){
+        file.copy(planes$datapath,
+                  paste(planes$datapath, ".xlsx", sep = ""))
+        
+        SFACTURADOS <- read.xlsx(planes$datapath,
+                          sheet = "Uso por accesoproducto",
+                          startRow = 1)
+        SFACTURADOS <-
+          subset(
+            SFACTURADOS,
+            select = c(
+              "Acceso",
+              "Estado.acceso",
+              "Producto",
+              "Tipo.de.producto",
+              "Centro.de.facturación",
+              "Importe.de.las.opciones.facturadas.(CLP)",
+              "Importe.descuentos.sobre.plano.tarifario.(CLP)",
+              "Importe.de.las.opciones.descontadas.(CLP)"
+            )
+          )
+        file.remove("Planes.txt")
+        write.table(SFACTURADOS,
+                    file = "Planes.txt",
+                    fileEncoding = "UTF8")
+        SFACTURADOS <- read.table(file = "Planes.txt", encoding = "UTF8")
+        
+        names(SFACTURADOS) <- c(
+          "Acceso",
+          "Estado acceso",
+          "Producto",
+          "Tipo de producto",
+          "Centro de facturacion",
+          "Importe de las opciones facturadas (CLP)",
+          "Importe descuentos sobre plano tarifario (CLP)",
+          "Importe de las opciones descontadas (CLP)"
+        )
+        
+        SFACTURADOS[, 'Acceso fix'] <-
+          lapply(SFACTURADOS['Acceso'], function(x)
+            substring(x, 3))
+        SFACTURADOS3 <- subset(SFACTURADOS,is.na(SFACTURADOS[["Importe descuentos sobre plano tarifario (CLP)"]])==TRUE)
+        SFACTURADOS2 <- subset(SFACTURADOS,is.na(SFACTURADOS[["Importe descuentos sobre plano tarifario (CLP)"]])==FALSE)
+        SFACTURADOS3[,'Importe descuentos sobre plano tarifario (CLP)']<- 0
+        SFACTURADOS<-rbind(SFACTURADOS3,SFACTURADOS2)
+        
+        dbWriteTable(
+          DB,
+          "servicios_facturados",
+          SFACTURADOS,
+          field.types = list(
+            `Acceso` = "varchar(255)",
+            `Estado acceso` = "varchar(255)",
+            `Producto` = "varchar(255)",
+            `Tipo de Producto` = "varchar(255)",
+            `Centro de Facturacion` = "varchar(255)",
+            `Importe de las opciones facturadas (CLP)` = "double(15,2)",
+            `Importe descuentos sobre plano tarifario (CLP)` = "double(15,2)",
+            `Importe de las opciones descontadas (CLP)` = "double(15,2)",
+            `Acceso fix` = "varchar(255)"
+          ),
+          row.names = FALSE,
+          overwrite = TRUE,
+          append = FALSE,
+          allow.keywords = FALSE
+          
+        )
+        
+        SFACTURADOS <<- SFACTURADOS
+        
+        file.remove("Planes.txt")
+      }
     }
     #Run the following code if theres a file in the tipos file input
     if (!is.null(tipos)) {

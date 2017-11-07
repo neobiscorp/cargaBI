@@ -25,7 +25,8 @@ shinyUI(fluidPage(
           "Falabella",
           "Aguas Andinas",
           "Licitacion Movil (Entel y Movistar)",
-          "Informe Gestion Movil"
+          "Informe Gestion Movil",
+          "Anomalias de Gestion Movil"
         ),
         selected = ""
       ),
@@ -114,7 +115,7 @@ shinyUI(fluidPage(
       ),
       #Create conditional Panel accepting multiple csv files
       conditionalPanel(
-        condition = "input.Client == 'Licitacion Movil (Entel y Movistar)'",
+        condition = "input.Client == 'Licitacion Movil (Entel y Movistar)'||input.Client =='Anomalias de Gestion Movil'",
         fileInput(
           'cdr',
           'Elegir el Archivo CSV que contenga el CDR del cliente',
@@ -126,7 +127,7 @@ shinyUI(fluidPage(
       ),
       #Create conditional Panel accepting one xlsx file
       conditionalPanel(
-        condition = "input.Client == 'Licitacion Movil (Entel y Movistar)' ||input.Client =='Informe Gestion Movil'",
+        condition = "input.Client == 'Licitacion Movil (Entel y Movistar)' ||input.Client =='Informe Gestion Movil'||input.Client =='Anomalias de Gestion Movil'",
         fileInput(
           'planes',
           'Elegir el Archivo xlsx que contiene el informe de los planes de los proveedores',
@@ -152,6 +153,18 @@ shinyUI(fluidPage(
         fileInput(
           'cuentas',
           'Elegir el Archivo xlsx que contiene RUT de la empresa a licitar y sus cuentas clientes',
+          accept = c(
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+          )
+        )
+      ),
+      #Create conditional Panel accepting one xlsx file
+      conditionalPanel(
+        condition = "input.Client == 'Licitacion Movil (Entel y Movistar)' ||input.Client =='Informe Gestion Movil'||input.Client =='Anomalias de Gestion Movil'",
+        fileInput(
+          'contrato',
+          'Elegir el Archivo xlsx que contiene el informe del Contrato del cliente con su(s) provedor(es)',
+          multiple = T,
           accept = c(
             'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
           )
