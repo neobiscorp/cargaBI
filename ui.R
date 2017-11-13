@@ -130,7 +130,7 @@ shinyUI(fluidPage(
         condition = "input.Client == 'Licitacion Movil (Entel y Movistar)' ||input.Client =='Informe Gestion Movil'||input.Client =='Anomalias de Gestion Movil'",
         fileInput(
           'planes',
-          'Elegir el Archivo xlsx que contiene el informe de los planes de los proveedores',
+          'Elegir el Archivo xlsx que contiene el informe de los planes de los proveedores O los servicios facturados para Anomalias',
           accept = c(
             'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
           )
@@ -160,7 +160,7 @@ shinyUI(fluidPage(
       ),
       #Create conditional Panel accepting one xlsx file
       conditionalPanel(
-        condition = "input.Client == 'Licitacion Movil (Entel y Movistar)' ||input.Client =='Informe Gestion Movil'||input.Client =='Anomalias de Gestion Movil'",
+        condition = "input.Client =='Anomalias de Gestion Movil'",
         fileInput(
           'contrato',
           'Elegir el Archivo xlsx que contiene el informe del Contrato del cliente con su(s) provedor(es)',

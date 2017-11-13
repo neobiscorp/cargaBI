@@ -1615,6 +1615,7 @@ shinyServer(function(input, output, session) {
         ACCESSES <<- ACCESSES
         
       }
+      
       else if (client == "lmovil") {
         #Only select the columns with the following titles
         
