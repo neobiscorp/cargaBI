@@ -9,6 +9,17 @@
     }
     else{}
   }
+  ########Excepciones############
+  if(!is.null(nombre)){
+    if(nombre == "Aguas Andinas"){
+      probar<<-subset(UAADP_usos,UAADP_usos[["Centro de facturacion"]] == '-')
+      UAADP_usos2<-subset(UAADP_usos,UAADP_usos[["Centro de facturacion"]]!='-')
+      probar[["Centro de facturacion"]]<-NULL
+      probar[,'Centro de facturacion']<-probar[,'Proveedor Nivel 3']
+      UAADP_usos<-rbind(probar,UAADP_usos2)
+      rm(probar,UAADP_usos2)
+    }
+  }
 
   uso[["Nombre"]]<-NULL #Eliminamos la columna Nombre que es innecesaria
   #Dejamos los proveedores relevantes para conseguir la informacion necesaria de ACCESSES
@@ -99,17 +110,7 @@ SinUsos<-UAADP_usos
   }
     rm(AAA)
   SinUsos<-subset(SinUsos,SinUsos[["Meses"]]<=3)
-########Excepciones############
-  if(!is.null(nombre)){
-    if(nombre == "Aguas Andinas"){
-  probar<<-subset(UAADP_usos,UAADP_usos[["Centro de facturacion"]] == '-')
-  UAADP_usos2<-subset(UAADP_usos,UAADP_usos[["Centro de facturacion"]]!='-')
-  probar[["Centro de facturacion"]]<-NULL
-  probar[,'Centro de facturacion']<-probar[,'Proveedor Nivel 3']
-  UAADP_usos<-rbind(probar,UAADP_usos2)
-  rm(probar,UAADP_usos2)
-  }
-  }
+
   
   
   
