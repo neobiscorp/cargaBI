@@ -67,8 +67,8 @@ shinyServer(function(input, output, session) {
     if (client == "Informe Gestion Movil") {
       client <- "igm"
     }
-    if (client == "Anomalias de Gestion Movil") {
-      client <- "agm"
+    if (client == "Anomalias de Facturacion Movil") {
+      client <- "afm"
     }
     
     
@@ -338,7 +338,7 @@ shinyServer(function(input, output, session) {
         
       }
       #If the client its not Parque Arauco and licitacion run the following
-      else if (client != "lmovil" & client != "igm" & client!= "agm") {
+      else if (client != "lmovil" & client != "igm" & client!= "afm") {
         #Change the name of the columns
         names(uso)[names(uso) == 'ï..Acceso'] <<- 'Acceso'
         names(uso)[names(uso) == 'Proveedor'] <<- 'Proveedor'
@@ -421,7 +421,7 @@ shinyServer(function(input, output, session) {
             substring(x, 3))
         
       }
-      else if(client == "agm"){
+      else if(client == "afm"){
         #Generate the name of the columns for Informe Gestion Movil
 
         names(uso)[names(uso) == 'ï..Acceso'] <<- 'Acceso'
@@ -522,7 +522,7 @@ shinyServer(function(input, output, session) {
       
       #If the client got printer access eliminate the thousand dot separator
       if (client != "hdc" &
-          client != "aguasandinas" & client != "lmovil"& client != "igm"& client != "agm") {
+          client != "aguasandinas" & client != "lmovil"& client != "igm"& client != "afm") {
         uso[, c('N Copias', 'N Copias B/N', 'N Copias Color')] <<-
           lapply(uso[, c('N Copias', 'N Copias B/N', 'N Copias Color')], function(x)
             as.character(gsub("\\.", "", x)))
@@ -609,7 +609,7 @@ shinyServer(function(input, output, session) {
         
       }
       else if (client != "hdc" &
-               client != "aguasandinas" & client != "lmovil"& client != "igm"& client != "agm") {
+               client != "aguasandinas" & client != "lmovil"& client != "igm"& client != "afm") {
         dbWriteTable(
           DB,
           "usos",
@@ -802,7 +802,7 @@ shinyServer(function(input, output, session) {
         #   allow.keywords = FALSE
         # )
       }
-      else if (client == "agm") {
+      else if (client == "afm") {
         #Only select the following columns, if there are more, do not use them
         
         uso <-
@@ -905,7 +905,7 @@ shinyServer(function(input, output, session) {
         )
       }
       #Send an MySQL Query that delete spaces inside Accesos
-      if (client != "igm" & client != "agm"){
+      if (client != "igm" & client != "afm"){
       dbSendQuery(DB, "update `usos` set ACCESO = replace(ACCESO, ' ', '')")
       }
       uso <<- uso
@@ -1878,7 +1878,7 @@ shinyServer(function(input, output, session) {
     }
     #Run the following code if theres a file in the planes file input
     if (!is.null(planes)) {
-      if (client !="agm"){
+      if (client !="afm"){
       file.copy(planes$datapath,
                 paste(planes$datapath, ".xlsx", sep = ""))
       
@@ -1941,7 +1941,7 @@ shinyServer(function(input, output, session) {
       
       file.remove("Planes.txt")
       }
-      else if (client == "agm"){
+      else if (client == "afm"){
         file.copy(planes$datapath,
                   paste(planes$datapath, ".xlsx", sep = ""))
         
@@ -2170,6 +2170,10 @@ shinyServer(function(input, output, session) {
       CUENTAS <<- CUENTAS
       
       file.remove("CUENTAS.txt")
+      
+    }
+    #Run the following code if theres a file in the contrato file input
+    if (!is.null(contrato)){
       
     }
     #Run the following code if theres a file in the cdr file input

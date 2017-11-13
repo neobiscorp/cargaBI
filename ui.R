@@ -26,7 +26,7 @@ shinyUI(fluidPage(
           "Aguas Andinas",
           "Licitacion Movil (Entel y Movistar)",
           "Informe Gestion Movil",
-          "Anomalias de Gestion Movil"
+          "Anomalias de Facturacion Movil"
         ),
         selected = ""
       ),
@@ -115,7 +115,7 @@ shinyUI(fluidPage(
       ),
       #Create conditional Panel accepting multiple csv files
       conditionalPanel(
-        condition = "input.Client == 'Licitacion Movil (Entel y Movistar)'||input.Client =='Anomalias de Gestion Movil'",
+        condition = "input.Client == 'Licitacion Movil (Entel y Movistar)'||input.Client =='Anomalias de Facturacion Movil'",
         fileInput(
           'cdr',
           'Elegir el Archivo CSV que contenga el CDR del cliente',
@@ -127,7 +127,7 @@ shinyUI(fluidPage(
       ),
       #Create conditional Panel accepting one xlsx file
       conditionalPanel(
-        condition = "input.Client == 'Licitacion Movil (Entel y Movistar)' ||input.Client =='Informe Gestion Movil'||input.Client =='Anomalias de Gestion Movil'",
+        condition = "input.Client == 'Licitacion Movil (Entel y Movistar)' ||input.Client =='Informe Gestion Movil'||input.Client =='Anomalias de Facturacion Movil'",
         fileInput(
           'planes',
           'Elegir el Archivo xlsx que contiene el informe de los planes de los proveedores O los servicios facturados para Anomalias',
@@ -160,11 +160,10 @@ shinyUI(fluidPage(
       ),
       #Create conditional Panel accepting one xlsx file
       conditionalPanel(
-        condition = "input.Client =='Anomalias de Gestion Movil'",
+        condition = "input.Client =='Anomalias de Facturacion Movil'",
         fileInput(
           'contrato',
           'Elegir el Archivo xlsx que contiene el informe del Contrato del cliente con su(s) provedor(es)',
-          multiple = T,
           accept = c(
             'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
           )
