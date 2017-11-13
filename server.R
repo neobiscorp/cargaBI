@@ -50,6 +50,7 @@ shinyServer(function(input, output, session) {
     presupuesto <- input$presupuesto
     cuentas <- input$cuentas
     contrato <- input$contrato
+    proveedor <-input$proveedor
     
     #Change name of client input to the same name of the database
     if (client == "Parque Arauco") {
@@ -2174,7 +2175,76 @@ shinyServer(function(input, output, session) {
     }
     #Run the following code if theres a file in the contrato file input
     if (!is.null(contrato)){
+      file.copy(contrato$datapath,
+                paste(contrato$datapath, ".xlsx", sep = ""))
+      if (proveedor == "Movistar CL") {
+      ########################################MOVISTAR_PLANES############
+      MOVISTAR_PLANES <- read.xlsx(contrato$datapath,
+                                        sheet = "Movistar Planes",
+                                        startRow = 1)
+      file.remove("MOVISTAR_PLANES.txt")
+      write.table(MOVISTAR_PLANES,
+                  file = "MOVISTAR_PLANES.txt",
+                  fileEncoding = "UTF8")
+      MOVISTAR_PLANES <-
+        read.table(file = "MOVISTAR_PLANES.txt", encoding = "UTF8")
+      names(MOVISTAR_PLANES) <- c("Producto", "Tipo de Producto","Tipo","Valor Plan","Minutos","GB","Valor minutos","R. Consumo de Datos","R. Consumo de voz","R. P por Q")
+ 
+      dbWriteTable(
+        DB,
+        "movistar_planes",
+        MOVISTAR_PLANES,
+        field.types = NULL ,
+        row.names = FALSE,
+        overwrite = TRUE,
+        append = FALSE,
+        allow.keywords = FALSE
+      )
+      ########################################MOVISTAR_OPCIONES############
+      MOVISTAR_OPCIONES <- read.xlsx(contrato$datapath,
+                                   sheet = "Movistar Opciones",
+                                   startRow = 1)
+      file.remove("MOVISTAR_OPCIONES.txt")
+      write.table(MOVISTAR_PLANES,
+                  file = "MOVISTAR_OPCIONES.txt",
+                  fileEncoding = "UTF8")
+      MOVISTAR_OPCIONES <-
+        read.table(file = "MOVISTAR_OPCIONES.txt", encoding = "UTF8")
+      names(MOVISTAR_OPCIONES) <- c("Producto", "Tipo de Producto","Tipo","Valor Plan","Minutos","GB","Duracion")
       
+      dbWriteTable(
+        DB,
+        "movistar_opciones",
+        MOVISTAR_OPCIONES,
+        field.types = NULL ,
+        row.names = FALSE,
+        overwrite = TRUE,
+        append = FALSE,
+        allow.keywords = FALSE
+      )
+      ########################################MOVISTAR_PAISES############
+      MOVISTAR_PAISES <- read.xlsx(contrato$datapath,
+                                     sheet = "Movistar Paises",
+                                     startRow = 1)
+      file.remove("MOVISTAR_PAISES.txt")
+      write.table(MOVISTAR_PLANES,
+                  file = "MOVISTAR_PAISES.txt",
+                  fileEncoding = "UTF8")
+      MOVISTAR_PAISES <-
+        read.table(file = "MOVISTAR_PAISES.txt", encoding = "UTF8")
+      names(MOVISTAR_PAISES) <- c("Paises")
+      
+      dbWriteTable(
+        DB,
+        "movistar_opciones",
+        MOVISTAR_PAISES,
+        field.types = NULL ,
+        row.names = FALSE,
+        overwrite = TRUE,
+        append = FALSE,
+        allow.keywords = FALSE
+      )
+      }
     }
     #Run the following code if theres a file in the cdr file input
     if (!is.null(input$cdr)) {

@@ -171,6 +171,20 @@ shinyUI(fluidPage(
       ),
       #Create conditional panel with a checkbox
       conditionalPanel(
+        condition = "input.Client == 'Anomalias de Facturacion Movil'",
+        selectInput(
+          "proveedor",
+          label = h5("Proveedor al que se le enviara la nota de credito"),
+          choices = c(
+            "Movistar CL",
+            "Entel PCS",
+            "Claro"
+          ),
+          selected = ""
+        )
+      ),
+      #Create conditional panel with a checkbox
+      conditionalPanel(
         condition = "input.Client == 'Licitacion Movil (Entel y Movistar)'",
         checkboxInput('excel', '¿Crear RFP en Excel?', value = FALSE)
       ),
