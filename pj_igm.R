@@ -2,23 +2,12 @@
   #Se busca rellenar los campos vacios de los centros de facturacion con informacion relevante
   for(i in 1:length(uso[["Acceso"]])){
     if (is.na(uso[["Acceso"]][i])==TRUE){ #Forma de identificar a los centros de facturacion en uso
-      uso[["Acceso"]][i]<-as.character(uso[["Nombre"]][i]) #se le pone el nombre del centro a la columna Acceso (puede quedar mal pero sirve que no quede vacia)
+      uso[["Acceso"]][i]<-as.numeric(uso[["Nombre"]][i]) #se le pone el nombre del centro a la columna Acceso (puede quedar mal pero sirve que no quede vacia)
       uso[["Centro de facturacion"]][i]<-as.character(uso[["Nombre"]][i]) #se le pone el nombre del centro a la columna Centro de facturacion 
       uso[["Acceso fix"]][i]<-as.character(uso[["Nombre"]][i]) #se le pone el nombre del centro a la columna Acceso fix
       
     }
     else{}
-  }
-  ########Excepciones############
-  if(!is.null(nombre)){
-    if(nombre == "Aguas Andinas"){
-      probar<<-subset(UAADP_usos,UAADP_usos[["Centro de facturacion"]] == '-')
-      UAADP_usos2<-subset(UAADP_usos,UAADP_usos[["Centro de facturacion"]]!='-')
-      probar[["Centro de facturacion"]]<-NULL
-      probar[,'Centro de facturacion']<-probar[,'Proveedor Nivel 3']
-      UAADP_usos<-rbind(probar,UAADP_usos2)
-      rm(probar,UAADP_usos2)
-    }
   }
 
   uso[["Nombre"]]<-NULL #Eliminamos la columna Nombre que es innecesaria
@@ -111,6 +100,17 @@ SinUsos<-UAADP_usos
     rm(AAA)
   SinUsos<-subset(SinUsos,SinUsos[["Meses"]]<=3)
 
+  ########Excepciones############
+  if(!is.null(nombre)){
+    if(nombre == "Aguas Andinas"){
+      probar<<-subset(UAADP_usos,UAADP_usos[["Centro de facturacion"]] == '-')
+      UAADP_usos2<-subset(UAADP_usos,UAADP_usos[["Centro de facturacion"]]!='-')
+      probar[["Centro de facturacion"]]<-NULL
+      probar[,'Centro de facturacion']<-probar[,'Proveedor Nivel 3']
+      UAADP_usos<-rbind(probar,UAADP_usos2)
+      rm(probar,UAADP_usos2)
+    }
+  }
   
   
   
