@@ -142,7 +142,34 @@ shinyServer(function(input, output, session) {
         )
         
       }
-      
+      else if (client == "afm"){
+        names(facturas)<-c("Factura","Proveedor","Cuenta cliente", "Centro de facturacion","Fecha de facturacion", "Importado el","Total sin impuestos","Total imp. incluidos","Importe IVA","Divisa","N. accesos facturados","Etiqueta centro de facturacion","Fecha")
+      facturas[,'Fecha de facturacion']<-NULL
+      facturas[,'Importado el']<-NULL
+      facturas[,'Etiqueta centro de facturacion']<-NULL
+      dbWriteTable(
+        DB,
+        "facturas",
+        facturas,
+        field.types = list(
+          `Factura` = "varchar(255)",
+          `Proveedor` = "varchar(255)",
+          `Cuenta cliente` = "varchar(255)",
+          `Centro de facturacion` = "varchar(255)",
+          `Total sin impuestos` = "double(15,2)",
+          `Total imp. incluidos` = "double(15,2)",
+          `Importe IVA` = "double(15,2)",
+          `Divisa` = "varchar(255)",
+          `N. accesos facturados` = "double(15,2)",
+          `Fecha` = "date"
+        ),
+        row.names = FALSE,
+        overwrite = TRUE,
+        append = FALSE,
+        allow.keywords = FALSE
+      )
+        facturas<<-facturas
+        }
       else{
         names(facturas)[names(facturas) == 'Total.sin.impuestos'] <-
           'Total Sin Impuestos'
@@ -2182,14 +2209,15 @@ shinyServer(function(input, output, session) {
       ########################################MOVISTAR_PLANES############
       MOVISTAR_PLANES <- read.xlsx(contrato$datapath,
                                         sheet = "Movistar Planes",
-                                        startRow = 1)
+                                        startRow = 1,
+                                    na.strings = TRUE)
       file.remove("MOVISTAR_PLANES.txt")
       write.table(MOVISTAR_PLANES,
                   file = "MOVISTAR_PLANES.txt",
                   fileEncoding = "UTF8")
       MOVISTAR_PLANES <-
         read.table(file = "MOVISTAR_PLANES.txt", encoding = "UTF8")
-      names(MOVISTAR_PLANES) <- c("Producto", "Tipo de Producto","Tipo","Valor Plan","Minutos","GB","Valor minutos","R. Consumo de Datos","R. Consumo de voz","R. P por Q")
+      names(MOVISTAR_PLANES) <- c("Producto", "Tipo de Producto","Tipo","Valor Plan","Minutos","GB","Valor minutos","R. Consumo de Datos","R. P por Q")
  
       dbWriteTable(
         DB,
@@ -2201,15 +2229,18 @@ shinyServer(function(input, output, session) {
         append = FALSE,
         allow.keywords = FALSE
       )
+      MOVISTAR_PLANES<<-MOVISTAR_PLANES
       ########################################MOVISTAR_OPCIONES############
-      MOVISTAR_OPCIONES <- read.xlsx(contrato$datapath,
+      #FALTA DESARROLLARLO PARA LA PARTE 2 DE ANOMALIAS
+      if (FALSE){
+      MOVISTAR_OPCIONES <<- read.xlsx(contrato$datapath,
                                    sheet = "Movistar Opciones",
                                    startRow = 1)
       file.remove("MOVISTAR_OPCIONES.txt")
       write.table(MOVISTAR_PLANES,
                   file = "MOVISTAR_OPCIONES.txt",
                   fileEncoding = "UTF8")
-      MOVISTAR_OPCIONES <-
+      MOVISTAR_OPCIONES <<-
         read.table(file = "MOVISTAR_OPCIONES.txt", encoding = "UTF8")
       names(MOVISTAR_OPCIONES) <- c("Producto", "Tipo de Producto","Tipo","Valor Plan","Minutos","GB","Duracion")
       
@@ -2223,21 +2254,21 @@ shinyServer(function(input, output, session) {
         append = FALSE,
         allow.keywords = FALSE
       )
+      }
       ########################################MOVISTAR_PAISES############
-      MOVISTAR_PAISES <- read.xlsx(contrato$datapath,
+      MOVISTAR_PAISES <<- read.xlsx(contrato$datapath,
                                      sheet = "Movistar Paises",
                                      startRow = 1)
       file.remove("MOVISTAR_PAISES.txt")
-      write.table(MOVISTAR_PLANES,
+      write.table(MOVISTAR_PAISES,
                   file = "MOVISTAR_PAISES.txt",
                   fileEncoding = "UTF8")
       MOVISTAR_PAISES <-
         read.table(file = "MOVISTAR_PAISES.txt", encoding = "UTF8")
-      names(MOVISTAR_PAISES) <- c("Paises")
       
       dbWriteTable(
         DB,
-        "movistar_opciones",
+        "movistar_paises",
         MOVISTAR_PAISES,
         field.types = NULL ,
         row.names = FALSE,
@@ -2245,6 +2276,7 @@ shinyServer(function(input, output, session) {
         append = FALSE,
         allow.keywords = FALSE
       )
+      MOVISTAR_PAISES<<-MOVISTAR_PAISES
       }
     }
     #Run the following code if theres a file in the cdr file input
