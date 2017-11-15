@@ -71,11 +71,9 @@ SinUsos <-
       
       `Acceso` = "varchar(255)",
       `Usuario` = "varchar(255)",
-      `Producto` = "varchar(255)",
       `Centro de facturacion` = "varchar(255)",
       `Modelo` = "varchar(255)",
       `Tipo` = "varchar(255)",
-      `Importe de las opciones descontadas (CLP)` = "double(15,2)",
       `Proveedor` = "varchar(255)",
       `Proveedor Nivel 2` = "varchar(255)",
       `Proveedor Nivel 3` = "varchar(255)",
@@ -122,11 +120,9 @@ SinUsos <-
         
         `Acceso` = "varchar(255)",
         `Usuario` = "varchar(255)",
-        `Producto` = "varchar(255)",
         `Centro de facturacion` = "varchar(255)",
         `Modelo` = "varchar(255)",
         `Tipo` = "varchar(255)",
-        `Importe de las opciones descontadas (CLP)` = "double(15,2)",
         `Proveedor` = "varchar(255)",
         `Proveedor Nivel 2` = "varchar(255)",
         `Proveedor Nivel 3` = "varchar(255)",
@@ -173,11 +169,9 @@ SinUsos <-
         
         `Acceso` = "varchar(255)",
         `Usuario` = "varchar(255)",
-        `Producto` = "varchar(255)",
         `Centro de facturacion` = "varchar(255)",
         `Modelo` = "varchar(255)",
         `Tipo` = "varchar(255)",
-        `Importe de las opciones descontadas (CLP)` = "double(15,2)",
         `Proveedor` = "varchar(255)",
         `Proveedor Nivel 2` = "varchar(255)",
         `Proveedor Nivel 3` = "varchar(255)",
@@ -224,11 +218,9 @@ SinUsos <-
         
         `Acceso` = "varchar(255)",
         `Usuario` = "varchar(255)",
-        `Producto` = "varchar(255)",
         `Centro de facturacion` = "varchar(255)",
         `Modelo` = "varchar(255)",
         `Tipo` = "varchar(255)",
-        `Importe de las opciones descontadas (CLP)` = "double(15,2)",
         `Proveedor` = "varchar(255)",
         `Proveedor Nivel 2` = "varchar(255)",
         `Proveedor Nivel 3` = "varchar(255)",
@@ -267,7 +259,8 @@ SinUsos <-
     )  
   }
   if (is.null(UAADPT_users2[["MANAGEMENTORG5"]])==TRUE&
-      is.null(UAADPT_users2[["MANAGEMENTORG4"]])==FALSE){dbWriteTable(
+      is.null(UAADPT_users2[["MANAGEMENTORG4"]])==FALSE){
+    dbWriteTable(
         DB,
         "usos",
         UAADPT_users2,
@@ -275,11 +268,9 @@ SinUsos <-
           
           `Acceso` = "varchar(255)",
           `Usuario` = "varchar(255)",
-          `Producto` = "varchar(255)",
           `Centro de facturacion` = "varchar(255)",
           `Modelo` = "varchar(255)",
           `Tipo` = "varchar(255)",
-          `Importe de las opciones descontadas (CLP)` = "double(15,2)",
           `Proveedor` = "varchar(255)",
           `Proveedor Nivel 2` = "varchar(255)",
           `Proveedor Nivel 3` = "varchar(255)",
@@ -326,11 +317,9 @@ SinUsos <-
           
           `Acceso` = "varchar(255)",
           `Usuario` = "varchar(255)",
-          `Producto` = "varchar(255)",
           `Centro de facturacion` = "varchar(255)",
           `Modelo` = "varchar(255)",
           `Tipo` = "varchar(255)",
-          `Importe de las opciones descontadas (CLP)` = "double(15,2)",
           `Proveedor` = "varchar(255)",
           `Proveedor Nivel 2` = "varchar(255)",
           `Proveedor Nivel 3` = "varchar(255)",
@@ -378,11 +367,9 @@ SinUsos <-
           
           `Acceso` = "varchar(255)",
           `Usuario` = "varchar(255)",
-          `Producto` = "varchar(255)",
           `Centro de facturacion` = "varchar(255)",
           `Modelo` = "varchar(255)",
           `Tipo` = "varchar(255)",
-          `Importe de las opciones descontadas (CLP)` = "double(15,2)",
           `Proveedor` = "varchar(255)",
           `Proveedor Nivel 2` = "varchar(255)",
           `Proveedor Nivel 3` = "varchar(255)",
@@ -431,11 +418,9 @@ SinUsos <-
           
           `Acceso` = "varchar(255)",
           `Usuario` = "varchar(255)",
-          `Producto` = "varchar(255)",
           `Centro de facturacion` = "varchar(255)",
           `Modelo` = "varchar(255)",
           `Tipo` = "varchar(255)",
-          `Importe de las opciones descontadas (CLP)` = "double(15,2)",
           `Proveedor` = "varchar(255)",
           `Proveedor Nivel 2` = "varchar(255)",
           `Proveedor Nivel 3` = "varchar(255)",
@@ -484,11 +469,9 @@ SinUsos <-
       
       `Acceso` = "varchar(255)",
       `Usuario` = "varchar(255)",
-      `Producto` = "varchar(255)",
       `Centro de facturacion` = "varchar(255)",
       `Modelo` = "varchar(255)",
       `Tipo` = "varchar(255)",
-      `Importe de las opciones descontadas (CLP)` = "double(15,2)",
       `Proveedor` = "varchar(255)",
       `Proveedor Nivel 2` = "varchar(255)",
       `Proveedor Nivel 3` = "varchar(255)",
@@ -531,7 +514,7 @@ SinUsos <-
     allow.keywords = FALSE
   )  }
   usofinal<<-UAADPT_users2
-  print("UAA_users subido")
+  print("DATOS SUBIDOS")
   
   ######Tabla UTP_accesses######
  

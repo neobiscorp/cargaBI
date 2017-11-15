@@ -143,8 +143,7 @@ shinyServer(function(input, output, session) {
         
       }
       else if (client == "afm"){
-        facturas[,'Divisa']<-NULL
-        names(facturas)<-c("Factura","Proveedor","Cuenta cliente", "Centro de facturacion","Fecha de facturacion", "Importado el","Total sin impuestos","Total imp. incluidos","Importe IVA","N. accesos facturados","Etiqueta centro de facturacion","Fecha")
+        names(facturas)<-c("Factura","Proveedor","Cuenta cliente", "Centro de facturacion","Fecha de facturacion", "Importado el","Total sin impuestos","Total imp. incluidos","Importe IVA","Divisa","N. accesos facturados","Etiqueta centro de facturacion","Fecha")
       facturas[,'Fecha de facturacion']<-NULL
       facturas[,'Importado el']<-NULL
       facturas[,'Etiqueta centro de facturacion']<-NULL
@@ -160,6 +159,7 @@ shinyServer(function(input, output, session) {
           `Total sin impuestos` = "double(15,2)",
           `Total imp. incluidos` = "double(15,2)",
           `Importe IVA` = "double(15,2)",
+          `Divisa` = "varchar(255)",
           `N. accesos facturados` = "double(15,2)",
           `Fecha` = "date"
         ),
