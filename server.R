@@ -577,6 +577,7 @@ shinyServer(function(input, output, session) {
             `N Copias B/N` = "INT(10)",
             `N Copias Color` = "INT(10)",
             `Fecha` = "date",
+            `Mes` = "INT(2)",
             `Total (PEN)` = "double(15,2)",
             `Plano tarifario (PEN)` = "double(15,2)",
             `Uso (PEN)` = "double(15,2)",
