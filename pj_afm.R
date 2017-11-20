@@ -20,6 +20,7 @@ SFPlanes<-subset(SFPlanes,SFPlanes[["Producto"]]!="T1P")
   facturas2[,'Fecha']<-NULL
   Fact<<-merge(Fact,facturas2,by = "Centro de facturacion", all.x = TRUE)
   Fact[["Acceso fix"]]<-NULL
+  cdr2<-subset(cdr,(cdr[["Servicio llamado"]]=="NÃƒÂºmeros especiales" | (cdr[["Pais emisor"]]!= "Chile" | cdr[["Pais destinatario"]]!="Chile"))&cdr[["Tipo de llamada"]]!="SMS")
   #########################Consolidado######
   dbWriteTable(
     DB,
@@ -72,7 +73,6 @@ SFPlanes<-subset(SFPlanes,SFPlanes[["Producto"]]!="T1P")
   SFduplicados<-subset(SFPlanes2,SFPlanes2[["Duplicados"]]==TRUE)
   contador<-length(SFduplicados[["Acceso"]])
   accesosunicos<-as.list(unique(SFPlanes2["Acceso"]))
-summary(cdr[["Servicio llamado"]])
   for(i in 1:lengths(accesosunicos)){
     SFUnico<-subset(SFPlanes2,SFPlanes2[["Acceso"]] == as.character(accesosunicos[["Acceso"]][i]))
     if (length(SFUnico[["Acceso"]]) != 1){

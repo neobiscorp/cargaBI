@@ -2213,9 +2213,9 @@ shinyServer(function(input, output, session) {
       file.remove("MOVISTAR_PLANES.txt")
       write.table(MOVISTAR_PLANES,
                   file = "MOVISTAR_PLANES.txt",
-                  fileEncoding = "UTF8")
+                  fileEncoding = "UTF-8")
       MOVISTAR_PLANES <-
-        read.table(file = "MOVISTAR_PLANES.txt", encoding = "UTF8")
+        read.table(file = "MOVISTAR_PLANES.txt", encoding = "UTF-8")
       names(MOVISTAR_PLANES) <- c("Producto","Descripcion","Tipo","Precio (CLP)","Voz (min)","Datos (KB)","Precio/min (CLP)","PrecioSC/min (CLP)","Precio/SMS (CLP)","Precio/KB (CLP)")
  
       dbWriteTable(
@@ -2261,9 +2261,9 @@ shinyServer(function(input, output, session) {
       file.remove("MOVISTAR_PAISES.txt")
       write.table(MOVISTAR_PAISES,
                   file = "MOVISTAR_PAISES.txt",
-                  fileEncoding = "UTF8")
+                  fileEncoding = "UTF-8")
       MOVISTAR_PAISES <-
-        read.table(file = "MOVISTAR_PAISES.txt", encoding = "UTF8")
+        read.table(file = "MOVISTAR_PAISES.txt", encoding = "UTF-8")
       
       dbWriteTable(
         DB,
