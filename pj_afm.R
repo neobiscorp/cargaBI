@@ -7,6 +7,7 @@ SFPlanesDb<-subset(SFACTURADOS,
                    SFACTURADOS[["Tipo de producto"]]=="Plano tarifario" & 
                      SFACTURADOS[["Estado acceso"]]=="Dado de baja")
 SFPlanes<-rbind(SFPlanesDb,SFPlanesA)
+SFPlanes2<-SFPlanes
 SFPlanes<-subset(SFPlanes,SFPlanes[["Producto"]]!="T1P")
   Fact<-merge(uso,SFPlanes,by = c("Acceso fix","Acceso","Centro de facturacion"),all.x = TRUE)
   facturas2<-facturas
@@ -17,9 +18,9 @@ SFPlanes<-subset(SFPlanes,SFPlanes[["Producto"]]!="T1P")
   facturas2[,'Divisa']<-NULL
   facturas2[,'N. accesos facturados']<-NULL
   facturas2[,'Fecha']<-NULL
-  Fact<-merge(Fact,facturas2,by = "Centro de facturacion", all.x = TRUE)
+  Fact<<-merge(Fact,facturas2,by = "Centro de facturacion", all.x = TRUE)
   Fact[["Acceso fix"]]<-NULL
-  
+  #########################Consolidado######
   dbWriteTable(
     DB,
     "Consolidado",
@@ -64,6 +65,37 @@ SFPlanes<-subset(SFPlanes,SFPlanes[["Producto"]]!="T1P")
     append = FALSE,
     allow.keywords = FALSE
   )
+  ######################Planes Antiguos################
+  Productos_Contratados<-as.character(MOVISTAR_PLANES[["Producto"]])
+  a<-duplicated(SFPlanes2[["Acceso"]])
+  SFPlanes2[["Duplicados"]]<-a
+  SFduplicados<-subset(SFPlanes2,SFPlanes2[["Duplicados"]]==TRUE)
+  contador<-length(SFduplicados[["Acceso"]])
+  accesosunicos<-as.list(unique(SFPlanes2["Acceso"]))
+summary(cdr[["Servicio llamado"]])
+  for(i in 1:lengths(accesosunicos)){
+    SFUnico<-subset(SFPlanes2,SFPlanes2[["Acceso"]] == as.character(accesosunicos[["Acceso"]][i]))
+    if (length(SFUnico[["Acceso"]]) != 1){
+      c<-length(SFUnico["Acceso"])
+      
+    }
+    
+  }
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
   
   

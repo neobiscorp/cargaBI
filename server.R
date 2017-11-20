@@ -2317,6 +2317,108 @@ shinyServer(function(input, output, session) {
     }
     #Run the following code if theres a file in the cdr file input
     if (!is.null(input$cdr)) {
+      if(client=="afm"){
+        CDRFile <<- NULL
+        #Read CDR file with correct fileencoding
+        CDRFile <<-
+          lapply(input$cdr[['datapath']], read.csv2)
+        
+        #join all CDR months
+        cdr <<- rbindlist(CDRFile)
+        
+        #Change column names of the CDR
+        names(cdr)[names(cdr) == 'NÃºmero.de.llamada'] <<-
+          'Numero de llamada'
+        names(cdr)[names(cdr) == 'NÃºmero.llamado'] <<-
+          'Numero llamado'
+        names(cdr)[names(cdr) == 'Tipo.de.llamada'] <<-
+          'Tipo de llamada'
+        names(cdr)[names(cdr) == 'Fecha de llamada'] <<-
+          'Fecha de llamada'
+        names(cdr)[names(cdr) == 'GeografÃ.a'] <<- 'Geografia'
+        names(cdr)[names(cdr) == 'PaÃ.s.emisor'] <<- 'Pais emisor'
+        names(cdr)[names(cdr) == 'PaÃ.s.destinatario'] <<-
+          'Pais destinatario'
+        names(cdr)[names(cdr) == 'DuraciÃ³n'] <<- 'Duracion'
+        names(cdr)[names(cdr) == 'Volumen'] <<- 'Volumen'
+        names(cdr)[names(cdr) == 'Precio'] <<- 'Precio'
+        names(cdr)[names(cdr) == 'OrganizaciÃ³n.Proveedor'] <<-
+          'Organizacion Proveedor'
+        names(cdr)[names(cdr) == 'TarificaciÃ³n'] <<- 'Tarificacion'
+        names(cdr)[names(cdr) == 'ï..Usuario'] <<- 'Usuario'
+        names(cdr)[names(cdr) == 'TecnologÃ.a'] <<- 'Tecnologia'
+        names(cdr)[names(cdr) == 'Red.recurrente'] <<-
+          'Red recurrente'
+        names(cdr)[names(cdr) == 'Red.destinada'] <<- 'Red destinada'
+        names(cdr)[names(cdr) == 'OrganizaciÃ³n.de.gestiÃ²n'] <<-
+          'Organización de gestion'
+        names(cdr)[names(cdr) == 'VPN'] <<- 'VPN'
+        names(cdr)[names(cdr) == 'Llamadas.internas'] <<-
+          'Llamadas internas'
+        names(cdr)[names(cdr) == 'Servicio.llamado'] <<-
+          'Servicio llamado'
+        
+        #delete not used columns
+        cdr[, 'Usuario'] <<- NULL
+        cdr[, 'Tecnologia'] <<- NULL
+        cdr[, 'Red recurrente'] <<- NULL
+        cdr[, 'Red destinada'] <<- NULL
+        cdr[, 'Organización de gestion'] <<- NULL
+        cdr[, 'VPN'] <<- NULL
+        cdr[, 'Llamadas internas'] <<- NULL
+        
+        cdr[, 'Numero de llamada fix'] <<-
+          lapply(cdr[, 'Numero de llamada'], function(x)
+            substring(x, 3))
+        
+        file.remove("cdr.txt")
+        write.table(cdr, file = "cdr.txt", fileEncoding = "UTF8")
+        cdr <<- read.table(file = "cdr.txt", encoding = "UTF8")
+        names(cdr) <<-
+          c(
+            "Numero de llamada",
+            "Numero llamado",
+            "Tipo de llamada",
+            "Fecha de llamada",
+            "Geografia",
+            "Pais emisor",
+            "Pais destinatario",
+            "Duracion",
+            "Volumen",
+            "Precio",
+            "Organizacion Proveedor",
+            "Tarificacion",
+            "Servicio llamado",
+            "Numero de llamada fix"
+          )
+        dbWriteTable(
+          DB,
+          "cdr",
+          cdr,
+          field.types = list(
+            `Numero de llamada` = "char(11)",
+            `Numero de llamada fix` = "int(9)",
+            `Numero llamado` = "varchar(20)",
+            `Tipo de llamada` = "ENUM('Datos','MMS','SMS','Voz','E-mail','Desconocidos') NOT NULL",
+            `Fecha de llamada` = "DATE",
+            `Geografia` = "ENUM('A internacional','Local','Regional','Nacional desconocido','Roaming entrante','Roaming saliente','Roaming desconocido','Internacional desconocido','Desconocidos') NOT NULL",
+            `Pais emisor` = "varchar(40)",
+            `Pais destinatario` = "varchar(40)",
+            `Duracion` = "SMALLINT(8) UNSIGNED NOT NULL",
+            `Volumen` = "MEDIUMINT(10) UNSIGNED NOT NULL",
+            `Precio` = "FLOAT(10,2) NOT NULL",
+            `Tarificacion` = "ENUM('En el plan','Más alla del plan','Desconocidos','Fuera de plan') NOT NULL",
+            `Servicio llamado` = "varchar(255)",
+            `Organizacion Proveedor` = "varchar(255)"
+          ),
+          row.names = FALSE,
+          overwrite = TRUE,
+          append = FALSE,
+          allow.keywords = FALSE
+        )
+        cdr<<-cdr
+      }
+      else{
       CDRFile <<- NULL
       #Read CDR file with correct fileencoding
       CDRFile <<-
@@ -2510,7 +2612,7 @@ shinyServer(function(input, output, session) {
       )
       
       cdr_accesses<<-cdr_accesses
-      
+      }
     }
     
 
