@@ -2216,7 +2216,7 @@ shinyServer(function(input, output, session) {
                   fileEncoding = "UTF8")
       MOVISTAR_PLANES <-
         read.table(file = "MOVISTAR_PLANES.txt", encoding = "UTF8")
-      names(MOVISTAR_PLANES) <- c("Producto", "Tipo de Producto","Tipo","Valor Plan","Minutos","GB","Valor minutos","R. Consumo de Datos","R. P por Q")
+      names(MOVISTAR_PLANES) <- c("Producto","Descripcion","Tipo","Precio (CLP)","Voz (min)","Datos (KB)","Precio/min (CLP)","PrecioSC/min (CLP)","Precio/SMS (CLP)","Precio/KB (CLP)")
  
       dbWriteTable(
         DB,
@@ -2276,6 +2276,43 @@ shinyServer(function(input, output, session) {
         allow.keywords = FALSE
       )
       MOVISTAR_PAISES<<-MOVISTAR_PAISES
+      }
+      if (!is.null(input$usos)){
+        SFOpciones<-subset(SFACTURADOS,
+                           SFACTURADOS[["Tipo de producto"]]=="Option")
+        SFPlanesA<-subset(SFACTURADOS,
+                          SFACTURADOS[["Tipo de producto"]]=="Plano tarifario" & 
+                            SFACTURADOS[["Estado acceso"]]=="Activo")
+        SFPlanesDb<-subset(SFACTURADOS,
+                           SFACTURADOS[["Tipo de producto"]]=="Plano tarifario" & 
+                             SFACTURADOS[["Estado acceso"]]=="Dado de baja")
+        SFPlanes<-rbind(SFPlanesDb,SFPlanesA)
+        #Excepcion para Aguas Andinas
+        if(nombre == "Aguas Andinas"){
+        SFPlanes<-subset(SFPlanes,SFPlanes[["Producto"]]!="T1P")}
+        Fact<-merge(uso,SFPlanes,by = c("Acceso fix","Acceso","Centro de facturacion"),all.x = TRUE)
+        facturas2<-facturas
+        facturas2[,'Proveedor']<-NULL
+        facturas2[,'Total sin impuestos']<-NULL
+        facturas2[,'Total imp. incluidos']<-NULL
+        facturas2[,'Importe IVA']<-NULL
+        facturas2[,'Divisa']<-NULL
+        facturas2[,'N. accesos facturados']<-NULL
+        facturas2[,'Fecha']<-NULL
+        Fact<<-merge(Fact,facturas2,by = "Centro de facturacion", all.x = TRUE)
+        Fact[["Acceso fix"]]<-NULL
+        
+        dbWriteTable(
+          DB,
+          "consolidado",
+          Fact,
+          field.types = NULL ,
+          row.names = FALSE,
+          overwrite = TRUE,
+          append = FALSE,
+          allow.keywords = FALSE
+        )
+        
       }
     }
     #Run the following code if theres a file in the cdr file input
@@ -2475,6 +2512,8 @@ shinyServer(function(input, output, session) {
       cdr_accesses<<-cdr_accesses
       
     }
+    
+
     #Run the following code if theres a ticket in the RFP excel checkbox
     if (input$excel == TRUE) {
       #open RFP Workbook

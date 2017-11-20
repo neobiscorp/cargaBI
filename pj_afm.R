@@ -18,5 +18,53 @@ SFPlanes<-subset(SFPlanes,SFPlanes[["Producto"]]!="T1P")
   facturas2[,'N. accesos facturados']<-NULL
   facturas2[,'Fecha']<-NULL
   Fact<-merge(Fact,facturas2,by = "Centro de facturacion", all.x = TRUE)
+  Fact[["Acceso fix"]]<-NULL
+  
+  dbWriteTable(
+    DB,
+    "Consolidado",
+    Fact,
+    field.types = list(
+      
+      `Acceso` = "varchar(255)",
+      `Estado acceso` = "varchar(255)",
+      `Producto` = "varchar(255)",
+      `Tipo de producto` = "varchar(255)",
+      `Centro de facturacion` = "varchar(255)",
+      `Tipo` = "varchar(255)",
+      `Proveedor` = "varchar(255)",
+      `Factura` = "varchar(255)",
+      `Cuenta cliente` = "varchar(255)",
+      `Total (CLP)` = "double(15,2)",
+      `Plano tarifario (CLP)` = "double(15,2)",
+      `Uso rebajado (CLP)` = "double(15,2)",
+      `Servicios (CLP)` = "double(15,2)",
+      `Servicios opciones (CLP)` = "double(15,2)",
+      `Servicios otros (CLP)` = "double(15,2)",
+      `Descuentos (CLP)` = "double(15,2)",
+      `Descuentos opciones (CLP)` = "double(15,2)",
+      `Descuentos otros (CLP)` = "double(15,2)",
+      `Voz (CLP)` = "double(15,2)",
+      `Voz nacional (CLP)` = "double(15,2)",
+      `Voz roaming (CLP)` = "double(15,2)",
+      `Datos (CLP)` = "double(15,2)",
+      `Datos nacional (CLP)` = "double(15,2)",
+      `Datos inter (CLP)` = "double(15,2)",
+      `Voz nacional (seg)` = "double(15,2)",
+      `Voz roaming (seg)` = "double(15,2)",
+      `N. Voz nacional` = "double(15,2)",
+      `Datos inter (KB)` = "double(15,2)",
+      `Importe de las opciones facturadas (CLP)` = "double(15,2)",
+      `Importe descuentos sobre plano tarifario (CLP)` = "double(15,2)",
+      `Importe de las opciones descontadas (CLP)` = "double(15,2)",
+      `Fecha` = "varchar(255)"
+    ),
+    row.names = FALSE,
+    overwrite = TRUE,
+    append = FALSE,
+    allow.keywords = FALSE
+  )
+  
+  
   
 rm(Fact)
