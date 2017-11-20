@@ -2321,45 +2321,77 @@ shinyServer(function(input, output, session) {
         CDRFile <<- NULL
         #Read CDR file with correct fileencoding
         CDRFile <<-
-          lapply(input$cdr[['datapath']], read.csv2)
+          lapply(input$cdr[['datapath']], function(x) read.csv2(x,encoding = "UTF-8"))
         
         #join all CDR months
         cdr <<- rbindlist(CDRFile)
         
+        # #Change column names of the CDR
+        # names(cdr)[names(cdr) == 'NÃºmero.de.llamada'] <<-
+        #   'Numero de llamada'
+        # names(cdr)[names(cdr) == 'NÃºmero.llamado'] <<-
+        #   'Numero llamado'
+        # names(cdr)[names(cdr) == 'Tipo.de.llamada'] <<-
+        #   'Tipo de llamada'
+        # names(cdr)[names(cdr) == 'Fecha de llamada'] <<-
+        #   'Fecha de llamada'
+        # names(cdr)[names(cdr) == 'GeografÃ.a'] <<- 'Geografia'
+        # names(cdr)[names(cdr) == 'PaÃ.s.emisor'] <<- 'Pais emisor'
+        # names(cdr)[names(cdr) == 'PaÃ.s.destinatario'] <<-
+        #   'Pais destinatario'
+        # names(cdr)[names(cdr) == 'DuraciÃ³n'] <<- 'Duracion'
+        # names(cdr)[names(cdr) == 'Volumen'] <<- 'Volumen'
+        # names(cdr)[names(cdr) == 'Precio'] <<- 'Precio'
+        # names(cdr)[names(cdr) == 'OrganizaciÃ³n.Proveedor'] <<-
+        #   'Organizacion Proveedor'
+        # names(cdr)[names(cdr) == 'TarificaciÃ³n'] <<- 'Tarificacion'
+        # names(cdr)[names(cdr) == 'ï..Usuario'] <<- 'Usuario'
+        # names(cdr)[names(cdr) == 'TecnologÃ.a'] <<- 'Tecnologia'
+        # names(cdr)[names(cdr) == 'Red.recurrente'] <<-
+        #   'Red recurrente'
+        # names(cdr)[names(cdr) == 'Red.destinada'] <<- 'Red destinada'
+        # names(cdr)[names(cdr) == 'OrganizaciÃ³n.de.gestiÃ²n'] <<-
+        #   'Organización de gestion'
+        # names(cdr)[names(cdr) == 'VPN'] <<- 'VPN'
+        # names(cdr)[names(cdr) == 'Llamadas.internas'] <<-
+        #   'Llamadas internas'
+        # names(cdr)[names(cdr) == 'Servicio.llamado'] <<-
+        #   'Servicio llamado'
+        
         #Change column names of the CDR
-        names(cdr)[names(cdr) == 'NÃºmero.de.llamada'] <<-
+        names(cdr)[names(cdr) == 'Número.de.llamada'] <<-
           'Numero de llamada'
-        names(cdr)[names(cdr) == 'NÃºmero.llamado'] <<-
+        names(cdr)[names(cdr) == 'Número.llamado'] <<-
           'Numero llamado'
-        names(cdr)[names(cdr) == 'Tipo.de.llamada'] <<-
+        names(cdr)[names(cdr) == 'Tipo de llamada'] <<-
           'Tipo de llamada'
-        names(cdr)[names(cdr) == 'Fecha de llamada'] <<-
+        names(cdr)[names(cdr) == 'Fecha.de.llamada'] <<-
           'Fecha de llamada'
-        names(cdr)[names(cdr) == 'GeografÃ.a'] <<- 'Geografia'
-        names(cdr)[names(cdr) == 'PaÃ.s.emisor'] <<- 'Pais emisor'
-        names(cdr)[names(cdr) == 'PaÃ.s.destinatario'] <<-
+        names(cdr)[names(cdr) == 'Geografía'] <<- 'Geografia'
+        names(cdr)[names(cdr) == 'País.emisor'] <<- 'Pais emisor'
+        names(cdr)[names(cdr) == 'País.destinatario'] <<-
           'Pais destinatario'
-        names(cdr)[names(cdr) == 'DuraciÃ³n'] <<- 'Duracion'
+        names(cdr)[names(cdr) == 'Duración'] <<- 'Duracion'
         names(cdr)[names(cdr) == 'Volumen'] <<- 'Volumen'
         names(cdr)[names(cdr) == 'Precio'] <<- 'Precio'
-        names(cdr)[names(cdr) == 'OrganizaciÃ³n.Proveedor'] <<-
+        names(cdr)[names(cdr) == 'Organización.Proveedor'] <<-
           'Organizacion Proveedor'
-        names(cdr)[names(cdr) == 'TarificaciÃ³n'] <<- 'Tarificacion'
+        names(cdr)[names(cdr) == 'Tarificación'] <<- 'Tarificacion'
         names(cdr)[names(cdr) == 'ï..Usuario'] <<- 'Usuario'
-        names(cdr)[names(cdr) == 'TecnologÃ.a'] <<- 'Tecnologia'
+        names(cdr)[names(cdr) == 'Tecnología'] <<- 'Tecnologia'
         names(cdr)[names(cdr) == 'Red.recurrente'] <<-
           'Red recurrente'
         names(cdr)[names(cdr) == 'Red.destinada'] <<- 'Red destinada'
-        names(cdr)[names(cdr) == 'OrganizaciÃ³n.de.gestiÃ²n'] <<-
+        names(cdr)[names(cdr) == 'Organización.de.gestiòn'] <<-
           'Organización de gestion'
         names(cdr)[names(cdr) == 'VPN'] <<- 'VPN'
         names(cdr)[names(cdr) == 'Llamadas.internas'] <<-
           'Llamadas internas'
-        names(cdr)[names(cdr) == 'Servicio.llamado'] <<-
+        names(cdr)[names(cdr) == 'Servicio llamado'] <<-
           'Servicio llamado'
         
         #delete not used columns
-        cdr[, 'Usuario'] <<- NULL
+        cdr[, 'X.U.FEFF.Usuario'] <<- NULL
         cdr[, 'Tecnologia'] <<- NULL
         cdr[, 'Red recurrente'] <<- NULL
         cdr[, 'Red destinada'] <<- NULL
@@ -2372,8 +2404,8 @@ shinyServer(function(input, output, session) {
             substring(x, 3))
         
         file.remove("cdr.txt")
-        write.table(cdr, file = "cdr.txt", fileEncoding = "UTF8")
-        cdr <<- read.table(file = "cdr.txt", encoding = "UTF8")
+        write.table(cdr, file = "cdr.txt", fileEncoding = "UTF-8")
+        cdr <<- read.table(file = "cdr.txt", encoding = "UTF-8")
         names(cdr) <<-
           c(
             "Numero de llamada",
@@ -2391,6 +2423,12 @@ shinyServer(function(input, output, session) {
             "Servicio llamado",
             "Numero de llamada fix"
           )
+        
+        dbSendQuery(
+          DB,
+          "set names utf8mb4;"
+        )
+        
         dbWriteTable(
           DB,
           "cdr",
