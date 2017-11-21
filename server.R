@@ -2228,6 +2228,8 @@ shinyServer(function(input, output, session) {
         append = FALSE,
         allow.keywords = FALSE
       )
+      
+      file.remove("MOVISTAR_PLANES.txt")
       MOVISTAR_PLANES<<-MOVISTAR_PLANES
       ########################################MOVISTAR_OPCIONES############
       #FALTA DESARROLLARLO PARA LA PARTE 2 DE ANOMALIAS

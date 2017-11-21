@@ -20,69 +20,82 @@ SFPlanes<-subset(SFPlanes,SFPlanes[["Producto"]]!="T1P")
   facturas2[,'Fecha']<-NULL
   Fact<<-merge(Fact,facturas2,by = "Centro de facturacion", all.x = TRUE)
   Fact[["Acceso fix"]]<-NULL
-  cdr2<-subset(cdr,(cdr[["Servicio llamado"]]=="NÃƒÂºmeros especiales" | (cdr[["Pais emisor"]]!= "Chile" | cdr[["Pais destinatario"]]!="Chile"))&cdr[["Tipo de llamada"]]!="SMS")
+  cdr2<-subset(cdr,(cdr[["Servicio llamado"]]=="Números especiales" | (cdr[["Pais emisor"]]!= "Chile" | cdr[["Pais destinatario"]]!="Chile"))&cdr[["Tipo de llamada"]]!="SMS")
   #########################Consolidado######
-  dbWriteTable(
-    DB,
-    "Consolidado",
-    Fact,
-    field.types = list(
-      
-      `Acceso` = "varchar(255)",
-      `Estado acceso` = "varchar(255)",
-      `Producto` = "varchar(255)",
-      `Tipo de producto` = "varchar(255)",
-      `Centro de facturacion` = "varchar(255)",
-      `Tipo` = "varchar(255)",
-      `Proveedor` = "varchar(255)",
-      `Factura` = "varchar(255)",
-      `Cuenta cliente` = "varchar(255)",
-      `Total (CLP)` = "double(15,2)",
-      `Plano tarifario (CLP)` = "double(15,2)",
-      `Uso rebajado (CLP)` = "double(15,2)",
-      `Servicios (CLP)` = "double(15,2)",
-      `Servicios opciones (CLP)` = "double(15,2)",
-      `Servicios otros (CLP)` = "double(15,2)",
-      `Descuentos (CLP)` = "double(15,2)",
-      `Descuentos opciones (CLP)` = "double(15,2)",
-      `Descuentos otros (CLP)` = "double(15,2)",
-      `Voz (CLP)` = "double(15,2)",
-      `Voz nacional (CLP)` = "double(15,2)",
-      `Voz roaming (CLP)` = "double(15,2)",
-      `Datos (CLP)` = "double(15,2)",
-      `Datos nacional (CLP)` = "double(15,2)",
-      `Datos inter (CLP)` = "double(15,2)",
-      `Voz nacional (seg)` = "double(15,2)",
-      `Voz roaming (seg)` = "double(15,2)",
-      `N. Voz nacional` = "double(15,2)",
-      `Datos inter (KB)` = "double(15,2)",
-      `Importe de las opciones facturadas (CLP)` = "double(15,2)",
-      `Importe descuentos sobre plano tarifario (CLP)` = "double(15,2)",
-      `Importe de las opciones descontadas (CLP)` = "double(15,2)",
-      `Fecha` = "varchar(255)"
-    ),
-    row.names = FALSE,
-    overwrite = TRUE,
-    append = FALSE,
-    allow.keywords = FALSE
-  )
+  # dbWriteTable(
+  #   DB,
+  #   "Consolidado",
+  #   Fact,
+  #   field.types = list(
+  #     
+  #     `Acceso` = "varchar(255)",
+  #     `Estado acceso` = "varchar(255)",
+  #     `Producto` = "varchar(255)",
+  #     `Tipo de producto` = "varchar(255)",
+  #     `Centro de facturacion` = "varchar(255)",
+  #     `Tipo` = "varchar(255)",
+  #     `Proveedor` = "varchar(255)",
+  #     `Factura` = "varchar(255)",
+  #     `Cuenta cliente` = "varchar(255)",
+  #     `Total (CLP)` = "double(15,2)",
+  #     `Plano tarifario (CLP)` = "double(15,2)",
+  #     `Uso rebajado (CLP)` = "double(15,2)",
+  #     `Servicios (CLP)` = "double(15,2)",
+  #     `Servicios opciones (CLP)` = "double(15,2)",
+  #     `Servicios otros (CLP)` = "double(15,2)",
+  #     `Descuentos (CLP)` = "double(15,2)",
+  #     `Descuentos opciones (CLP)` = "double(15,2)",
+  #     `Descuentos otros (CLP)` = "double(15,2)",
+  #     `Voz (CLP)` = "double(15,2)",
+  #     `Voz nacional (CLP)` = "double(15,2)",
+  #     `Voz roaming (CLP)` = "double(15,2)",
+  #     `Datos (CLP)` = "double(15,2)",
+  #     `Datos nacional (CLP)` = "double(15,2)",
+  #     `Datos inter (CLP)` = "double(15,2)",
+  #     `Voz nacional (seg)` = "double(15,2)",
+  #     `Voz roaming (seg)` = "double(15,2)",
+  #     `N. Voz nacional` = "double(15,2)",
+  #     `Datos inter (KB)` = "double(15,2)",
+  #     `Importe de las opciones facturadas (CLP)` = "double(15,2)",
+  #     `Importe descuentos sobre plano tarifario (CLP)` = "double(15,2)",
+  #     `Importe de las opciones descontadas (CLP)` = "double(15,2)",
+  #     `Fecha` = "varchar(255)"
+  #   ),
+  #   row.names = FALSE,
+  #   overwrite = TRUE,
+  #   append = FALSE,
+  #   allow.keywords = FALSE
+  # )
   ######################Planes Antiguos################
   Productos_Contratados<-as.character(MOVISTAR_PLANES[["Producto"]])
-  a<-duplicated(SFPlanes2[["Acceso"]])
+  a<-duplicated(SFPlanes2[["Acceso"]],fromLast = FALSE)
+  b<-duplicated(SFPlanes2[["Acceso"]],fromLast = TRUE)
   SFPlanes2[["Duplicados"]]<-a
-  SFduplicados<-subset(SFPlanes2,SFPlanes2[["Duplicados"]]==TRUE)
+  SFPlanes2[["Duplicados2"]]<-b
+  SFduplicados<-subset(SFPlanes2,SFPlanes2[["Duplicados"]]=="TRUE"|SFPlanes2[["Duplicados2"]]=="TRUE")
   contador<-length(SFduplicados[["Acceso"]])
   accesosunicos<-as.list(unique(SFPlanes2["Acceso"]))
+  SF_a_evaluar<- merge(SFduplicados,MOVISTAR_PLANES,by = "Producto",all.x = TRUE)
+  SF_fueradecontratoSC<-subset(SF_a_evaluar,is.na(SF_a_evaluar[["Tipo"]])==TRUE & SF_a_evaluar[["Importe de las opciones descontadas (CLP)"]]==0)
+  SF_fueradecontratoCC<-subset(SF_a_evaluar,is.na(SF_a_evaluar[["Tipo"]])==TRUE & SF_a_evaluar[["Importe de las opciones descontadas (CLP)"]]!=0)
+  SF_encontrato<-subset(SF_a_evaluar,is.na(SF_a_evaluar[["Tipo"]])==TRUE)
+  SF_CPduplicados<-rbind(SF_encontrato,SF_fueradecontratoCC)
+  SF_CPduplicados[["Duplicado"]]<-NULL
+  SF_CPduplicados[["Duplicado2"]]<-NULL
+  a<-duplicated(SF_CPduplicados[["Acceso"]],fromLast = FALSE)
+  b<-duplicated(SF_CPduplicados[["Acceso"]],fromLast = TRUE)
+  SF_CPduplicados[["Duplicados"]]<-a
+  SF_CPduplicados[["Duplicados2"]]<-b
+SFduplicados2<-subset(SF_CPduplicados,SF_CPduplicados[["Duplicados"]]=="TRUE"|SF_CPduplicados[["Duplicados2"]]=="TRUE")
+if(length(SFduplicados2[["Acceso"]])>0){
+  accesosunicos<-as.list(unique(SFduplicados2["Acceso"]))
   for(i in 1:lengths(accesosunicos)){
     SFUnico<-subset(SFPlanes2,SFPlanes2[["Acceso"]] == as.character(accesosunicos[["Acceso"]][i]))
-    if (length(SFUnico[["Acceso"]]) != 1){
-      c<-length(SFUnico["Acceso"])
-      
-    }
     
+  
   }
   
-  
+}
   
   
   
