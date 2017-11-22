@@ -2301,9 +2301,9 @@ shinyServer(function(input, output, session) {
         facturas2[,'Divisa']<-NULL
         facturas2[,'N. accesos facturados']<-NULL
         facturas2[,'Fecha']<-NULL
-        Fact<<-merge(Fact,facturas2,by = "Centro de facturacion", all.x = TRUE)
+        Fact<-merge(Fact,facturas2,by = "Centro de facturacion", all.x = TRUE)
         Fact[["Acceso fix"]]<-NULL
-        
+        Fact<<-Fact
         dbWriteTable(
           DB,
           "consolidado",

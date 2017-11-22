@@ -33,6 +33,7 @@ UAADP_usos <- merge(uso,
                       by.x = "Acceso fix",
                       by.y = "Acceso fix",
                       all.x = TRUE)
+uso3<<-UAADP_usos
 #se modifica plan eliminando las columnas innecesarias
   PLAN2 <- PLAN
   PLAN2[["Acceso"]] <- NULL
@@ -82,6 +83,7 @@ UAADP_usos <- merge(uso,
       UAADP_usos[["Proveedor"]] == "Entel PCS (CL)" |
       UAADP_usos[["Proveedor"]] == "Claro CL"
   )
+  uso6<<-UAADP_usos
  # rm(ACCESSES2, UAAD_users, PLAN2) #Se borran las tablas que no aportan
   
 
@@ -126,6 +128,7 @@ SinUsos<-UAADP_usos
   SinUsos[["Meses"]][i]<-(fin2-AAA[["year"]][i])*12+fin1-AAA[["month"]][i]+1
   }
     rm(AAA)
+  SinUsos<-subset(SinUsos,SinUsos[["Meses"]]<=3) 
   SinUsos<<-subset(SinUsos,SinUsos[["Meses"]]<=3)
 
   ########Excepciones############
