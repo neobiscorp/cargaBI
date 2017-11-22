@@ -84,12 +84,15 @@ shinyUI(fluidPage(
         )
       ),
       #Create conditional Panel accepting one xlsx file
+      conditionalPanel(
+        condition = "input.Client != 'Anomalias de Facturacion Movil'",
       fileInput(
         'Export',
         'Elegir el Archivo xlsx que contenga el Export de iTem',
         accept = c(
           'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         )
+      )
       ),
       #Create conditional Panel accepting multiple csv files
       conditionalPanel(

@@ -91,7 +91,7 @@ UAADP_usos[,'N. SMS/MMS']<-UAADP_usos[["N. SMS/MMS2"]]
 UAADP_usos[["N. SMS/MMS2"]]<-NULL
 
 SinUsos<-UAADP_usos
-  SinUsos<-subset(SinUsos,SinUsos[["Acceso"]]!=SinUsos[["Centro de facturacion"]])
+  SinUsos<-subset(SinUsos,SinUsos[["Acceso fix"]]!=SinUsos[["Centro de facturacion"]])
   SinUsos[,'usocant']<-SinUsos[,'Voz (seg)']+SinUsos[,'Datos (KB)']+SinUsos[,'N. SMS/MMS']
   SinUsos <-
     subset(
@@ -126,7 +126,7 @@ SinUsos<-UAADP_usos
   SinUsos[["Meses"]][i]<-(fin2-AAA[["year"]][i])*12+fin1-AAA[["month"]][i]+1
   }
     rm(AAA)
-  SinUsos<-subset(SinUsos,SinUsos[["Meses"]]<=3)
+  SinUsos<<-subset(SinUsos,SinUsos[["Meses"]]<=3)
 
   ########Excepciones############
   if(!is.null(nombre)){
