@@ -1,4 +1,5 @@
-SFOpciones<-subset(SFACTURADOS,
+{
+  SFOpciones<-subset(SFACTURADOS,
                    SFACTURADOS[["Tipo de producto"]]=="Option")
 SFPlanesA<-subset(SFACTURADOS,
                   SFACTURADOS[["Tipo de producto"]]=="Plano tarifario" & 
@@ -73,13 +74,12 @@ SFPlanes<-subset(SFPlanes,SFPlanes[["Producto"]]!="T1P")
   SFPlanes2[["Duplicados"]]<-a
   SFPlanes2[["Duplicados2"]]<-b
   SFduplicados<-subset(SFPlanes2,SFPlanes2[["Duplicados"]]=="TRUE"|SFPlanes2[["Duplicados2"]]=="TRUE")
-  contador<-length(SFduplicados[["Acceso"]])
-  accesosunicos<-as.list(unique(SFPlanes2["Acceso"]))
+  SF_no_duplicados<-subset(SFPlanes2,SFPlanes2[["Duplicados"]]=="FALSE"&SFPlanes2[["Duplicados2"]]=="FALSE")
   SF_a_evaluar<- merge(SFduplicados,MOVISTAR_PLANES,by = "Producto",all.x = TRUE)
   SF_fueradecontratoSC<-subset(SF_a_evaluar,is.na(SF_a_evaluar[["Tipo"]])==TRUE & SF_a_evaluar[["Importe de las opciones descontadas (CLP)"]]==0)
   SF_fueradecontratoCC<-subset(SF_a_evaluar,is.na(SF_a_evaluar[["Tipo"]])==TRUE & SF_a_evaluar[["Importe de las opciones descontadas (CLP)"]]!=0)
-  SF_encontrato<-subset(SF_a_evaluar,is.na(SF_a_evaluar[["Tipo"]])==TRUE)
-  SF_CPduplicados<-rbind(SF_encontrato,SF_fueradecontratoCC)
+  SF_en_contrato<-subset(SF_a_evaluar,is.na(SF_a_evaluar[["Tipo"]])==FALSE)
+  SF_CPduplicados<-rbind(SF_en_contrato,SF_fueradecontratoCC)
   SF_CPduplicados[["Duplicado"]]<-NULL
   SF_CPduplicados[["Duplicado2"]]<-NULL
   a<-duplicated(SF_CPduplicados[["Acceso"]],fromLast = FALSE)
@@ -89,9 +89,21 @@ SFPlanes<-subset(SFPlanes,SFPlanes[["Producto"]]!="T1P")
 SFduplicados2<-subset(SF_CPduplicados,SF_CPduplicados[["Duplicados"]]=="TRUE"|SF_CPduplicados[["Duplicados2"]]=="TRUE")
 if(length(SFduplicados2[["Acceso"]])>0){
   accesosunicos<-as.list(unique(SFduplicados2["Acceso"]))
+  SF_unicos<-subset(SFPlanes,SFPlanes[["Acceso"]]==0&SFPlanes[["Acceso"]]!=0)
   for(i in 1:lengths(accesosunicos)){
     SFUnico<-subset(SFPlanes2,SFPlanes2[["Acceso"]] == as.character(accesosunicos[["Acceso"]][i]))
     
+    
+    SF_unicos[["Acceso"]][i]<-SFUnico[["Acceso"]][1]
+    for(j in 1:length(SFUnico[["Acceso"]]))
+    SF_unicos[["Estado acceso"]][i]<-
+      SF_unicos[["Producto"]][i]<-
+      SF_unicos[["Tipo de producto"]][i]<-
+      SF_unicos[["Centro de facturacion"]][i]<-
+      SF_unicos[["Importe de las opciones facturadas (CLP)"]][i]<-
+      SF_unicos[["Importe descuentos sobre plano tarifario (CLP)"]][i]<-
+      SF_unicos[["Importe de las opciones descontadas (CLP)"]][i]<-
+      SF_unicos[["Acceso fix"]][i]<-
   
   }
   
@@ -107,9 +119,4 @@ if(length(SFduplicados2[["Acceso"]])>0){
   
   
   
-  
-  
-  
-  
-  
-rm(Fact)
+}
