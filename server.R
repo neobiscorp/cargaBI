@@ -2214,10 +2214,10 @@ shinyServer(function(input, output, session) {
       file.remove("MOVISTAR_PLANES.txt")
       write.table(MOVISTAR_PLANES,
                   file = "MOVISTAR_PLANES.txt",
-                  fileEncoding = "UTF8")
+                  fileEncoding = "UTF-8")
       MOVISTAR_PLANES <-
-        read.table(file = "MOVISTAR_PLANES.txt", encoding = "UTF8")
-      names(MOVISTAR_PLANES) <- c("Producto", "Tipo de Producto","Tipo","Valor Plan","Minutos","GB","Valor minutos","R. Consumo de Datos","R. P por Q")
+        read.table(file = "MOVISTAR_PLANES.txt", encoding = "UTF-8")
+      names(MOVISTAR_PLANES) <- c("Producto","Descripcion","Tipo","Precio (CLP)","Voz (min)","Datos (KB)","Precio/min (CLP)","PrecioSC/min (CLP)","Precio/SMS (CLP)","Precio/KB (CLP)")
  
       dbWriteTable(
         DB,
@@ -2229,6 +2229,8 @@ shinyServer(function(input, output, session) {
         append = FALSE,
         allow.keywords = FALSE
       )
+      
+      file.remove("MOVISTAR_PLANES.txt")
       MOVISTAR_PLANES<<-MOVISTAR_PLANES
       ########################################MOVISTAR_OPCIONES############
       #FALTA DESARROLLARLO PARA LA PARTE 2 DE ANOMALIAS
@@ -2262,9 +2264,9 @@ shinyServer(function(input, output, session) {
       file.remove("MOVISTAR_PAISES.txt")
       write.table(MOVISTAR_PAISES,
                   file = "MOVISTAR_PAISES.txt",
-                  fileEncoding = "UTF8")
+                  fileEncoding = "UTF-8")
       MOVISTAR_PAISES <-
-        read.table(file = "MOVISTAR_PAISES.txt", encoding = "UTF8")
+        read.table(file = "MOVISTAR_PAISES.txt", encoding = "UTF-8")
       
       dbWriteTable(
         DB,
@@ -2278,9 +2280,186 @@ shinyServer(function(input, output, session) {
       )
       MOVISTAR_PAISES<<-MOVISTAR_PAISES
       }
+      if (!is.null(input$usos)){
+        SFOpciones<-subset(SFACTURADOS,
+                           SFACTURADOS[["Tipo de producto"]]=="Option")
+        SFPlanesA<-subset(SFACTURADOS,
+                          SFACTURADOS[["Tipo de producto"]]=="Plano tarifario" & 
+                            SFACTURADOS[["Estado acceso"]]=="Activo")
+        SFPlanesDb<-subset(SFACTURADOS,
+                           SFACTURADOS[["Tipo de producto"]]=="Plano tarifario" & 
+                             SFACTURADOS[["Estado acceso"]]=="Dado de baja")
+        SFPlanes<-rbind(SFPlanesDb,SFPlanesA)
+        #Excepcion para Aguas Andinas
+        if(nombre == "Aguas Andinas"){
+        SFPlanes<-subset(SFPlanes,SFPlanes[["Producto"]]!="T1P")}
+        Fact<-merge(uso,SFPlanes,by = c("Acceso fix","Acceso","Centro de facturacion"),all.x = TRUE)
+        facturas2<-facturas
+        facturas2[,'Proveedor']<-NULL
+        facturas2[,'Total sin impuestos']<-NULL
+        facturas2[,'Total imp. incluidos']<-NULL
+        facturas2[,'Importe IVA']<-NULL
+        facturas2[,'Divisa']<-NULL
+        facturas2[,'N. accesos facturados']<-NULL
+        facturas2[,'Fecha']<-NULL
+        Fact<<-merge(Fact,facturas2,by = "Centro de facturacion", all.x = TRUE)
+        Fact[["Acceso fix"]]<-NULL
+        
+        dbWriteTable(
+          DB,
+          "consolidado",
+          Fact,
+          field.types = NULL ,
+          row.names = FALSE,
+          overwrite = TRUE,
+          append = FALSE,
+          allow.keywords = FALSE
+        )
+        
+      }
     }
     #Run the following code if theres a file in the cdr file input
     if (!is.null(input$cdr)) {
+      if(client=="afm"){
+        CDRFile <<- NULL
+        #Read CDR file with correct fileencoding
+        CDRFile <<-
+          lapply(input$cdr[['datapath']], function(x) read.csv2(x,encoding = "UTF-8"))
+        
+        #join all CDR months
+        cdr <<- rbindlist(CDRFile)
+        
+        # #Change column names of the CDR
+        # names(cdr)[names(cdr) == 'NÃºmero.de.llamada'] <<-
+        #   'Numero de llamada'
+        # names(cdr)[names(cdr) == 'NÃºmero.llamado'] <<-
+        #   'Numero llamado'
+        # names(cdr)[names(cdr) == 'Tipo.de.llamada'] <<-
+        #   'Tipo de llamada'
+        # names(cdr)[names(cdr) == 'Fecha de llamada'] <<-
+        #   'Fecha de llamada'
+        # names(cdr)[names(cdr) == 'GeografÃ.a'] <<- 'Geografia'
+        # names(cdr)[names(cdr) == 'PaÃ.s.emisor'] <<- 'Pais emisor'
+        # names(cdr)[names(cdr) == 'PaÃ.s.destinatario'] <<-
+        #   'Pais destinatario'
+        # names(cdr)[names(cdr) == 'DuraciÃ³n'] <<- 'Duracion'
+        # names(cdr)[names(cdr) == 'Volumen'] <<- 'Volumen'
+        # names(cdr)[names(cdr) == 'Precio'] <<- 'Precio'
+        # names(cdr)[names(cdr) == 'OrganizaciÃ³n.Proveedor'] <<-
+        #   'Organizacion Proveedor'
+        # names(cdr)[names(cdr) == 'TarificaciÃ³n'] <<- 'Tarificacion'
+        # names(cdr)[names(cdr) == 'ï..Usuario'] <<- 'Usuario'
+        # names(cdr)[names(cdr) == 'TecnologÃ.a'] <<- 'Tecnologia'
+        # names(cdr)[names(cdr) == 'Red.recurrente'] <<-
+        #   'Red recurrente'
+        # names(cdr)[names(cdr) == 'Red.destinada'] <<- 'Red destinada'
+        # names(cdr)[names(cdr) == 'OrganizaciÃ³n.de.gestiÃ²n'] <<-
+        #   'Organización de gestion'
+        # names(cdr)[names(cdr) == 'VPN'] <<- 'VPN'
+        # names(cdr)[names(cdr) == 'Llamadas.internas'] <<-
+        #   'Llamadas internas'
+        # names(cdr)[names(cdr) == 'Servicio.llamado'] <<-
+        #   'Servicio llamado'
+        
+        #Change column names of the CDR
+        names(cdr)[names(cdr) == 'Número.de.llamada'] <<-
+          'Numero de llamada'
+        names(cdr)[names(cdr) == 'Número.llamado'] <<-
+          'Numero llamado'
+        names(cdr)[names(cdr) == 'Tipo de llamada'] <<-
+          'Tipo de llamada'
+        names(cdr)[names(cdr) == 'Fecha.de.llamada'] <<-
+          'Fecha de llamada'
+        names(cdr)[names(cdr) == 'Geografía'] <<- 'Geografia'
+        names(cdr)[names(cdr) == 'País.emisor'] <<- 'Pais emisor'
+        names(cdr)[names(cdr) == 'País.destinatario'] <<-
+          'Pais destinatario'
+        names(cdr)[names(cdr) == 'Duración'] <<- 'Duracion'
+        names(cdr)[names(cdr) == 'Volumen'] <<- 'Volumen'
+        names(cdr)[names(cdr) == 'Precio'] <<- 'Precio'
+        names(cdr)[names(cdr) == 'Organización.Proveedor'] <<-
+          'Organizacion Proveedor'
+        names(cdr)[names(cdr) == 'Tarificación'] <<- 'Tarificacion'
+        names(cdr)[names(cdr) == 'ï..Usuario'] <<- 'Usuario'
+        names(cdr)[names(cdr) == 'Tecnología'] <<- 'Tecnologia'
+        names(cdr)[names(cdr) == 'Red.recurrente'] <<-
+          'Red recurrente'
+        names(cdr)[names(cdr) == 'Red.destinada'] <<- 'Red destinada'
+        names(cdr)[names(cdr) == 'Organización.de.gestiòn'] <<-
+          'Organización de gestion'
+        names(cdr)[names(cdr) == 'VPN'] <<- 'VPN'
+        names(cdr)[names(cdr) == 'Llamadas.internas'] <<-
+          'Llamadas internas'
+        names(cdr)[names(cdr) == 'Servicio llamado'] <<-
+          'Servicio llamado'
+        
+        #delete not used columns
+        cdr[, 'X.U.FEFF.Usuario'] <<- NULL
+        cdr[, 'Tecnologia'] <<- NULL
+        cdr[, 'Red recurrente'] <<- NULL
+        cdr[, 'Red destinada'] <<- NULL
+        cdr[, 'Organización de gestion'] <<- NULL
+        cdr[, 'VPN'] <<- NULL
+        cdr[, 'Llamadas internas'] <<- NULL
+        
+        cdr[, 'Numero de llamada fix'] <<-
+          lapply(cdr[, 'Numero de llamada'], function(x)
+            substring(x, 3))
+        
+        file.remove("cdr.txt")
+        write.table(cdr, file = "cdr.txt", fileEncoding = "UTF-8")
+        cdr <<- read.table(file = "cdr.txt", encoding = "UTF-8")
+        names(cdr) <<-
+          c(
+            "Numero de llamada",
+            "Numero llamado",
+            "Tipo de llamada",
+            "Fecha de llamada",
+            "Geografia",
+            "Pais emisor",
+            "Pais destinatario",
+            "Duracion",
+            "Volumen",
+            "Precio",
+            "Organizacion Proveedor",
+            "Tarificacion",
+            "Servicio llamado",
+            "Numero de llamada fix"
+          )
+        
+        dbSendQuery(
+          DB,
+          "set names utf8mb4;"
+        )
+        
+        dbWriteTable(
+          DB,
+          "cdr",
+          cdr,
+          field.types = list(
+            `Numero de llamada` = "char(11)",
+            `Numero de llamada fix` = "int(9)",
+            `Numero llamado` = "varchar(20)",
+            `Tipo de llamada` = "ENUM('Datos','MMS','SMS','Voz','E-mail','Desconocidos') NOT NULL",
+            `Fecha de llamada` = "DATE",
+            `Geografia` = "ENUM('A internacional','Local','Regional','Nacional desconocido','Roaming entrante','Roaming saliente','Roaming desconocido','Internacional desconocido','Desconocidos') NOT NULL",
+            `Pais emisor` = "varchar(40)",
+            `Pais destinatario` = "varchar(40)",
+            `Duracion` = "SMALLINT(8) UNSIGNED NOT NULL",
+            `Volumen` = "MEDIUMINT(10) UNSIGNED NOT NULL",
+            `Precio` = "FLOAT(10,2) NOT NULL",
+            `Tarificacion` = "ENUM('En el plan','Más alla del plan','Desconocidos','Fuera de plan') NOT NULL",
+            `Servicio llamado` = "varchar(255)",
+            `Organizacion Proveedor` = "varchar(255)"
+          ),
+          row.names = FALSE,
+          overwrite = TRUE,
+          append = FALSE,
+          allow.keywords = FALSE
+        )
+        cdr<<-cdr
+      }
+      else{
       CDRFile <<- NULL
       #Read CDR file with correct fileencoding
       CDRFile <<-
@@ -2474,8 +2653,10 @@ shinyServer(function(input, output, session) {
       )
       
       cdr_accesses<<-cdr_accesses
-      
+      }
     }
+    
+
     #Run the following code if theres a ticket in the RFP excel checkbox
     if (input$excel == TRUE) {
       #open RFP Workbook
