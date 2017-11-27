@@ -2457,6 +2457,92 @@ shinyServer(function(input, output, session) {
           allow.keywords = FALSE
         )
         cdr<<-cdr
+        
+        if(!is.null(input$usos)&!is.null(planes)&!is.null(contrato)&!is.null(input$factura)){
+        source("pj_afm.r", local = TRUE)
+          dbWriteTable(
+            DB,
+            "SF_Planes",
+            SFPlanes,
+            field.types = list(
+              `Acceso` = "varchar(255)",
+              `Estado acceso` = "varchar(255)",
+              `Producto` = "varchar(255)",
+              `Tipo de producto` = "varchar(255)",
+              `Centro de facturacion` = "varchar(255)",
+              `Importe de las opciones facturadas (CLP)` = "double(15,2)",
+              `Importe descuentos sobre plano tarifario (CLP)` = "double(15,2)",
+              `Importe de las opciones descontadas (CLP)` = "double(15,2)",
+              `Acceso fix` = "varchar(255)"
+            ),
+            row.names = FALSE,
+            overwrite = TRUE,
+            append = FALSE,
+            allow.keywords = FALSE
+          )
+          dbWriteTable(
+            DB,
+            "SF_Opciones",
+            SFOpciones,
+            field.types = list(
+              `Acceso` = "varchar(255)",
+              `Estado acceso` = "varchar(255)",
+              `Producto` = "varchar(255)",
+              `Tipo de producto` = "varchar(255)",
+              `Centro de facturacion` = "varchar(255)",
+              `Importe de las opciones facturadas (CLP)` = "double(15,2)",
+              `Importe descuentos sobre plano tarifario (CLP)` = "double(15,2)",
+              `Importe de las opciones descontadas (CLP)` = "double(15,2)",
+              `Acceso fix` = "varchar(255)"
+            ),
+            row.names = FALSE,
+            overwrite = TRUE,
+            append = FALSE,
+            allow.keywords = FALSE
+          )
+          dbWriteTable(
+            DB,
+            "SF_Final",
+            SF_Final,
+            field.types = list(
+              `Acceso` = "varchar(255)",
+              `Estado acceso` = "varchar(255)",
+              `Producto` = "varchar(255)",
+              `Tipo de producto` = "varchar(255)",
+              `Centro de facturacion` = "varchar(255)",
+              `Importe de las opciones facturadas (CLP)` = "double(15,2)",
+              `Importe descuentos sobre plano tarifario (CLP)` = "double(15,2)",
+              `Importe de las opciones descontadas (CLP)` = "double(15,2)",
+              `Acceso fix` = "varchar(255)"
+            ),
+            row.names = FALSE,
+            overwrite = TRUE,
+            append = FALSE,
+            allow.keywords = FALSE
+          )
+          dbWriteTable(
+            DB,
+            "SF_Apartados",
+            SF_Apartados,
+            field.types = list(
+              `Acceso` = "varchar(255)",
+              `Estado acceso` = "varchar(255)",
+              `Producto` = "varchar(255)",
+              `Tipo de producto` = "varchar(255)",
+              `Centro de facturacion` = "varchar(255)",
+              `Importe de las opciones facturadas (CLP)` = "double(15,2)",
+              `Importe descuentos sobre plano tarifario (CLP)` = "double(15,2)",
+              `Importe de las opciones descontadas (CLP)` = "double(15,2)",
+              `Acceso fix` = "varchar(255)",
+              `Revisar` = "double(15,2)"
+            ),
+            row.names = FALSE,
+            overwrite = TRUE,
+            append = FALSE,
+            allow.keywords = FALSE
+          )
+          
+        }
       }
       else{
       CDRFile <<- NULL

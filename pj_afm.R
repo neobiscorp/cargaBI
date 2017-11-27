@@ -9,19 +9,8 @@ SFPlanesDb<-subset(SFACTURADOS,
                      SFACTURADOS[["Estado acceso"]]=="Dado de baja")
 SFPlanes<-rbind(SFPlanesDb,SFPlanesA)
 SFPlanes2<-SFPlanes
-SFPlanes<-subset(SFPlanes,SFPlanes[["Producto"]]!="T1P")
-  Fact<-merge(uso,SFPlanes,by = c("Acceso fix","Acceso","Centro de facturacion"),all.x = TRUE)
-  facturas2<-facturas
-  facturas2[,'Proveedor']<-NULL
-  facturas2[,'Total sin impuestos']<-NULL
-  facturas2[,'Total imp. incluidos']<-NULL
-  facturas2[,'Importe IVA']<-NULL
-  facturas2[,'Divisa']<-NULL
-  facturas2[,'N. accesos facturados']<-NULL
-  facturas2[,'Fecha']<-NULL
-  Fact<<-merge(Fact,facturas2,by = "Centro de facturacion", all.x = TRUE)
-  Fact[["Acceso fix"]]<-NULL
-  cdr2<-subset(cdr,(cdr[["Servicio llamado"]]=="Números especiales" | (cdr[["Pais emisor"]]!= "Chile" | cdr[["Pais destinatario"]]!="Chile"))&cdr[["Tipo de llamada"]]!="SMS")
+#SFPlanes<-subset(SFPlanes,SFPlanes[["Producto"]]!="T1P")
+  
   #########################Consolidado######
   # dbWriteTable(
   #   DB,
@@ -67,7 +56,7 @@ SFPlanes<-subset(SFPlanes,SFPlanes[["Producto"]]!="T1P")
   #   append = FALSE,
   #   allow.keywords = FALSE
   # )
-  ######################Planes Antiguos################
+  ######################Ajuste de Servicios Facturados################
   Productos_Contratados<-as.character(MOVISTAR_PLANES[["Producto"]])
   a<-duplicated(SFPlanes2[["Acceso"]],fromLast = FALSE)
   b<-duplicated(SFPlanes2[["Acceso"]],fromLast = TRUE)
@@ -77,6 +66,7 @@ SFPlanes<-subset(SFPlanes,SFPlanes[["Producto"]]!="T1P")
                          SFPlanes2[["Duplicados2"]]=="TRUE")
   SF_no_duplicados<-subset(SFPlanes2,SFPlanes2[["Duplicados"]]=="FALSE"&
                              SFPlanes2[["Duplicados2"]]=="FALSE")
+  if(length(SFduplicados[["Acceso"]])>0){
   SF_a_evaluar<- merge(SFduplicados,
                        MOVISTAR_PLANES,
                        by = "Producto",
@@ -137,11 +127,64 @@ if(length(SFduplicados2[["Acceso"]])>0){
 
     SFUnicos<-Accesos
     
-    }
+}
+else {
+  SFUnicos<-subset(SFACTURADOS,SFACTURADOS[["Acceso"]]==1&SFACTURADOS[["Acceso"]]!=1)
+
+  }
   SF_no_duplicados[["Duplicados"]]<-NULL
   SF_no_duplicados[["Duplicados2"]]<-NULL
   SFduplicadosbuenos2<-subset(SFduplicadosbuenos,select = c("Acceso","Estado acceso","Producto","Tipo de producto","Centro de facturacion","Importe de las opciones facturadas (CLP)",
                                                            "Importe descuentos sobre plano tarifario (CLP)","Importe de las opciones descontadas (CLP)","Acceso fix"))
-  SF_Final<-rbind(SF_no_duplicados,SFduplicadosbuenos2,SFUnicos)
-  rm(SF_a_evaluar,SF_CPduplicados,SF_en_contrato,SF_fueradecontratoCC,SF_no_duplicados,SFUnico,SFduplicados,SFduplicados2,SFduplicadosbuenos,SFduplicadosbuenos2,SFPlanes2,Accesos,accesosunicos)
-}
+  SF_Final<-rbind(SFUnicos,SF_no_duplicados,SFduplicadosbuenos2)
+  SFduplicados2<-subset(SFduplicados2,select = c("Acceso","Estado acceso","Producto","Tipo de producto","Centro de facturacion","Importe de las opciones facturadas (CLP)",
+                                                            "Importe descuentos sobre plano tarifario (CLP)","Importe de las opciones descontadas (CLP)","Acceso fix"))
+  SF_fueradecontratoSC<-subset(SF_fueradecontratoSC,select = c("Acceso","Estado acceso","Producto","Tipo de producto","Centro de facturacion","Importe de las opciones facturadas (CLP)",
+                                                 "Importe descuentos sobre plano tarifario (CLP)","Importe de las opciones descontadas (CLP)","Acceso fix"))
+  if(length(SFduplicados2[["Acceso"]])>0){
+  SFduplicados2<-SFduplicados2[order(x = SFduplicados2[["Acceso"]]),]
+  SFduplicados2["Revisar"]<-1
+  }
+  if(length(SF_fueradecontratoSC[["Acceso"]])>0){
+  SF_fueradecontratoSC["Revisar"]<-2
+  }
+  SF_Apartados<-rbind(SFduplicados2,SF_fueradecontratoSC)
+  }
+  else{
+    SF_Final<-SF_no_duplicados
+    SFPlanes2["Revisar"]<-0
+    SFduplicados<-subset(SFPlanes2,SFPlanes2[["Duplicados"]]=="TRUE"|
+                           SFPlanes2[["Duplicados2"]]=="TRUE")
+    SF_Apartados<-SF_duplicados
+  }
+  rm(SF_a_evaluar,SF_CPduplicados,SF_en_contrato,SF_fueradecontratoCC,SF_no_duplicados,SFduplicados,SFduplicados2,SFduplicadosbuenos,SFduplicadosbuenos2,SFPlanes2,SF_fueradecontratoSC,SFUnicos,SFPlanesA,SFPlanesDb)
+  
+################Consolidado############
+  Fact<-merge(uso,SF_Final,by = c("Acceso fix","Acceso","Centro de facturacion"),all.x = TRUE)
+  facturas2<-facturas
+  facturas2[,'Proveedor']<-NULL
+  facturas2[,'Total sin impuestos']<-NULL
+  facturas2[,'Total imp. incluidos']<-NULL
+  facturas2[,'Importe IVA']<-NULL
+  facturas2[,'Divisa']<-NULL
+  facturas2[,'N. accesos facturados']<-NULL
+  facturas2[,'Fecha']<-NULL
+  Fact<<-merge(Fact,facturas2,by = "Centro de facturacion", all.x = TRUE)
+  Fact[["Acceso fix"]]<-NULL
+  cdr2<-subset(cdr,(cdr[["Servicio llamado"]]=="Números especiales" | (cdr[["Pais emisor"]]!= "Chile" | cdr[["Pais destinatario"]]!="Chile"))&cdr[["Tipo de llamada"]]!="SMS")
+  cdr3<-subset(cdr,(cdr[["Servicio llamado"]]=="Números especiales"&cdr[["Tipo de llamada"]]!="SMS"))
+  Contratoplanes<-subset(MOVISTAR_PLANES,select = c("Producto","Precio (CLP)","Voz (min)","Datos (KB)","Precio/min (CLP)","PrecioSC/min (CLP)","Precio/SMS (CLP)","Precio/KB (CLP)"))
+  Consolidado<-merge(Fact,Contratoplanes,by = "Producto",all.x = TRUE)
+  Consolidado[,'Voz nac. (min)']<-Consolidado[,'Voz nacional (seg)']/60
+####################MIN ADICIONAL#################
+  MIN_ADICIONAL1<-subset(Consolidado,Consolidado[["Voz nac. (min)"]]>Consolidado[["Voz (min)"]]&Consolidado[["Voz (min)"]]>0)
+  
+  MIN_ADICIONAL1[,'Precio Real']<- (MIN_ADICIONAL1[,'Voz nac. (min)']-MIN_ADICIONAL1[,'Voz (min)'])*MIN_ADICIONAL1[,'PrecioSC/min (CLP)']
+  MIN_ADICIONAL1[,'Delta']<-MIN_ADICIONAL1[,'Voz nacional (CLP)']-MIN_ADICIONAL1[,'Precio Real']
+  MIN_ADICIONAL2<-subset(Consolidado,Consolidado[["Voz nac. (min)"]]<Consolidado[["Voz (min)"]]&Consolidado[["Voz nacional (CLP)"]]>0&Consolidado[["PrecioSC/min (CLP)"]]>0)
+  MIN_ADICIONAL2[,'Precio Real']<- 0
+  MIN_ADICIONAL2[,'Delta']<-MIN_ADICIONAL2[,'Voz nacional (CLP)']-MIN_ADICIONAL2[,'Precio Real']
+  
+  
+  MIN_ADICIONAL<-rbind(MIN_ADICIONAL1,MIN_ADICIONAL2)
+  }
