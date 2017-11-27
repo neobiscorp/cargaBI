@@ -32,6 +32,7 @@ SinUsos <-
       "usocant"
     )
   )
+SinUsos2<<-SinUsos
 #Se sube a la base de datos
   dbWriteTable(
     DB,
