@@ -2436,6 +2436,14 @@ shinyServer(function(input, output, session) {
             append = FALSE,
             allow.keywords = FALSE
           )
+          SFPlanes<-subset(SFPlanes,select = c("Acceso","Estado acceso","Producto","Tipo de producto","Centro de facturacion","Importe de las opciones facturadas (CLP)",
+                                                                       "Importe descuentos sobre plano tarifario (CLP)","Importe de las opciones descontadas (CLP)","Acceso fix"))
+          SFOpciones<-subset(SFOpciones,select = c("Acceso","Estado acceso","Producto","Tipo de producto","Centro de facturacion","Importe de las opciones facturadas (CLP)",
+                                               "Importe descuentos sobre plano tarifario (CLP)","Importe de las opciones descontadas (CLP)","Acceso fix"))
+          SF_Final<-subset(SF_Final,select = c("Acceso","Estado acceso","Producto","Tipo de producto","Centro de facturacion","Importe de las opciones facturadas (CLP)",
+                                               "Importe descuentos sobre plano tarifario (CLP)","Importe de las opciones descontadas (CLP)","Acceso fix"))
+          SF_Apartados<-subset(SF_Apartados,select = c("Acceso","Estado acceso","Producto","Tipo de producto","Centro de facturacion","Importe de las opciones facturadas (CLP)",
+                                               "Importe descuentos sobre plano tarifario (CLP)","Importe de las opciones descontadas (CLP)","Acceso fix","Revisar"))
           dbWriteTable(
             DB,
             "sf_planes",
