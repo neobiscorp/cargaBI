@@ -2321,6 +2321,7 @@ shinyServer(function(input, output, session) {
     #Run the following code if theres a file in the cdr file input
     if (!is.null(input$cdr)) {
       if(client=="afm"){
+        {
         CDRFile <<- NULL
         #Read CDR file with correct fileencoding
         CDRFile <<-
@@ -2458,12 +2459,13 @@ shinyServer(function(input, output, session) {
           allow.keywords = FALSE
         )
         cdr<<-cdr
-        
+      }
         if(!is.null(input$usos)&!is.null(planes)&!is.null(contrato)&!is.null(input$factura)){
+          cdr3<<-subset(cdr,(cdr[["Servicio llamado"]]=="Números especiales" & cdr[["Tipo de llamada"]]!="SMS"))
         source("pj_afm.r", local = TRUE)
           dbWriteTable(
             DB,
-            "SF_Planes",
+            "sf_planes",
             SFPlanes,
             field.types = list(
               `Acceso` = "varchar(255)",
@@ -2483,7 +2485,7 @@ shinyServer(function(input, output, session) {
           )
           dbWriteTable(
             DB,
-            "SF_Opciones",
+            "sf_opciones",
             SFOpciones,
             field.types = list(
               `Acceso` = "varchar(255)",
@@ -2503,7 +2505,7 @@ shinyServer(function(input, output, session) {
           )
           dbWriteTable(
             DB,
-            "SF_Final",
+            "sf_final",
             SF_Final,
             field.types = list(
               `Acceso` = "varchar(255)",
@@ -2523,7 +2525,7 @@ shinyServer(function(input, output, session) {
           )
           dbWriteTable(
             DB,
-            "SF_Apartados",
+            "sf_apartados",
             SF_Apartados,
             field.types = list(
               `Acceso` = "varchar(255)",
@@ -2542,7 +2544,59 @@ shinyServer(function(input, output, session) {
             append = FALSE,
             allow.keywords = FALSE
           )
-          
+          MIN_ADICIONAL<-subset(MIN_ADICIONAL,select = c(
+                                                          "Acceso",
+                                                          "Estado acceso",
+                                                          "Tipo",
+                                                          "Producto",
+                                                          "Centro de facturacion",
+                                                          "Cuenta cliente",
+                                                          "Factura",
+                                                          "Total (CLP)",
+                                                          "Plano tarifario (CLP)",
+                                                          "Voz (CLP)",
+                                                          "Voz nacional (CLP)",
+                                                          "N. Voz nacional",
+                                                          "Voz nacional (seg)",
+                                                          "Voz nac. (min)",
+                                                          "Voz (min)",
+                                                          "Delta minutos",
+                                                          "Precio Real",
+                                                          "Servicio llamado",
+                                                          "Delta"
+                                                          
+          ))
+          MIN_ADICIONAL<<-MIN_ADICIONAL
+          dbWriteTable(
+            DB,
+            "min_adicional",
+            MIN_ADICIONAL,
+            field.types = list(
+              `Acceso` = "varchar(255)",
+              `Estado acceso` = "varchar(255)",
+              `Tipo` = "varchar(255)",
+              `Producto` = "varchar(255)",
+              `Centro de facturacion` = "varchar(255)",
+              `Cuenta cliente` = "varchar(255)",
+              `Factura` = "varchar(255)",
+              `Total (CLP)` = "double(15,2)",
+              `Plano tarifario (CLP)` = "double(15,2)",
+              `Voz (CLP)` = "double(15,2)",
+              `Voz nacional (CLP)` = "double(15,2)",
+              `N. Voz nacional` = "double(15,2)",
+              `Voz nacional (seg)` = "double(15,2)",
+              `Voz nac. (min)` = "double(15,2)",
+              `Voz (min)` = "double(15,2)",
+              `Delta minutos` = "double(15,2)",
+              `Precio Real` = "double(15,2)",
+              `Servicio llamado` = "varchar(255)",
+              `Delta` = "double(15,2)"
+            ),
+            row.names = FALSE,
+            overwrite = TRUE,
+            append = FALSE,
+            allow.keywords = FALSE
+          )
         }
       }
       else{

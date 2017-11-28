@@ -1,6 +1,7 @@
 {
   SFOpciones<-subset(SFACTURADOS,
                    SFACTURADOS[["Tipo de producto"]]=="Option")
+  SFOpciones<<-SFOpciones
 SFPlanesA<-subset(SFACTURADOS,
                   SFACTURADOS[["Tipo de producto"]]=="Plano tarifario" & 
                     SFACTURADOS[["Estado acceso"]]=="Activo")
@@ -8,6 +9,7 @@ SFPlanesDb<-subset(SFACTURADOS,
                    SFACTURADOS[["Tipo de producto"]]=="Plano tarifario" & 
                      SFACTURADOS[["Estado acceso"]]=="Dado de baja")
 SFPlanes<-rbind(SFPlanesDb,SFPlanesA)
+SFPlanes<<-SFPlanes
 SFPlanes2<-SFPlanes
 #SFPlanes<-subset(SFPlanes,SFPlanes[["Producto"]]!="T1P")
   
@@ -158,9 +160,10 @@ else {
     SF_Apartados<-SF_duplicados
   }
   rm(SF_a_evaluar,SF_CPduplicados,SF_en_contrato,SF_fueradecontratoCC,SF_no_duplicados,SFduplicados,SFduplicados2,SFduplicadosbuenos,SFduplicadosbuenos2,SFPlanes2,SF_fueradecontratoSC,SFUnicos,SFPlanesA,SFPlanesDb)
-  
+  SF_Final<<-SF_Final
+  SF_Apartados<<-SF_Apartados
 ################Consolidado############
-  Fact<-merge(uso,SF_Final,by = c("Acceso fix","Acceso","Centro de facturacion"),all.x = TRUE)
+  Fact<<-merge(uso,SF_Final,by = c("Acceso fix","Acceso","Centro de facturacion"),all.x = TRUE)
   facturas2<-facturas
   facturas2[,'Proveedor']<-NULL
   facturas2[,'Total sin impuestos']<-NULL
@@ -169,22 +172,29 @@ else {
   facturas2[,'Divisa']<-NULL
   facturas2[,'N. accesos facturados']<-NULL
   facturas2[,'Fecha']<-NULL
+  facturas2<<-facturas2
   Fact<<-merge(Fact,facturas2,by = "Centro de facturacion", all.x = TRUE)
   Fact[["Acceso fix"]]<-NULL
-  cdr2<-subset(cdr,(cdr[["Servicio llamado"]]=="Números especiales" | (cdr[["Pais emisor"]]!= "Chile" | cdr[["Pais destinatario"]]!="Chile"))&cdr[["Tipo de llamada"]]!="SMS")
-  cdr3<-subset(cdr,(cdr[["Servicio llamado"]]=="Números especiales"&cdr[["Tipo de llamada"]]!="SMS"))
+  
   Contratoplanes<-subset(MOVISTAR_PLANES,select = c("Producto","Precio (CLP)","Voz (min)","Datos (KB)","Precio/min (CLP)","PrecioSC/min (CLP)","Precio/SMS (CLP)","Precio/KB (CLP)"))
-  Consolidado<-merge(Fact,Contratoplanes,by = "Producto",all.x = TRUE)
+  Consolidado<<-merge(Fact,Contratoplanes,by = "Producto",all.x = TRUE)
   Consolidado[,'Voz nac. (min)']<-Consolidado[,'Voz nacional (seg)']/60
 ####################MIN ADICIONAL#################
-  MIN_ADICIONAL1<-subset(Consolidado,Consolidado[["Voz nac. (min)"]]>Consolidado[["Voz (min)"]]&Consolidado[["Voz (min)"]]>0)
-  
+
+  MIN_ADICIONAL1<<-subset(Consolidado,Consolidado[["Voz nac. (min)"]]>Consolidado[["Voz (min)"]]&Consolidado[["Voz (min)"]]>0)
+  MIN_ADICIONAL1[,'Delta minutos']<-MIN_ADICIONAL1[,'Voz nac. (min)']-MIN_ADICIONAL1[,'Voz (min)']
   MIN_ADICIONAL1[,'Precio Real']<- (MIN_ADICIONAL1[,'Voz nac. (min)']-MIN_ADICIONAL1[,'Voz (min)'])*MIN_ADICIONAL1[,'PrecioSC/min (CLP)']
   MIN_ADICIONAL1[,'Delta']<-MIN_ADICIONAL1[,'Voz nacional (CLP)']-MIN_ADICIONAL1[,'Precio Real']
   MIN_ADICIONAL2<-subset(Consolidado,Consolidado[["Voz nac. (min)"]]<Consolidado[["Voz (min)"]]&Consolidado[["Voz nacional (CLP)"]]>0&Consolidado[["PrecioSC/min (CLP)"]]>0)
+  MIN_ADICIONAL2[,'Delta minutos']<-MIN_ADICIONAL2[,'Voz nac. (min)']-MIN_ADICIONAL2[,'Voz (min)']
   MIN_ADICIONAL2[,'Precio Real']<- 0
   MIN_ADICIONAL2[,'Delta']<-MIN_ADICIONAL2[,'Voz nacional (CLP)']-MIN_ADICIONAL2[,'Precio Real']
-  
-  
-  MIN_ADICIONAL<-rbind(MIN_ADICIONAL1,MIN_ADICIONAL2)
+  cdr4<-subset(cdr3,select = c("Numero de llamada","Servicio llamado"))
+  MIN_ADICIONAL<<-rbind(MIN_ADICIONAL1,MIN_ADICIONAL2)
+  MIN_ADICIONAL<<-merge(MIN_ADICIONAL,cdr3,by.x = "Acceso",by.y = "Numero de llamada",all.x = TRUE)
+  a<-duplicated(MIN_ADICIONAL[["Acceso"]],fromLast = FALSE)
+  MIN_ADICIONAL[["Duplicados"]]<-a
+  MIN_ADICIONAL<-subset(MIN_ADICIONAL,MIN_ADICIONAL[["Duplicados"]]=="FALSE")
+  MIN_ADICIONAL[["Duplicados"]]<-NULL
+  MIN_ADICIONAL<<-MIN_ADICIONAL
   }
