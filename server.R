@@ -2280,43 +2280,6 @@ shinyServer(function(input, output, session) {
       )
       MOVISTAR_PAISES<<-MOVISTAR_PAISES
       }
-      if (!is.null(input$usos)){
-        SFOpciones<-subset(SFACTURADOS,
-                           SFACTURADOS[["Tipo de producto"]]=="Option")
-        SFPlanesA<-subset(SFACTURADOS,
-                          SFACTURADOS[["Tipo de producto"]]=="Plano tarifario" & 
-                            SFACTURADOS[["Estado acceso"]]=="Activo")
-        SFPlanesDb<-subset(SFACTURADOS,
-                           SFACTURADOS[["Tipo de producto"]]=="Plano tarifario" & 
-                             SFACTURADOS[["Estado acceso"]]=="Dado de baja")
-        SFPlanes<-rbind(SFPlanesDb,SFPlanesA)
-        #Excepcion para Aguas Andinas
-        if(nombre == "Aguas Andinas"){
-        SFPlanes<-subset(SFPlanes,SFPlanes[["Producto"]]!="T1P")}
-        Fact<-merge(uso,SFPlanes,by = c("Acceso fix","Acceso","Centro de facturacion"),all.x = TRUE)
-        facturas2<-facturas
-        facturas2[,'Proveedor']<-NULL
-        facturas2[,'Total sin impuestos']<-NULL
-        facturas2[,'Total imp. incluidos']<-NULL
-        facturas2[,'Importe IVA']<-NULL
-        facturas2[,'Divisa']<-NULL
-        facturas2[,'N. accesos facturados']<-NULL
-        facturas2[,'Fecha']<-NULL
-        Fact<-merge(Fact,facturas2,by = "Centro de facturacion", all.x = TRUE)
-        Fact[["Acceso fix"]]<-NULL
-        Fact<<-Fact
-        dbWriteTable(
-          DB,
-          "consolidado",
-          Fact,
-          field.types = NULL ,
-          row.names = FALSE,
-          overwrite = TRUE,
-          append = FALSE,
-          allow.keywords = FALSE
-        )
-        
-      }
     }
     #Run the following code if theres a file in the cdr file input
     if (!is.null(input$cdr)) {
@@ -2463,6 +2426,17 @@ shinyServer(function(input, output, session) {
         if(!is.null(input$usos)&!is.null(planes)&!is.null(contrato)&!is.null(input$factura)){
           cdr3<<-subset(cdr,(cdr[["Servicio llamado"]]=="Números especiales" & cdr[["Tipo de llamada"]]!="SMS"))
         source("pj_afm.r", local = TRUE)
+          
+          dbWriteTable(
+            DB,
+            "consolidado",
+            Fact,
+            field.types = NULL ,
+            row.names = FALSE,
+            overwrite = TRUE,
+            append = FALSE,
+            allow.keywords = FALSE
+          )
           dbWriteTable(
             DB,
             "sf_planes",

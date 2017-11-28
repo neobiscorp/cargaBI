@@ -190,11 +190,14 @@ else {
   MIN_ADICIONAL2[,'Precio Real']<- 0
   MIN_ADICIONAL2[,'Delta']<-MIN_ADICIONAL2[,'Voz nacional (CLP)']-MIN_ADICIONAL2[,'Precio Real']
   cdr4<-subset(cdr3,select = c("Numero de llamada","Servicio llamado"))
+  
   MIN_ADICIONAL<<-rbind(MIN_ADICIONAL1,MIN_ADICIONAL2)
+  
   MIN_ADICIONAL<<-merge(MIN_ADICIONAL,cdr3,by.x = "Acceso",by.y = "Numero de llamada",all.x = TRUE)
   a<-duplicated(MIN_ADICIONAL[["Acceso"]],fromLast = FALSE)
   MIN_ADICIONAL[["Duplicados"]]<-a
   MIN_ADICIONAL<-subset(MIN_ADICIONAL,MIN_ADICIONAL[["Duplicados"]]=="FALSE")
   MIN_ADICIONAL[["Duplicados"]]<-NULL
   MIN_ADICIONAL<<-MIN_ADICIONAL
+  
   }
