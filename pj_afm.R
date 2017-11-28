@@ -155,9 +155,9 @@ else {
   else{
     SF_Final<-SF_no_duplicados
     SFPlanes2["Revisar"]<-0
-    SFduplicados<-subset(SFPlanes2,SFPlanes2[["Duplicados"]]=="TRUE"|
+    SF_Apartados<-subset(SFPlanes2,SFPlanes2[["Duplicados"]]=="TRUE"|
                            SFPlanes2[["Duplicados2"]]=="TRUE")
-    SF_Apartados<-SF_duplicados
+   
   }
   rm(SF_a_evaluar,SF_CPduplicados,SF_en_contrato,SF_fueradecontratoCC,SF_no_duplicados,SFduplicados,SFduplicados2,SFduplicadosbuenos,SFduplicadosbuenos2,SFPlanes2,SF_fueradecontratoSC,SFUnicos,SFPlanesA,SFPlanesDb)
   SF_Final<<-SF_Final
