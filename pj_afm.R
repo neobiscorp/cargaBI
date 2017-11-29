@@ -175,8 +175,9 @@ else {
   facturas2<<-facturas2
   Fact<<-merge(Fact,facturas2,by = "Centro de facturacion", all.x = TRUE)
   Fact[["Acceso fix"]]<-NULL
-  
-  Contratoplanes<-subset(MOVISTAR_PLANES,select = c("Producto","Precio (CLP)","Voz (min)","Datos (KB)","Precio/min (CLP)","PrecioSC/min (CLP)","Precio/SMS (CLP)","Precio/KB (CLP)"))
+  Contratoplanes<-subset(MOVISTAR_PLANES,select = c("Producto","Tipo","Precio (CLP)","Voz (min)","Datos (KB)","Precio/min (CLP)","PrecioSC/min (CLP)","Precio/SMS (CLP)","Precio/KB (CLP)"))
+  Contratoplanes[,'Tipo Contrato']<-Contratoplanes[,'Tipo']
+  Contratoplanes[["Tipo"]]<-NULL
   Consolidado<<-merge(Fact,Contratoplanes,by = "Producto",all.x = TRUE)
   Consolidado[,'Voz nac. (min)']<-Consolidado[,'Voz nacional (seg)']/60
 ####################MIN ADICIONAL#################
@@ -199,5 +200,29 @@ else {
   MIN_ADICIONAL<-subset(MIN_ADICIONAL,MIN_ADICIONAL[["Duplicados"]]=="FALSE")
   MIN_ADICIONAL[["Duplicados"]]<-NULL
   MIN_ADICIONAL<<-MIN_ADICIONAL
+  print("Total min adicional")
+  print(sum(MIN_ADICIONAL[["Delta"]]))
+##########################DENTRO DEL PLAN##############
+  PlanContrato<-subset(Consolidado,Consolidado[["Importe de las opciones descontadas (CLP)"]]!=Consolidado[["Precio (CLP)"]]&Consolidado[["Precio (CLP)"]]!=0&Consolidado[["Estado acceso"]]=="Activo")
+  PlanContrato[,'Delta']<-PlanContrato[,'Importe de las opciones descontadas (CLP)']-PlanContrato[,'Precio (CLP)']
+  PlanContrato<<-subset(PlanContrato,PlanContrato[["Delta"]]>0)
+  print("Total Plan Contrato")
+  print(sum(PlanContrato[["Delta"]]))
+  PlanContratoGranel<-subset(Consolidado,Consolidado[["Precio (CLP)"]]==0&Consolidado[["Estado acceso"]]=="Activo")
+  PlanContratoGranel[,'Delta']<-PlanContratoGranel[["Voz nacional (CLP)"]]+PlanContratoGranel[["Importe de las opciones descontadas (CLP)"]]-((PlanContratoGranel[,'Voz nacional (seg)']/60)*PlanContratoGranel[,'Precio/min (CLP)'])
+  PlanContratoGranel<<-subset(PlanContratoGranel,PlanContratoGranel[["Delta"]]>0)
+  
+#################################Voz Nacional################## 
+  Consolidado2<-subset(Consolidado,Consolidado[["Tipo"]]=="MÃ³vil")
+  if(length(Consolidado2[["Acceso"]])>0){
+  Consolidado2[["Tipo2"]]<-"Móvil"
+  Consolidado2[["Tipo"]]<-NULL
+  Consolidado2[["Tipo"]]<-Consolidado2[["Tipo2"]]
+  Consolidado2[["Tipo2"]]<-NULL
+  Consolidado3<-subset(Consolidado,Consolidado[["Tipo"]]!="MÃ³vil")
+  Consolidado2<-rbind(Consolidado2,Consolidado3)
+}
+  VozNacional<-subset(Consolidado2,Consolidado2[["Estado acceso"]]=="Activo"&Consolidado2[["Tipo Contrato"]]!="Móvil"& Consolidado2[["Voz (CLP)"]]>0)
+  VozNacional[,'Delta']<-VozNacional[,'Voz (CLP)']
   
   }

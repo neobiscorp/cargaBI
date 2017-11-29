@@ -2423,6 +2423,7 @@ shinyServer(function(input, output, session) {
         cdr<<-cdr
       }
         if(!is.null(input$usos)&!is.null(planes)&!is.null(contrato)&!is.null(input$factura)){
+          cdr2<<-subset(cdr,(cdr[["Geografia"]]!="Nacional desconocido"& cdr[["Tipo de llamada"]]!="SMS"))
           cdr3<<-subset(cdr,(cdr[["Servicio llamado"]]=="Números especiales" & cdr[["Tipo de llamada"]]!="SMS"))
         source("pj_afm.r", local = TRUE)
           
@@ -2544,9 +2545,7 @@ shinyServer(function(input, output, session) {
                                                           "Delta minutos",
                                                           "Precio Real",
                                                           "Servicio llamado",
-                                                          "Delta"
-                                                          
-          ))
+                                                          "Delta"))
           MIN_ADICIONAL<<-MIN_ADICIONAL
           dbWriteTable(
             DB,
@@ -2578,6 +2577,7 @@ shinyServer(function(input, output, session) {
             append = FALSE,
             allow.keywords = FALSE
           )
+          
         }
       }
       else{
