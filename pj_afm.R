@@ -211,7 +211,8 @@ else {
   PlanContratoGranel<-subset(Consolidado,Consolidado[["Precio (CLP)"]]==0&Consolidado[["Estado acceso"]]=="Activo")
   PlanContratoGranel[,'Delta']<-PlanContratoGranel[["Voz nacional (CLP)"]]+PlanContratoGranel[["Importe de las opciones descontadas (CLP)"]]-((PlanContratoGranel[,'Voz nacional (seg)']/60)*PlanContratoGranel[,'Precio/min (CLP)'])
   PlanContratoGranel<<-subset(PlanContratoGranel,PlanContratoGranel[["Delta"]]>0)
-  
+  print("Total Plan Granel")
+  print(sum(PlanContratoGranel[["Delta"]]))
 #################################Voz Nacional################## 
   Consolidado2<-subset(Consolidado,Consolidado[["Tipo"]]=="MÃ³vil")
   if(length(Consolidado2[["Acceso"]])>0){
@@ -222,7 +223,8 @@ else {
   Consolidado3<-subset(Consolidado,Consolidado[["Tipo"]]!="MÃ³vil")
   Consolidado2<-rbind(Consolidado2,Consolidado3)
 }
-  VozNacional<-subset(Consolidado2,Consolidado2[["Estado acceso"]]=="Activo"&Consolidado2[["Tipo Contrato"]]!="Móvil"& Consolidado2[["Voz (CLP)"]]>0)
+  VozNacional<-subset(Consolidado2,Consolidado2[["Estado acceso"]]=="Activo" & Consolidado2[["Tipo Contrato"]]!="Móvil"& Consolidado2[["Voz (CLP)"]]>0)
   VozNacional[,'Delta']<-VozNacional[,'Voz (CLP)']
-  
+  VozNacional<-subset(VozNacional,VozNacional[["Delta"]]>0)
+  VozNacional<<-VozNacional
   }
