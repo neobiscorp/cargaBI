@@ -2427,7 +2427,7 @@ shinyServer(function(input, output, session) {
           cdr2<<-subset(cdr,(cdr[["Geografia"]]!="Nacional desconocido"& cdr[["Tipo de llamada"]]!="SMS"))
           cdr3<<-subset(cdr,(cdr[["Servicio llamado"]]=="Números especiales" & cdr[["Tipo de llamada"]]!="SMS"))
         source("pj_afm.r", local = TRUE)
-          
+############Consolidado###########
           dbWriteTable(
             DB,
             "consolidado",
@@ -2438,6 +2438,7 @@ shinyServer(function(input, output, session) {
             append = FALSE,
             allow.keywords = FALSE
           )
+##################Servicios Facturados###############
           SFPlanes<-subset(SFPlanes,select = c("Acceso","Estado acceso","Producto","Tipo de producto","Centro de facturacion","Importe de las opciones facturadas (CLP)",
                                                                        "Importe descuentos sobre plano tarifario (CLP)","Importe de las opciones descontadas (CLP)","Acceso fix"))
           SFOpciones<-subset(SFOpciones,select = c("Acceso","Estado acceso","Producto","Tipo de producto","Centro de facturacion","Importe de las opciones facturadas (CLP)",
@@ -2527,6 +2528,7 @@ shinyServer(function(input, output, session) {
             append = FALSE,
             allow.keywords = FALSE
           )
+##################Min Adicional###################
           MIN_ADICIONAL<-subset(MIN_ADICIONAL,select = c(
                                                           "Acceso",
                                                           "Estado acceso",
@@ -2578,7 +2580,100 @@ shinyServer(function(input, output, session) {
             append = FALSE,
             allow.keywords = FALSE
           )
+#################Voz Nacional################
+          VozNacional<-subset(VozNacional,select = c("Acceso",
+                                                     "Estado acceso",
+                                                     "Tipo Contrato",
+                                                     "Producto",
+                                                     "Centro de facturacion",
+                                                     "Cuenta cliente",
+                                                     "Factura",
+                                                     "Total (CLP)",
+                                                     "Plano tarifario (CLP)",
+                                                     "Voz (CLP)",
+                                                     "Voz nacional (CLP)",
+                                                     "N. Voz nacional",
+                                                     "Voz nacional (seg)",
+                                                     "Delta"))
+          VozNacional<<-VozNacional
+          dbWriteTable(
+            DB,
+            "voznacional",
+            VozNacional,
+            field.types = list(
+              `Acceso` = "varchar(255)",
+              `Estado acceso` = "varchar(255)",
+              `Tipo Contrato` = "varchar(255)",
+              `Producto` = "varchar(255)",
+              `Centro de facturacion` = "varchar(255)",
+              `Cuenta cliente` = "varchar(255)",
+              `Factura` = "varchar(255)",
+              `Total (CLP)` = "double(15,2)",
+              `Plano tarifario (CLP)` = "double(15,2)",
+              `Voz (CLP)` = "double(15,2)",
+              `Voz nacional (CLP)` = "double(15,2)",
+              `N. Voz nacional` = "double(15,2)",
+              `Voz nacional (seg)` = "double(15,2)",
+              `Delta` = "double(15,2)"
+            ),
+            row.names = FALSE,
+            overwrite = TRUE,
+            append = FALSE,
+            allow.keywords = FALSE
+          )
           
+          
+        
+#################Plan Contrato###################
+          PlanContrato<-subset(PlanContrato,select = c("Acceso",
+                                                       "Estado acceso",
+                                                       "Tipo Contrato",
+                                                       "Producto",
+                                                       "Centro de facturacion",
+                                                       "Cuenta cliente",
+                                                       "Factura",
+                                                       "Importe de las opciones facturadas (CLP)",
+                                                       "Importe descuentos sobre plano tarifario (CLP)",
+                                                       "Importe de las opciones descontadas (CLP)",
+                                                       "Precio (CLP)",
+                                                       "Delta"))
+          PlanContrato<<-PlanContrato
+          dbWriteTable(
+            DB,
+            "plancontrato",
+            PlanContrato,
+            field.types = list(
+              `Acceso` = "varchar(255)",
+              `Estado acceso` = "varchar(255)",
+              `Tipo Contrato` = "varchar(255)",
+              `Producto` = "varchar(255)",
+              `Centro de facturacion` = "varchar(255)",
+              `Cuenta cliente` = "varchar(255)",
+              `Factura` = "varchar(255)",
+              `Importe de las opciones facturadas (CLP)` = "double(15,2)",
+              `Importe descuentos sobre plano tarifario (CLP)` = "double(15,2)",
+              `Importe de las opciones descontadas (CLP)` = "double(15,2)",
+              `Precio (CLP)` = "double(15,2)",
+              `Delta` = "double(15,2)"
+            ),
+            row.names = FALSE,
+            overwrite = TRUE,
+            append = FALSE,
+            allow.keywords = FALSE
+          )
+#################Plan Granel#####################
+          PlanContratoGranel<-subset(PlanContratoGranel,select = c("Acceso",
+                                                                   "Estado acceso",
+                                                                   "Tipo Contrato",
+                                                                   "Producto",
+                                                                   "Centro de facturacion",
+                                                                   "Cuenta cliente",
+                                                                   "Factura",
+                                                                   "Importe de las opciones facturadas (CLP)",
+                                                                   "Importe descuentos sobre plano tarifario (CLP)",
+                                                                   "Importe de las opciones descontadas (CLP)",
+                                                                   "Precio (CLP)",
+                                                                   "Delta"))
         }
       }
       else{
