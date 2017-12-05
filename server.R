@@ -1974,10 +1974,10 @@ shinyServer(function(input, output, session) {
         file.copy(planes$datapath,
                   paste(planes$datapath, ".xlsx", sep = ""))
         
-        SFACTURADOS <- read.xlsx(planes$datapath,
+        SFACTURADOS <<- read.xlsx(planes$datapath,
                           sheet = "Uso por accesoproducto",
                           startRow = 1)
-        SFACTURADOS <-
+        SFACTURADOS <<-
           subset(
             SFACTURADOS,
             select = c(
@@ -2011,11 +2011,13 @@ shinyServer(function(input, output, session) {
         SFACTURADOS[, 'Acceso fix'] <-
           lapply(SFACTURADOS['Acceso'], function(x)
             substring(x, 3))
+       
         SFACTURADOS3 <- subset(SFACTURADOS,is.na(SFACTURADOS[["Importe descuentos sobre plano tarifario (CLP)"]])==TRUE)
         SFACTURADOS2 <- subset(SFACTURADOS,is.na(SFACTURADOS[["Importe descuentos sobre plano tarifario (CLP)"]])==FALSE)
+        if(lenght(SFACTURADOS3[["Acceso"]])>0){
         SFACTURADOS3[,'Importe descuentos sobre plano tarifario (CLP)']<- 0
         SFACTURADOS<-rbind(SFACTURADOS3,SFACTURADOS2)
-        
+        }
         dbWriteTable(
           DB,
           "servicios_facturados",
@@ -2245,7 +2247,7 @@ shinyServer(function(input, output, session) {
                   fileEncoding = "UTF8")
       MOVISTAR_OPCIONES <<-
         read.table(file = "MOVISTAR_OPCIONES.txt", encoding = "UTF8")
-      names(MOVISTAR_OPCIONES) <- c("Opciones","Tipo","Valor Opcion","Minutos","KB","Duracion")
+      names(MOVISTAR_OPCIONES) <<- c("Opciones","Tipo","Valor Opcion","Minutos","KB","Duracion")
       
       dbWriteTable(
         DB,
