@@ -160,6 +160,10 @@ else {
    
   }
   rm(SF_a_evaluar,SF_CPduplicados,SF_en_contrato,SF_fueradecontratoCC,SF_no_duplicados,SFduplicados,SFduplicados2,SFduplicadosbuenos,SFduplicadosbuenos2,SFPlanes2,SF_fueradecontratoSC,SFUnicos,SFPlanesA,SFPlanesDb)
+  SFPlanes_final<<-SF_Final
+  if(length(SFOpciones[["Acceso"]])>0){
+  SF_Final<-rbind(SF_Final,SFOpciones)
+  }
   SF_Final<<-SF_Final
   SF_Apartados<<-SF_Apartados
 

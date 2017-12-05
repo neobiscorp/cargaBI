@@ -2431,7 +2431,7 @@ shinyServer(function(input, output, session) {
         source("pj_afm.r", local = TRUE)
           {
           ################Consolidado############
-          Fact<<-merge(uso,SF_Final,by = c("Acceso fix","Acceso","Centro de facturacion"),all.x = TRUE)
+          Fact<<-merge(uso,SFPlanes_Final,by = c("Acceso fix","Acceso","Centro de facturacion"),all.x = TRUE)
           facturas2<-facturas
           facturas2[,'Proveedor']<-NULL
           facturas2[,'Total sin impuestos']<-NULL
