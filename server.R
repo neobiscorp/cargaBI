@@ -2470,13 +2470,13 @@ shinyServer(function(input, output, session) {
           MIN_ADICIONAL<<-MIN_ADICIONAL
           print("Total min adicional")
           print(sum(MIN_ADICIONAL[["Delta"]]))
-          ##########################DENTRO DEL PLAN##############
+          ##########################CONTRATO PLAN Y A GRANEL##############
           PlanContrato<<-subset(Consolidado,Consolidado[["Importe de las opciones descontadas (CLP)"]]!=Consolidado[["Precio (CLP)"]]&Consolidado[["Precio (CLP)"]]!=0&Consolidado[["Estado acceso"]]=="Activo")
           PlanContrato[,'Delta']<<-PlanContrato[,'Importe de las opciones descontadas (CLP)']-PlanContrato[,'Precio (CLP)']
           PlanContrato<<-subset(PlanContrato,PlanContrato[["Delta"]]>0)
           print("Total Plan Contrato")
           print(sum(PlanContrato[["Delta"]]))
-          PlanContratoGranel<<-subset(Consolidado,Consolidado[["Precio (CLP)"]]==0&Consolidado[["Estado acceso"]]=="Activo")
+          PlanContratoGranel<<-subset(Consolidado,Consolidado[["Precio/min (CLP)"]]>0&Consolidado[["Estado acceso"]]=="Activo")
           PlanContratoGranel[,'Precio real (CLP)']<<-(PlanContratoGranel[,'Voz nacional (seg)']/60)*PlanContratoGranel[,'Precio/min (CLP)']
           PlanContratoGranel[,'Delta']<<-PlanContratoGranel[["Voz nacional (CLP)"]]+PlanContratoGranel[["Importe de las opciones descontadas (CLP)"]]-((PlanContratoGranel[,'Voz nacional (seg)']/60)*PlanContratoGranel[,'Precio/min (CLP)'])
           PlanContratoGranel<<-subset(PlanContratoGranel,PlanContratoGranel[["Delta"]]>0)
