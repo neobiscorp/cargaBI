@@ -2014,7 +2014,7 @@ shinyServer(function(input, output, session) {
        
         SFACTURADOS3 <- subset(SFACTURADOS,is.na(SFACTURADOS[["Importe descuentos sobre plano tarifario (CLP)"]])==TRUE)
         SFACTURADOS2 <- subset(SFACTURADOS,is.na(SFACTURADOS[["Importe descuentos sobre plano tarifario (CLP)"]])==FALSE)
-        if(lenght(SFACTURADOS3[["Acceso"]])>0){
+        if(length(SFACTURADOS3[["Acceso"]])>0){
         SFACTURADOS3[,'Importe descuentos sobre plano tarifario (CLP)']<- 0
         SFACTURADOS<-rbind(SFACTURADOS3,SFACTURADOS2)
         }
