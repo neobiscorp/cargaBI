@@ -198,7 +198,7 @@ shinyServer(function(input, output, session) {
       dataFilesUF <<- lapply(input$usos[['datapath']], read.csv2)
      
       #Append all usos files to the same dataframe
-      if (client == "igm" | client == "agm"){
+      if (client == "igm"){
       uso <<- rbindlist(dataFilesUF,fill = TRUE)}
       else{
       uso <<- rbindlist(dataFilesUF)}
@@ -2470,7 +2470,8 @@ shinyServer(function(input, output, session) {
         source("pj_afm.r", local = TRUE)
           {
           ################Consolidado############
-          Fact<<-merge(uso,SFPlanes_Final,by = c("Acceso fix","Acceso","Centro de facturacion"),all.x = TRUE)
+            SFPlanes_final<-SFPlanes_final
+          Fact<<-merge(uso,SFPlanes_final,by = c("Acceso fix","Acceso","Centro de facturacion"),all.x = TRUE)
           facturas2<-facturas
           facturas2[,'Proveedor']<-NULL
           facturas2[,'Total sin impuestos']<-NULL
@@ -2549,7 +2550,7 @@ shinyServer(function(input, output, session) {
             allow.keywords = FALSE
           )
 ##################Servicios Facturados###############
-          SFPlanes<-subset(SFPlanes,select = c("Acceso","Estado acceso","Producto","Tipo de producto","Centro de facturacion","Importe de las opciones facturadas (CLP)",
+          SFPlanes<-subset(SFPlanes_final,select = c("Acceso","Estado acceso","Producto","Tipo de producto","Centro de facturacion","Importe de las opciones facturadas (CLP)",
                                                                        "Importe descuentos sobre plano tarifario (CLP)","Importe de las opciones descontadas (CLP)","Acceso fix"))
           SFOpciones<-subset(SFOpciones,select = c("Acceso","Estado acceso","Producto","Tipo de producto","Centro de facturacion","Importe de las opciones facturadas (CLP)",
                                                "Importe descuentos sobre plano tarifario (CLP)","Importe de las opciones descontadas (CLP)","Acceso fix"))
