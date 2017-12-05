@@ -760,7 +760,8 @@ shinyServer(function(input, output, session) {
       }
       else if (client == "igm") {
         #Only select the following columns, if there are more, do not use them
-        
+      CF<<-subset(uso,!is.na(uso[["Nombre"]]))
+      if(length(CF[["Nombre"]])>0){
         uso <-
           subset(
             uso,
@@ -799,8 +800,46 @@ shinyServer(function(input, output, session) {
               "Mes"
             )
           )
-
-
+      }
+      else{
+        uso <-
+          subset(
+            uso,
+            select = c(
+              "Acceso",
+              "Proveedor",
+              "Usuario",
+              "Equipo",
+              "Tipo",
+              "Centro de facturacion",
+              "Total (CLP)",
+              "Plano tarifario (CLP)",
+              "Uso (CLP)",
+              "Servicios (CLP)",
+              "Descuentos (CLP)",
+              "Descuento de Plano tarifario (CLP)",
+              "Voz (CLP)",
+              "Voz nacional (CLP)",
+              "Voz inter (CLP)",
+              "Datos (CLP)",
+              "Datos nacional (CLP)",
+              "Datos inter (CLP)",
+              "SMS/MMS (CLP)",
+              "SMS/MMS nacional (CLP)",
+              "SMS/MMS inter (CLP)",
+              "Voz (seg)",
+              "Voz nacional (seg)",
+              "Voz inter (seg)",
+              "Datos (KB)",
+              "Datos nacional (KB)",
+              "Datos inter (KB)",
+              "N. SMS/MMS",
+              "Fecha",
+              "Acceso fix",
+              "Mes"
+            )
+          )
+      }
         # dbWriteTable(
         #   DB,
         #   "usos",

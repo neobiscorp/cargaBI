@@ -10,8 +10,9 @@
     }
     else{}
   }
-
+if(length(CF[["Nombre"]])>0){
   uso[["Nombre"]]<-NULL #Eliminamos la columna Nombre que es innecesaria
+}
   uso2<<-uso
 
   #Dejamos los proveedores relevantes para conseguir la informacion necesaria de ACCESSES
