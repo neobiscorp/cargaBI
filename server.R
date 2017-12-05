@@ -2233,18 +2233,19 @@ shinyServer(function(input, output, session) {
       file.remove("MOVISTAR_PLANES.txt")
       MOVISTAR_PLANES<<-MOVISTAR_PLANES
       ########################################MOVISTAR_OPCIONES############
-      #FALTA DESARROLLARLO PARA LA PARTE 2 DE ANOMALIAS
-      if (FALSE){
+      
+      
       MOVISTAR_OPCIONES <<- read.xlsx(contrato$datapath,
                                    sheet = "Movistar Opciones",
-                                   startRow = 1)
+                                   startRow = 1,
+                                   na.strings = TRUE)
       file.remove("MOVISTAR_OPCIONES.txt")
-      write.table(MOVISTAR_PLANES,
+      write.table(MOVISTAR_OPCIONES,
                   file = "MOVISTAR_OPCIONES.txt",
                   fileEncoding = "UTF8")
       MOVISTAR_OPCIONES <<-
         read.table(file = "MOVISTAR_OPCIONES.txt", encoding = "UTF8")
-      names(MOVISTAR_OPCIONES) <- c("Producto", "Tipo de Producto","Tipo","Valor Plan","Minutos","GB","Duracion")
+      names(MOVISTAR_OPCIONES) <- c("Opciones","Tipo","Valor Opcion","Minutos","KB","Duracion")
       
       dbWriteTable(
         DB,
@@ -2256,7 +2257,6 @@ shinyServer(function(input, output, session) {
         append = FALSE,
         allow.keywords = FALSE
       )
-      }
       ########################################MOVISTAR_PAISES############
       MOVISTAR_PAISES <<- read.xlsx(contrato$datapath,
                                      sheet = "Movistar Paises",
