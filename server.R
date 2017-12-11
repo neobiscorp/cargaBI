@@ -2320,6 +2320,28 @@ shinyServer(function(input, output, session) {
         allow.keywords = FALSE
       )
       MOVISTAR_PAISES<<-MOVISTAR_PAISES
+      ########################################MOVISTAR_ZONAS############
+      MOVISTAR_ZONAS <<- read.xlsx(contrato$datapath,
+                                    sheet = "Movistar Zonas",
+                                    startRow = 1)
+      file.remove("MOVISTAR_ZONAS.txt")
+      write.table(MOVISTAR_ZONAS,
+                  file = "MOVISTAR_ZONAS.txt",
+                  fileEncoding = "UTF-8")
+      MOVISTAR_ZONAS <-
+        read.table(file = "MOVISTAR_ZONAS.txt", encoding = "UTF-8")
+      
+      dbWriteTable(
+        DB,
+        "movistar_zonas",
+        MOVISTAR_PAISES,
+        field.types = NULL ,
+        row.names = FALSE,
+        overwrite = TRUE,
+        append = FALSE,
+        allow.keywords = FALSE
+      )
+      MOVISTAR_ZONAS<<-MOVISTAR_ZONAS
       }
     }
     #Run the following code if theres a file in the cdr file input
