@@ -71,6 +71,9 @@ shinyServer(function(input, output, session) {
     if (client == "Anomalias de Facturacion Movil") {
       client <- "afm"
     }
+    if (client=="Informe Gestion Impresion"){
+      client <- "igi"
+    }
     
     
     #Create DB connection variable
@@ -366,7 +369,8 @@ shinyServer(function(input, output, session) {
         
       }
       #If the client its not Parque Arauco and licitacion run the following
-      else if (client != "lmovil" & client != "igm" & client!= "afm") {
+      else if (client != "lmovil" & client != "igm" & client!= "afm" & client!="igi") {
+        print("no lmovil o igm o afm o igi")
         #Change the name of the columns
         names(uso)[names(uso) == 'ï..Acceso'] <<- 'Acceso'
         names(uso)[names(uso) == 'Proveedor'] <<- 'Proveedor'
@@ -483,6 +487,25 @@ shinyServer(function(input, output, session) {
             substring(x, 3))
         
       }
+      else if (client == "igi"){
+        
+        names(uso)[names(uso) == 'ï..Acceso'] <<- 'Acceso'
+        names(uso)[names(uso) == 'Tipo'] <<- 'Tipo'
+        names(uso)[names(uso) == 'Centro.de.facturaciÃ³n'] <<-  'Centro de facturacion'
+        names(uso)[names(uso) == 'Proveedor'] <<- 'Proveedor'
+        names(uso)[names(uso) == 'Usuario.ID'] <<- 'Usuario ID'
+        names(uso)[names(uso) == 'PerÃ.odo.de'] <<-  'Periodo de'
+        names(uso)[names(uso) == 'Total..CLP.'] <<- 'Total (CLP)'
+        names(uso)[names(uso) == 'Copias..CLP.'] <<- 'Copias (CLP)'
+        names(uso)[names(uso) == 'Copias.B.N..CLP.'] <<- 'Copias B/N (CLP)'
+        names(uso)[names(uso) == 'Copias.Color..CLP.'] <<- 'Copias Color (CLP)'
+        names(uso)[names(uso) == 'N.Â..Copias.B.N'] <<- 'N. Copias B/N'
+        names(uso)[names(uso) == 'N.Â..Copias.Color'] <<- 'N. Copias Color'
+        names(uso)[names(uso) == 'N.Â..Copias'] <<- 'N. Copias'
+        names(uso)[names(uso) == 'Contador.Color.Actual'] <<- 'Contador Color Actual'
+        names(uso)[names(uso) == 'Contador.B.N.Actual'] <<- 'Contador B/N Actual'
+        
+      }
       else {
         #Change the name of the columns for the Licitacion movil
         names(uso)[names(uso) == 'ï..Acceso'] <<- 'Acceso'
@@ -546,11 +569,12 @@ shinyServer(function(input, output, session) {
         uso[, 'Acceso fix'] <<-
           lapply(uso[, 'Acceso'], function(x)
             substring(x, 3))
+      
       }
       
       #If the client got printer access eliminate the thousand dot separator
       if (client != "hdc" &
-          client != "aguasandinas" & client != "lmovil"& client != "igm"& client != "afm") {
+          client != "aguasandinas" & client != "lmovil"& client != "igm"& client != "afm" & client != "igi") {
         uso[, c('N Copias', 'N Copias B/N', 'N Copias Color')] <<-
           lapply(uso[, c('N Copias', 'N Copias B/N', 'N Copias Color')], function(x)
             as.character(gsub("\\.", "", x)))
@@ -638,7 +662,7 @@ shinyServer(function(input, output, session) {
         
       }
       else if (client != "hdc" &
-               client != "aguasandinas" & client != "lmovil"& client != "igm"& client != "afm") {
+               client != "aguasandinas" & client != "lmovil"& client != "igm"& client != "afm"& client != "igi") {
         dbWriteTable(
           DB,
           "usos",
@@ -943,6 +967,35 @@ shinyServer(function(input, output, session) {
           allow.keywords = FALSE
         )
       }
+      else if (client == "igi"){
+        dbWriteTable(
+          DB,
+          "usos",
+          uso,
+          field.types = list(
+            `Acceso` = "varchar(255)",
+            `Tipo` = "varchar(255)",
+            `Centro de facturacion` = "varchar(255)",
+            `Proveedor` = "varchar(255)",
+            `Usuario ID` = "varchar(255)",
+            `Total (CLP)` = "double(15,2)",
+            `Copias (CLP)` = "double(15,2)",
+            `Copias B/N (CLP)` = "double(15,2)",
+            `Copias Color (CLP)` = "double(15,2)",
+            `N. Copias` = "double(15,2)",
+            `N. Copias B/N` = "double(15,2)",
+            `N. Copias Color` = "double(15,2)",
+            `Contador Color Actual` = "double(15,2)",
+            `Contador B/N Actual` = "double(15,2)",
+            `Mes` = "double(15,2)",
+            `Fecha` = "date"
+          ),
+          row.names = FALSE,
+          overwrite = TRUE,
+          append = FALSE,
+          allow.keywords = FALSE
+        )
+      }
       else {
        
         dbWriteTable(
@@ -986,7 +1039,7 @@ shinyServer(function(input, output, session) {
       
       #######################################USERS############
       
-      if (client != "lmovil" & client != "igm") {
+      if (client != "lmovil" & client != "igm" & client != "igi") {
         #Read the xlsx file at the sheet USERS
         USERS <- read.xlsx(export$datapath,
                            sheet = "USERS",
@@ -1351,7 +1404,7 @@ shinyServer(function(input, output, session) {
           allow.keywords = FALSE
         )
       }
-      else if (client == "igm"){
+      else if (client == "igm"|client =="igi"){
         #Only select the columns with the following titles
         a<-as.Date(ACCESSES$ELIGIBILITY.DATE, origin="1899-12-30")
         ACCESSES[,'Fecha Renovacion']<-as.Date(ACCESSES$ELIGIBILITY.DATE, origin="1899-12-30")
@@ -1384,9 +1437,9 @@ shinyServer(function(input, output, session) {
               "Fecha Renovacion"
             )
           )
-        write.table(ACCESSES, file = "ACCESSES.txt", fileEncoding = "UTF8")
+        write.table(ACCESSES, file = "ACCESSES.txt", fileEncoding = "UTF-8")
         ACCESSES <-
-          read.table(file = "ACCESSES.txt", encoding = "UTF8")
+          read.table(file = "ACCESSES.txt", encoding = "UTF-8")
         names(ACCESSES) <-
           c("Acceso",
             "Tipo",
@@ -1731,7 +1784,7 @@ shinyServer(function(input, output, session) {
       }
       file.remove("ACCESSES.txt")
       #######################################DEVICES############
-      if (client != "lmovil" & client != "igm") {
+      if (client != "lmovil" & client != "igm" & client != "igi") {
         DEVICES <- read.xlsx(export$datapath,
                              sheet = "DEVICES",
                              startRow = 1)
@@ -1844,7 +1897,7 @@ shinyServer(function(input, output, session) {
         DEVICES<<-DEVICES
       }
       #######################################ASSOCIATIONS############
-      if (client != "lmovil"& client != "igm") {
+      if (client != "lmovil"& client != "igm" & client != "igi") {
         ASSOCIATIONS <- read.xlsx(export$datapath,
                                   sheet = "ASSOCIATIONS",
                                   startRow = 1)
@@ -1869,7 +1922,7 @@ shinyServer(function(input, output, session) {
         ASSOCIATIONS <<- ASSOCIATIONS
       }
       #######################################PRODUCT_ASSOCIATIONS############
-      if (client != "lmovil"& client != "igm") {
+      if (client != "lmovil"& client != "igm" & client != "igi") {
         PRODUCT_ASSOCIATIONS <- read.xlsx(export$datapath,
                                           sheet = "PRODUCT ASSOCIATIONS",
                                           startRow = 1)

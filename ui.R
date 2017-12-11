@@ -26,7 +26,8 @@ shinyUI(fluidPage(
           "Aguas Andinas",
           "Licitacion Movil (Entel y Movistar)",
           "Informe Gestion Movil",
-          "Anomalias de Facturacion Movil"
+          "Anomalias de Facturacion Movil",
+          "Informe Gestion Impresion"
         ),
         selected = ""
       ),
