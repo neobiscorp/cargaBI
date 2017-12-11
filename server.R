@@ -2334,7 +2334,7 @@ shinyServer(function(input, output, session) {
       dbWriteTable(
         DB,
         "movistar_zonas",
-        MOVISTAR_PAISES,
+        MOVISTAR_ZONAS,
         field.types = NULL ,
         row.names = FALSE,
         overwrite = TRUE,
