@@ -488,7 +488,7 @@ shinyServer(function(input, output, session) {
         
       }
       else if (client == "igi"){
-        
+        uso1<<-uso
         names(uso)[names(uso) == 'ï..Acceso'] <<- 'Acceso'
         names(uso)[names(uso) == 'Tipo'] <<- 'Tipo'
         names(uso)[names(uso) == 'Centro.de.facturaciÃ³n'] <<-  'Centro de facturacion'
@@ -504,7 +504,7 @@ shinyServer(function(input, output, session) {
         names(uso)[names(uso) == 'N.Â..Copias'] <<- 'N. Copias'
         names(uso)[names(uso) == 'Contador.Color.Actual'] <<- 'Contador Color Actual'
         names(uso)[names(uso) == 'Contador.B.N.Actual'] <<- 'Contador B/N Actual'
-        
+        uso2<<-uso
       }
       else {
         #Change the name of the columns for the Licitacion movil
@@ -982,12 +982,12 @@ shinyServer(function(input, output, session) {
             `Copias (CLP)` = "double(15,2)",
             `Copias B/N (CLP)` = "double(15,2)",
             `Copias Color (CLP)` = "double(15,2)",
-            `N. Copias` = "double(15,2)",
-            `N. Copias B/N` = "double(15,2)",
-            `N. Copias Color` = "double(15,2)",
-            `Contador Color Actual` = "double(15,2)",
-            `Contador B/N Actual` = "double(15,2)",
-            `Mes` = "double(15,2)",
+            `N. Copias` = "text",
+            `N. Copias B/N` = "text",
+            `N. Copias Color` = "text",
+            `Contador Color Actual` = "text",
+            `Contador B/N Actual` = "text",
+            `Mes` = "text",
             `Fecha` = "date"
           ),
           row.names = FALSE,
@@ -1944,6 +1944,24 @@ shinyServer(function(input, output, session) {
           append = FALSE,
           allow.keywords = FALSE
         )
+      }
+      if (client == "igi"){
+        if(!is.null(uso)){
+          ACCESSES2<-ACCESSES
+          ACCESSES2[["Tipo"]]<-NULL
+          ACCESSES2[["Proveedor"]]<-NULL
+          Consolidado<-merge(uso,ACCESSES2,by = "Acceso",all.x = TRUE)
+          dbWriteTable(
+            DB,
+            "consolidado",
+            Consolidado,
+            field.types = NULL ,
+            row.names = FALSE,
+            overwrite = TRUE,
+            append = FALSE,
+            allow.keywords = FALSE
+          )
+        }
       }
     }
     #Run the following code if theres a file in the presupuesto file input
