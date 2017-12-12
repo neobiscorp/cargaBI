@@ -488,7 +488,7 @@ shinyServer(function(input, output, session) {
         
       }
       else if (client == "igi"){
-        uso1<<-uso
+        
         names(uso)[names(uso) == 'ï..Acceso'] <<- 'Acceso'
         names(uso)[names(uso) == 'Tipo'] <<- 'Tipo'
         names(uso)[names(uso) == 'Centro.de.facturaciÃ³n'] <<-  'Centro de facturacion'
@@ -504,7 +504,7 @@ shinyServer(function(input, output, session) {
         names(uso)[names(uso) == 'N.Â..Copias'] <<- 'N. Copias'
         names(uso)[names(uso) == 'Contador.Color.Actual'] <<- 'Contador Color Actual'
         names(uso)[names(uso) == 'Contador.B.N.Actual'] <<- 'Contador B/N Actual'
-        uso2<<-uso
+        
       }
       else {
         #Change the name of the columns for the Licitacion movil
