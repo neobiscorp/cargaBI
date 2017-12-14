@@ -59,7 +59,7 @@ SFPlanes2<-SFPlanes
   #   allow.keywords = FALSE
   # )
   ######################Ajuste de Servicios Facturados################
-  Productos_Contratados<-as.character(MOVISTAR_PLANES[["Producto"]])
+  #Productos_Contratados<-as.character(MOVISTAR_PLANES[["Producto"]])
   a<-duplicated(SFPlanes2[["Acceso"]],fromLast = FALSE)
   b<-duplicated(SFPlanes2[["Acceso"]],fromLast = TRUE)
   SFPlanes2[["Duplicados"]]<-a

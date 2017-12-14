@@ -48,11 +48,11 @@ shinyServer(function(input, output, session) {
     planes <- input$planes
     tipos <- input$tipos
     presupuesto <- input$presupuesto
-    presupuesto <- input$presupuesto2
+    presupuesto2 <- input$presupuesto2
     cuentas <- input$cuentas
     contrato <- input$contrato
     proveedor <<-input$proveedor
-    proveedor <<-input$proveedor2
+    proveedor2 <<-input$proveedor2
     
     #Change name of client input to the same name of the database
     if (client == "Parque Arauco") {
