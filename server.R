@@ -48,6 +48,7 @@ shinyServer(function(input, output, session) {
     planes <- input$planes
     tipos <- input$tipos
     presupuesto <- input$presupuesto
+    presupuesto <- input$presupuesto2
     cuentas <- input$cuentas
     contrato <- input$contrato
     proveedor <<-input$proveedor
@@ -497,6 +498,8 @@ shinyServer(function(input, output, session) {
         names(uso)[names(uso) == 'Usuario.ID'] <<- 'Usuario ID'
         names(uso)[names(uso) == 'PerÃ.odo.de'] <<-  'Periodo de'
         names(uso)[names(uso) == 'Total..CLP.'] <<- 'Total (CLP)'
+        names(uso)[names(uso) == 'Plano.tarifario..CLP.'] <<-
+          'Plano tarifario (CLP)'
         names(uso)[names(uso) == 'Copias..CLP.'] <<- 'Copias (CLP)'
         names(uso)[names(uso) == 'Copias.B.N..CLP.'] <<- 'Copias B/N (CLP)'
         names(uso)[names(uso) == 'Copias.Color..CLP.'] <<- 'Copias Color (CLP)'
@@ -980,6 +983,7 @@ shinyServer(function(input, output, session) {
             `Proveedor` = "varchar(255)",
             `Usuario ID` = "varchar(255)",
             `Total (CLP)` = "double(15,2)",
+            `Plano tarifario (CLP)` = "double(15,2)",
             `Copias (CLP)` = "double(15,2)",
             `Copias B/N (CLP)` = "double(15,2)",
             `Copias Color (CLP)` = "double(15,2)",
@@ -2127,6 +2131,66 @@ shinyServer(function(input, output, session) {
     }
     #Run the following code if theres a file in the presupuesto file input
     if (!is.null(presupuesto)) {
+      if (client == "igi"){
+        dataFilesUF2 <<- NULL
+        dataFilesUF2 <<- lapply(input$presupuesto[['datapath']], read.csv2)
+        
+        #Append all usos files to the same dataframe
+        
+          presupuesto <<- rbindlist(dataFilesUF2)
+          presupuesto<-subset(presupuesto,select = c("ï..Acceso","Usuario.ID","Proveedor","Centro.de.facturaciÃ³n'","PerÃ.odo.de","Total..CLP."))
+          names(presupuesto)[names(presupuesto) == 'ï..Acceso'] <<- 'Acceso'
+          names(presupuesto)[names(presupuesto) == 'Centro.de.facturaciÃ³n'] <<-  'Centro de facturacion'
+          names(presupuesto)[names(presupuesto) == 'Proveedor'] <<- 'Proveedor'
+          names(presupuesto)[names(presupuesto) == 'Usuario.ID'] <<- 'Usuario ID'
+          names(presupuesto)[names(presupuesto) == 'PerÃ.odo.de'] <<-  'Periodo de'
+          names(presupuesto)[names(presupuesto) == 'Total..CLP.'] <<- 'Total (CLP)'
+          names(presupuesto)[names(presupuesto) == 'Plano.tarifario..CLP.'] <<-
+            'Plano tarifario (CLP)'
+          
+          for (k in 1:12) {
+            uso[, 'Periodo de'] <<-
+              lapply(uso[, 'Periodo de'], function(x)
+                gsub(names(y[k]), y[[k]], x))
+          }
+          {
+            uso[, 'Fecha'] <<-
+              lapply(uso[, 'Periodo de'], function(x)
+                paste(substr(x , 3 , 6),
+                      substr(x , 1 , 2),
+                      "01",
+                      sep = "/"))
+            #Delete the Column MES that its not needed now
+            uso[, 'Periodo de'] <<- NULL
+            
+            #Add the column month as numeric value from Fecha
+            uso[, 'Mes'] <<-
+              lapply(uso[, 'Fecha'], function(x)
+                as.numeric(substr(x, 6 , 7)))
+            
+          }
+          
+          dbWriteTable(
+            DB,
+            "presupuesto",
+            presupuesto,
+            field.types = list(
+              `Acceso` = "varchar(255)",
+              `Centro de facturacion` = "varchar(255)",
+              `Proveedor` = "varchar(255)",
+              `Usuario ID` = "varchar(255)",
+              `Total (CLP)` = "double(15,2)",
+              `Plano tarifario (CLP)` = "double(15,2)",
+              `Mes` = "text",
+              `Fecha` = "date"
+            ),
+            row.names = FALSE,
+            overwrite = TRUE,
+            append = FALSE,
+            allow.keywords = FALSE
+          )
+      }
+      else{
       file.copy(presupuesto$datapath,
                 paste(presupuesto$datapath, ".xlsx", sep = ""))
       
@@ -2174,7 +2238,7 @@ shinyServer(function(input, output, session) {
         append = FALSE,
         allow.keywords = FALSE
       )
-      
+      }  
     }
     #Run the following code if theres a file in the planes file input
     if (!is.null(planes)) {

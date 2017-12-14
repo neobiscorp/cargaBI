@@ -119,6 +119,18 @@ shinyUI(fluidPage(
       ),
       #Create conditional Panel accepting multiple csv files
       conditionalPanel(
+        condition = "input.Client =='Informe Gestion Impresion'",
+        fileInput(
+          'presupuesto2',
+          'Elegir los Archivos CSV que contenga los presupuestos',
+          multiple = T,
+          accept = c('text/csv',
+                     'text/comma-separated-values,text/plain',
+                     '.csv')
+        )
+      ),
+      #Create conditional Panel accepting multiple csv files
+      conditionalPanel(
         condition = "input.Client == 'Licitacion Movil (Entel y Movistar)'||input.Client =='Anomalias de Facturacion Movil'",
         fileInput(
           'cdr',
