@@ -48,7 +48,7 @@ shinyServer(function(input, output, session) {
     planes <- input$planes
     tipos <- input$tipos
     presupuesto <- input$presupuesto
-    presupuesto2 <- input$presupuesto2
+    presupuesto2 <<- input$presupuesto2
     cuentas <- input$cuentas
     contrato <- input$contrato
     proveedor <<-input$proveedor
@@ -508,7 +508,7 @@ shinyServer(function(input, output, session) {
         names(uso)[names(uso) == 'N.Â..Copias'] <<- 'N. Copias'
         names(uso)[names(uso) == 'Contador.Color.Actual'] <<- 'Contador Color Actual'
         names(uso)[names(uso) == 'Contador.B.N.Actual'] <<- 'Contador B/N Actual'
-        
+        names(uso)[names(uso) == 'Descuentos..CLP.'] <<- 'Descuentos (CLP)'
       }
       else {
         #Change the name of the columns for the Licitacion movil
@@ -984,6 +984,7 @@ shinyServer(function(input, output, session) {
             `Usuario ID` = "varchar(255)",
             `Total (CLP)` = "double(15,2)",
             `Plano tarifario (CLP)` = "double(15,2)",
+            `Descuentos (CLP)` = "double(15,2)",
             `Copias (CLP)` = "double(15,2)",
             `Copias B/N (CLP)` = "double(15,2)",
             `Copias Color (CLP)` = "double(15,2)",
@@ -1591,6 +1592,7 @@ shinyServer(function(input, output, session) {
           MNG<-subset(MNG,MNG[["duplicados"]]=="FALSE")
           MNG[["duplicados"]]<-NULL
           MNG<<-MNG
+          
           dbWriteTable(
             DB,
             "accesses",
@@ -2132,47 +2134,46 @@ shinyServer(function(input, output, session) {
     #Run the following code if theres a file in the presupuesto file input
     if (!is.null(presupuesto2)){
       dataFilesUF2 <<- NULL
-      dataFilesUF2 <<- lapply(input$presupuesto[['datapath']], read.csv2)
+      dataFilesUF2 <<- lapply(input$presupuesto2[['datapath']], read.csv2)
       
       #Append all usos files to the same dataframe
       
-      presupuesto <<- rbindlist(dataFilesUF2)
-      presupuesto<-subset(presupuesto,select = c("ï..Acceso","Usuario.ID","Proveedor","Centro.de.facturaciÃ³n'","PerÃ.odo.de","Total..CLP."))
-      names(presupuesto)[names(presupuesto) == 'ï..Acceso'] <<- 'Acceso'
-      names(presupuesto)[names(presupuesto) == 'Centro.de.facturaciÃ³n'] <<-  'Centro de facturacion'
-      names(presupuesto)[names(presupuesto) == 'Proveedor'] <<- 'Proveedor'
-      names(presupuesto)[names(presupuesto) == 'Usuario.ID'] <<- 'Usuario ID'
-      names(presupuesto)[names(presupuesto) == 'PerÃ.odo.de'] <<-  'Periodo de'
-      names(presupuesto)[names(presupuesto) == 'Total..CLP.'] <<- 'Total (CLP)'
-      names(presupuesto)[names(presupuesto) == 'Plano.tarifario..CLP.'] <<-
+      presupuesto3 <<- rbindlist(dataFilesUF2)
+      presupuesto3<<-presupuesto3
+      presupuesto3 <<- subset(presupuesto3, select =  c("ï..Acceso","PerÃ.odo.de","Usuario.ID","Centro.de.facturaciÃ³n","Proveedor","Total..CLP."))
+      presupuesto3<<-presupuesto3
+      names(presupuesto3)[names(presupuesto3) == 'ï..Acceso'] <<- 'Acceso'
+      names(presupuesto3)[names(presupuesto3) == 'Centro.de.facturaciÃ³n'] <<-  'Centro de facturacion'
+      names(presupuesto3)[names(presupuesto3) == 'Proveedor'] <<- 'Proveedor'
+      names(presupuesto3)[names(presupuesto3) == 'Usuario.ID'] <<- 'Usuario ID'
+      names(presupuesto3)[names(presupuesto3) == 'PerÃ.odo.de'] <<-  'Periodo de'
+      names(presupuesto3)[names(presupuesto3) == 'Total..CLP.'] <<- 'Total (CLP)'
+      names(presupuesto3)[names(presupuesto3) == 'Plano.tarifario..CLP.'] <<-
         'Plano tarifario (CLP)'
       
       for (k in 1:12) {
-        uso[, 'Periodo de'] <<-
-          lapply(uso[, 'Periodo de'], function(x)
+        presupuesto3[, 'Periodo de'] <<-
+          lapply(presupuesto3[, 'Periodo de'], function(x)
             gsub(names(y[k]), y[[k]], x))
       }
       {
-        uso[, 'Fecha'] <<-
-          lapply(uso[, 'Periodo de'], function(x)
+        presupuesto3[, 'Fecha'] <<-
+          lapply(presupuesto3[, 'Periodo de'], function(x)
             paste(substr(x , 3 , 6),
                   substr(x , 1 , 2),
                   "01",
                   sep = "/"))
         #Delete the Column MES that its not needed now
-        uso[, 'Periodo de'] <<- NULL
+        presupuesto3[, 'Periodo de'] <<- NULL
         
-        #Add the column month as numeric value from Fecha
-        uso[, 'Mes'] <<-
-          lapply(uso[, 'Fecha'], function(x)
-            as.numeric(substr(x, 6 , 7)))
+      
         
       }
       
       dbWriteTable(
         DB,
         "presupuesto",
-        presupuesto,
+        presupuesto3,
         field.types = list(
           `Acceso` = "varchar(255)",
           `Centro de facturacion` = "varchar(255)",
@@ -2180,7 +2181,6 @@ shinyServer(function(input, output, session) {
           `Usuario ID` = "varchar(255)",
           `Total (CLP)` = "double(15,2)",
           `Plano tarifario (CLP)` = "double(15,2)",
-          `Mes` = "text",
           `Fecha` = "date"
         ),
         row.names = FALSE,
