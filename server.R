@@ -2029,7 +2029,7 @@ shinyServer(function(input, output, session) {
       }
       if (client == "igi"){
         if(!is.null(uso)){
-          if(proveedor=="Lexmark"){
+          if(proveedor2=="Lexmark"){
           ACCESSES2<-ACCESSES
           ACCESSES2[["Tipo"]]<-NULL
           ACCESSES2[["Proveedor"]]<-NULL
@@ -2130,67 +2130,68 @@ shinyServer(function(input, output, session) {
       }
     }
     #Run the following code if theres a file in the presupuesto file input
-    if (!is.null(presupuesto)) {
-      if (client == "igi"){
-        dataFilesUF2 <<- NULL
-        dataFilesUF2 <<- lapply(input$presupuesto[['datapath']], read.csv2)
-        
-        #Append all usos files to the same dataframe
-        
-          presupuesto <<- rbindlist(dataFilesUF2)
-          presupuesto<-subset(presupuesto,select = c("ï..Acceso","Usuario.ID","Proveedor","Centro.de.facturaciÃ³n'","PerÃ.odo.de","Total..CLP."))
-          names(presupuesto)[names(presupuesto) == 'ï..Acceso'] <<- 'Acceso'
-          names(presupuesto)[names(presupuesto) == 'Centro.de.facturaciÃ³n'] <<-  'Centro de facturacion'
-          names(presupuesto)[names(presupuesto) == 'Proveedor'] <<- 'Proveedor'
-          names(presupuesto)[names(presupuesto) == 'Usuario.ID'] <<- 'Usuario ID'
-          names(presupuesto)[names(presupuesto) == 'PerÃ.odo.de'] <<-  'Periodo de'
-          names(presupuesto)[names(presupuesto) == 'Total..CLP.'] <<- 'Total (CLP)'
-          names(presupuesto)[names(presupuesto) == 'Plano.tarifario..CLP.'] <<-
-            'Plano tarifario (CLP)'
-          
-          for (k in 1:12) {
-            uso[, 'Periodo de'] <<-
-              lapply(uso[, 'Periodo de'], function(x)
-                gsub(names(y[k]), y[[k]], x))
-          }
-          {
-            uso[, 'Fecha'] <<-
-              lapply(uso[, 'Periodo de'], function(x)
-                paste(substr(x , 3 , 6),
-                      substr(x , 1 , 2),
-                      "01",
-                      sep = "/"))
-            #Delete the Column MES that its not needed now
-            uso[, 'Periodo de'] <<- NULL
-            
-            #Add the column month as numeric value from Fecha
-            uso[, 'Mes'] <<-
-              lapply(uso[, 'Fecha'], function(x)
-                as.numeric(substr(x, 6 , 7)))
-            
-          }
-          
-          dbWriteTable(
-            DB,
-            "presupuesto",
-            presupuesto,
-            field.types = list(
-              `Acceso` = "varchar(255)",
-              `Centro de facturacion` = "varchar(255)",
-              `Proveedor` = "varchar(255)",
-              `Usuario ID` = "varchar(255)",
-              `Total (CLP)` = "double(15,2)",
-              `Plano tarifario (CLP)` = "double(15,2)",
-              `Mes` = "text",
-              `Fecha` = "date"
-            ),
-            row.names = FALSE,
-            overwrite = TRUE,
-            append = FALSE,
-            allow.keywords = FALSE
-          )
+    if (!is.null(presupuesto2)){
+      dataFilesUF2 <<- NULL
+      dataFilesUF2 <<- lapply(input$presupuesto[['datapath']], read.csv2)
+      
+      #Append all usos files to the same dataframe
+      
+      presupuesto <<- rbindlist(dataFilesUF2)
+      presupuesto<-subset(presupuesto,select = c("ï..Acceso","Usuario.ID","Proveedor","Centro.de.facturaciÃ³n'","PerÃ.odo.de","Total..CLP."))
+      names(presupuesto)[names(presupuesto) == 'ï..Acceso'] <<- 'Acceso'
+      names(presupuesto)[names(presupuesto) == 'Centro.de.facturaciÃ³n'] <<-  'Centro de facturacion'
+      names(presupuesto)[names(presupuesto) == 'Proveedor'] <<- 'Proveedor'
+      names(presupuesto)[names(presupuesto) == 'Usuario.ID'] <<- 'Usuario ID'
+      names(presupuesto)[names(presupuesto) == 'PerÃ.odo.de'] <<-  'Periodo de'
+      names(presupuesto)[names(presupuesto) == 'Total..CLP.'] <<- 'Total (CLP)'
+      names(presupuesto)[names(presupuesto) == 'Plano.tarifario..CLP.'] <<-
+        'Plano tarifario (CLP)'
+      
+      for (k in 1:12) {
+        uso[, 'Periodo de'] <<-
+          lapply(uso[, 'Periodo de'], function(x)
+            gsub(names(y[k]), y[[k]], x))
       }
-      else{
+      {
+        uso[, 'Fecha'] <<-
+          lapply(uso[, 'Periodo de'], function(x)
+            paste(substr(x , 3 , 6),
+                  substr(x , 1 , 2),
+                  "01",
+                  sep = "/"))
+        #Delete the Column MES that its not needed now
+        uso[, 'Periodo de'] <<- NULL
+        
+        #Add the column month as numeric value from Fecha
+        uso[, 'Mes'] <<-
+          lapply(uso[, 'Fecha'], function(x)
+            as.numeric(substr(x, 6 , 7)))
+        
+      }
+      
+      dbWriteTable(
+        DB,
+        "presupuesto",
+        presupuesto,
+        field.types = list(
+          `Acceso` = "varchar(255)",
+          `Centro de facturacion` = "varchar(255)",
+          `Proveedor` = "varchar(255)",
+          `Usuario ID` = "varchar(255)",
+          `Total (CLP)` = "double(15,2)",
+          `Plano tarifario (CLP)` = "double(15,2)",
+          `Mes` = "text",
+          `Fecha` = "date"
+        ),
+        row.names = FALSE,
+        overwrite = TRUE,
+        append = FALSE,
+        allow.keywords = FALSE
+      )
+    }
+    #Run the following code if theres a file in the presupuesto file input
+    if (!is.null(presupuesto)) {
+      
       file.copy(presupuesto$datapath,
                 paste(presupuesto$datapath, ".xlsx", sep = ""))
       
@@ -2238,7 +2239,7 @@ shinyServer(function(input, output, session) {
         append = FALSE,
         allow.keywords = FALSE
       )
-      }  
+      
     }
     #Run the following code if theres a file in the planes file input
     if (!is.null(planes)) {
@@ -2840,21 +2841,6 @@ shinyServer(function(input, output, session) {
           PlanContratoGranel<<-subset(PlanContratoGranel,PlanContratoGranel[["Delta"]]>0)
           print("Total Plan Granel")
           print(sum(PlanContratoGranel[["Delta"]]))
-          #################################Voz Nacional################## 
-          Consolidado2<<-subset(Consolidado,Consolidado[["Tipo"]]=="MÃ³vil")
-          if(length(Consolidado2[["Acceso"]])>0){
-            Consolidado2[["Tipo2"]]<<-"Móvil"
-            Consolidado2[["Tipo"]]<-NULL
-            Consolidado2[["Tipo"]]<-Consolidado2[["Tipo2"]]
-            Consolidado2[["Tipo2"]]<-NULL
-            Consolidado3<<-subset(Consolidado,Consolidado[["Tipo"]]!="MÃ³vil")
-            Consolidado2<<-rbind(Consolidado2,Consolidado3)
-          }
-          VozNacional<<-subset(Consolidado2,Consolidado2[["Estado acceso"]]=="Activo" & Consolidado2[["Tipo Contrato"]]!="Móvil"& Consolidado2[["Voz (CLP)"]]>0)
-          VozNacional[,'Delta']<<-VozNacional[,'Voz (CLP)']
-          VozNacional<<-subset(VozNacional,VozNacional[["Delta"]]>0)
-          VozNacional<<-VozNacional
-          
           }
 ############Consolidado###########
           dbWriteTable(
@@ -3009,50 +2995,6 @@ shinyServer(function(input, output, session) {
             append = FALSE,
             allow.keywords = FALSE
           )
-#################Voz Nacional################
-          VozNacional<-subset(VozNacional,select = c("Acceso",
-                                                     "Estado acceso",
-                                                     "Tipo Contrato",
-                                                     "Producto",
-                                                     "Centro de facturacion",
-                                                     "Cuenta cliente",
-                                                     "Factura",
-                                                     "Total (CLP)",
-                                                     "Plano tarifario (CLP)",
-                                                     "Voz (CLP)",
-                                                     "Voz nacional (CLP)",
-                                                     "N. Voz nacional",
-                                                     "Voz nacional (seg)",
-                                                     "Delta"))
-          VozNacional<<-VozNacional
-          dbWriteTable(
-            DB,
-            "voznacional",
-            VozNacional,
-            field.types = list(
-              `Acceso` = "varchar(255)",
-              `Estado acceso` = "varchar(255)",
-              `Tipo Contrato` = "varchar(255)",
-              `Producto` = "varchar(255)",
-              `Centro de facturacion` = "varchar(255)",
-              `Cuenta cliente` = "varchar(255)",
-              `Factura` = "varchar(255)",
-              `Total (CLP)` = "double(15,2)",
-              `Plano tarifario (CLP)` = "double(15,2)",
-              `Voz (CLP)` = "double(15,2)",
-              `Voz nacional (CLP)` = "double(15,2)",
-              `N. Voz nacional` = "double(15,2)",
-              `Voz nacional (seg)` = "double(15,2)",
-              `Delta` = "double(15,2)"
-            ),
-            row.names = FALSE,
-            overwrite = TRUE,
-            append = FALSE,
-            allow.keywords = FALSE
-          )
-          
-          
-        
 #################Plan Contrato###################
           PlanContrato<-subset(PlanContrato,select = c("Acceso",
                                                        "Estado acceso",
