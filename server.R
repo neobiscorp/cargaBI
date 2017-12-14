@@ -51,6 +51,7 @@ shinyServer(function(input, output, session) {
     cuentas <- input$cuentas
     contrato <- input$contrato
     proveedor <<-input$proveedor
+    proveedor <<-input$proveedor2
     
     #Change name of client input to the same name of the database
     if (client == "Parque Arauco") {
@@ -1470,6 +1471,7 @@ shinyServer(function(input, output, session) {
         ACCESSES[, 'Acceso fix'] <-
           lapply(ACCESSES['Acceso'], function(x)
             substring(x, 3))
+        ACCESSES<<-ACCESSES
         if(is.null(ACCESSES[["MANAGEMENTORG8"]])==FALSE&
            is.null(ACCESSES[["MANAGEMENTORG7"]])==FALSE&
            is.null(ACCESSES[["MANAGEMENTORG6"]])==FALSE&
@@ -1479,6 +1481,19 @@ shinyServer(function(input, output, session) {
            is.null(ACCESSES[["MANAGEMENTORG2"]])==FALSE&
            is.null(ACCESSES[["MANAGEMENTORG1"]])==FALSE)
         {
+          MNG<-subset(ACCESSES,select = c("MANAGEMENTORG1",
+                                          "MANAGEMENTORG2",
+                                          "MANAGEMENTORG3",
+                                          "MANAGEMENTORG4",
+                                          "MANAGEMENTORG5",
+                                          "MANAGEMENTORG6",
+                                          "MANAGEMENTORG7",
+                                          "MANAGEMENTORG8"))
+          a<-duplicated(MNG[["MANAGEMENTORG8"]])
+          MNG[["duplicados"]]<-a
+          MNG<-subset(MNG,MNG[["duplicados"]]=="FALSE")
+          MNG[["duplicados"]]<-NULL
+          MNG<<-MNG
           dbWriteTable(
             DB,
             "accesses",
@@ -1515,6 +1530,18 @@ shinyServer(function(input, output, session) {
                 is.null(ACCESSES[["MANAGEMENTORG2"]])==FALSE&
                 is.null(ACCESSES[["MANAGEMENTORG1"]])==FALSE)
         {
+          MNG<-subset(ACCESSES,select = c("MANAGEMENTORG1",
+                                          "MANAGEMENTORG2",
+                                          "MANAGEMENTORG3",
+                                          "MANAGEMENTORG4",
+                                          "MANAGEMENTORG5",
+                                          "MANAGEMENTORG6",
+                                          "MANAGEMENTORG7"))
+          a<-duplicated(MNG[["MANAGEMENTORG7"]])
+          MNG[["duplicados"]]<-a
+          MNG<-subset(MNG,MNG[["duplicados"]]=="FALSE")
+          MNG[["duplicados"]]<-NULL
+          MNG<<-MNG
           dbWriteTable(
             DB,
             "accesses",
@@ -1549,6 +1576,17 @@ shinyServer(function(input, output, session) {
                 is.null(ACCESSES[["MANAGEMENTORG2"]])==FALSE&
                 is.null(ACCESSES[["MANAGEMENTORG1"]])==FALSE)
         {
+          MNG<<-subset(ACCESSES,select = c("MANAGEMENTORG1",
+                                          "MANAGEMENTORG2",
+                                          "MANAGEMENTORG3",
+                                          "MANAGEMENTORG4",
+                                          "MANAGEMENTORG5",
+                                          "MANAGEMENTORG6"))
+          a<-duplicated(MNG[["MANAGEMENTORG6"]])
+          MNG[["duplicados"]]<-a
+          MNG<-subset(MNG,MNG[["duplicados"]]=="FALSE")
+          MNG[["duplicados"]]<-NULL
+          MNG<<-MNG
           dbWriteTable(
             DB,
             "accesses",
@@ -1581,6 +1619,16 @@ shinyServer(function(input, output, session) {
                 is.null(ACCESSES[["MANAGEMENTORG2"]])==FALSE&
                 is.null(ACCESSES[["MANAGEMENTORG1"]])==FALSE)
         {
+          MNG<-subset(ACCESSES,select = c("MANAGEMENTORG1",
+                                          "MANAGEMENTORG2",
+                                          "MANAGEMENTORG3",
+                                          "MANAGEMENTORG4",
+                                          "MANAGEMENTORG5"))
+          a<-duplicated(MNG[["MANAGEMENTORG5"]])
+          MNG[["duplicados"]]<-a
+          MNG<-subset(MNG,MNG[["duplicados"]]=="FALSE")
+          MNG[["duplicados"]]<-NULL
+          MNG<<-MNG
           dbWriteTable(
             DB,
             "accesses",
@@ -1611,6 +1659,15 @@ shinyServer(function(input, output, session) {
                 is.null(ACCESSES[["MANAGEMENTORG2"]])==FALSE&
                 is.null(ACCESSES[["MANAGEMENTORG1"]])==FALSE)
         {
+          MNG<-subset(ACCESSES,select = c("MANAGEMENTORG1",
+                                          "MANAGEMENTORG2",
+                                          "MANAGEMENTORG3",
+                                          "MANAGEMENTORG4"))
+          a<-duplicated(MNG[["MANAGEMENTORG4"]])
+          MNG[["duplicados"]]<-a
+          MNG<-subset(MNG,MNG[["duplicados"]]=="FALSE")
+          MNG[["duplicados"]]<-NULL
+          MNG<<-MNG
           dbWriteTable(
             DB,
             "accesses",
@@ -1639,6 +1696,14 @@ shinyServer(function(input, output, session) {
                 is.null(ACCESSES[["MANAGEMENTORG2"]])==FALSE&
                 is.null(ACCESSES[["MANAGEMENTORG1"]])==FALSE)
         {
+          MNG<-subset(ACCESSES,select = c("MANAGEMENTORG1",
+                                          "MANAGEMENTORG2",
+                                          "MANAGEMENTORG3"))
+          a<-duplicated(MNG[["MANAGEMENTORG3"]])
+          MNG[["duplicados"]]<-a
+          MNG<-subset(MNG,MNG[["duplicados"]]=="FALSE")
+          MNG[["duplicados"]]<-NULL
+          MNG<<-MNG
           dbWriteTable(
             DB,
             "accesses",
@@ -1665,6 +1730,13 @@ shinyServer(function(input, output, session) {
         else if(is.null(ACCESSES[["MANAGEMENTORG2"]])==FALSE&
                 is.null(ACCESSES[["MANAGEMENTORG1"]])==FALSE)
         {
+          MNG<-subset(ACCESSES,select = c("MANAGEMENTORG1",
+                                          "MANAGEMENTORG2"))
+          a<-duplicated(MNG[["MANAGEMENTORG2"]])
+          MNG[["duplicados"]]<-a
+          MNG<-subset(MNG,MNG[["duplicados"]]=="FALSE")
+          MNG[["duplicados"]]<-NULL
+          MNG<<-MNG
           dbWriteTable(
             DB,
             "accesses",
@@ -1689,6 +1761,12 @@ shinyServer(function(input, output, session) {
         }
         else if(is.null(ACCESSES[["MANAGEMENTORG1"]])==FALSE)
         {
+          MNG<-subset(ACCESSES,select = c("MANAGEMENTORG1"))
+          a<-duplicated(MNG[["MANAGEMENTORG1"]])
+          MNG[["duplicados"]]<-a
+          MNG<-subset(MNG,MNG[["duplicados"]]=="FALSE")
+          MNG[["duplicados"]]<-NULL
+          MNG<<-MNG
           dbWriteTable(
             DB,
             "accesses",
@@ -1947,10 +2025,92 @@ shinyServer(function(input, output, session) {
       }
       if (client == "igi"){
         if(!is.null(uso)){
+          if(proveedor=="Lexmark"){
           ACCESSES2<-ACCESSES
           ACCESSES2[["Tipo"]]<-NULL
           ACCESSES2[["Proveedor"]]<-NULL
-          Consolidado<-merge(uso,ACCESSES2,by = "Acceso",all.x = TRUE)
+          if(!is.null(ACCESSES[["MANAGEMENTORG8"]])){
+            ACCESSES2[["MANAGEMENTORG1"]]<-NULL
+            ACCESSES2[["MANAGEMENTORG2"]]<-NULL
+            ACCESSES2[["MANAGEMENTORG3"]]<-NULL
+            ACCESSES2[["MANAGEMENTORG4"]]<-NULL
+            ACCESSES2[["MANAGEMENTORG5"]]<-NULL
+            ACCESSES2[["MANAGEMENTORG6"]]<-NULL
+            ACCESSES2[["MANAGEMENTORG7"]]<-NULL
+            
+            Consolidado1<-merge(uso,ACCESSES2,by = "Acceso",all.x = TRUE)
+            Consolidado<-merge(Consolidado1,MNG,by.x = "Usuario ID",by.y = "MANAGEMENTORG8")
+            
+          }
+          else if(is.null(ACCESSES[["MANAGEMENTORG8"]]) & !is.null(ACCESSES[["MANAGEMENTORG7"]])){
+            ACCESSES2[["MANAGEMENTORG1"]]<-NULL
+            ACCESSES2[["MANAGEMENTORG2"]]<-NULL
+            ACCESSES2[["MANAGEMENTORG3"]]<-NULL
+            ACCESSES2[["MANAGEMENTORG4"]]<-NULL
+            ACCESSES2[["MANAGEMENTORG5"]]<-NULL
+            ACCESSES2[["MANAGEMENTORG6"]]<-NULL
+            
+            Consolidado1<-merge(uso,ACCESSES2,by = "Acceso",all.x = TRUE)
+            Consolidado<-merge(Consolidado1,MNG,by.x = "Usuario ID",by.y = "MANAGEMENTORG7")
+          }
+          else if(is.null(ACCESSES[["MANAGEMENTORG7"]]) & !is.null(ACCESSES[["MANAGEMENTORG6"]])){
+            ACCESSES2[["MANAGEMENTORG1"]]<-NULL
+            ACCESSES2[["MANAGEMENTORG2"]]<-NULL
+            ACCESSES2[["MANAGEMENTORG3"]]<-NULL
+            ACCESSES2[["MANAGEMENTORG4"]]<-NULL
+            ACCESSES2[["MANAGEMENTORG5"]]<-NULL
+            
+            Consolidado1<-merge(uso,ACCESSES2,by = "Acceso",all.x = TRUE)
+            Consolidado<-merge(Consolidado1,MNG,by.x = "Usuario ID",by.y = "MANAGEMENTORG6")
+          }
+          else if(is.null(ACCESSES[["MANAGEMENTORG6"]]) & !is.null(ACCESSES[["MANAGEMENTORG5"]])){
+            ACCESSES2[["MANAGEMENTORG1"]]<-NULL
+            ACCESSES2[["MANAGEMENTORG2"]]<-NULL
+            ACCESSES2[["MANAGEMENTORG3"]]<-NULL
+            ACCESSES2[["MANAGEMENTORG4"]]<-NULL
+            
+            Consolidado1<-merge(uso,ACCESSES2,by = "Acceso",all.x = TRUE)
+            Consolidado<-merge(Consolidado1,MNG,by.x = "Usuario ID",by.y = "MANAGEMENTORG5")
+          }
+          else if(is.null(ACCESSES[["MANAGEMENTORG5"]]) & !is.null(ACCESSES[["MANAGEMENTORG4"]])){
+            ACCESSES2[["MANAGEMENTORG1"]]<-NULL
+            ACCESSES2[["MANAGEMENTORG2"]]<-NULL
+            ACCESSES2[["MANAGEMENTORG3"]]<-NULL
+            
+            Consolidado1<-merge(uso,ACCESSES2,by = "Acceso",all.x = TRUE)
+            Consolidado<-merge(Consolidado1,MNG,by.x = "Usuario ID",by.y = "MANAGEMENTORG4")
+          }
+          else if(is.null(ACCESSES[["MANAGEMENTORG4"]]) & !is.null(ACCESSES[["MANAGEMENTORG3"]])){
+            ACCESSES2[["MANAGEMENTORG1"]]<-NULL
+            ACCESSES2[["MANAGEMENTORG2"]]<-NULL
+            
+            Consolidado1<-merge(uso,ACCESSES2,by = "Acceso",all.x = TRUE)
+            Consolidado<-merge(Consolidado1,MNG,by.x = "Usuario ID",by.y = "MANAGEMENTORG3")
+          }
+          else if(is.null(ACCESSES[["MANAGEMENTORG3"]]) & !is.null(ACCESSES[["MANAGEMENTORG2"]])){
+            ACCESSES2[["MANAGEMENTORG1"]]<-NULL
+            
+            Consolidado1<-merge(uso,ACCESSES2,by = "Acceso",all.x = TRUE)
+            Consolidado<-merge(Consolidado1,MNG,by.x = "Usuario ID",by.y = "MANAGEMENTORG2")
+          }
+          else if(is.null(ACCESSES[["MANAGEMENTORG2"]]) & !is.null(ACCESSES[["MANAGEMENTORG1"]])){
+            
+            
+            Consolidado1<-merge(uso,ACCESSES2,by = "Acceso",all.x = TRUE)
+            Consolidado<-merge(Consolidado1,MNG,by.x = "Usuario ID",by.y = "MANAGEMENTORG1")
+          }
+          else {
+            Consolidado<-merge(uso,ACCESSES2,by = "Acceso",all.x = TRUE)
+          }
+          }
+          else if (proveedor == "UNIT CL"){
+            print("Falta validar")
+            ACCESSES2<-ACCESSES
+            ACCESSES2[["Tipo"]]<-NULL
+            ACCESSES2[["Proveedor"]]<-NULL
+            Consolidado<-merge(uso,ACCESSES2,by = "Acceso",all.x = TRUE)
+          }
+            Consolidado<<-Consolidado
           dbWriteTable(
             DB,
             "consolidado",
@@ -1961,6 +2121,7 @@ shinyServer(function(input, output, session) {
             append = FALSE,
             allow.keywords = FALSE
           )
+          
         }
       }
     }
