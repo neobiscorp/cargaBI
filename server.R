@@ -76,6 +76,9 @@ shinyServer(function(input, output, session) {
     if (client=="Informe Gestion Impresion"){
       client <- "igi"
     }
+    if (client == "Informe Gestion Base"){
+      client <- "igb"
+    }
     
     
     #Create DB connection variable
@@ -508,6 +511,18 @@ shinyServer(function(input, output, session) {
         names(uso)[names(uso) == 'N.Â..Copias'] <<- 'N. Copias'
         names(uso)[names(uso) == 'Contador.Color.Actual'] <<- 'Contador Color Actual'
         names(uso)[names(uso) == 'Contador.B.N.Actual'] <<- 'Contador B/N Actual'
+        names(uso)[names(uso) == 'Descuentos..CLP.'] <<- 'Descuentos (CLP)'
+       
+      }
+      else if (client == "igb"){
+        names(uso)[names(uso) == 'ï..Acceso'] <<- 'Acceso'
+        names(uso)[names(uso) == 'Tipo'] <<- 'Tipo'
+        names(uso)[names(uso) == 'Proveedor'] <<- 'Proveedor'
+        names(uso)[names(uso) == 'Centro.de.facturaciÃ³n'] <<-  'Centro de facturacion'
+        names(uso)[names(uso) == 'PerÃ.odo.de'] <<-  'Periodo de'
+        names(uso)[names(uso) == 'Total..CLP.'] <<- 'Total (CLP)'
+        names(uso)[names(uso) == 'Plano.tarifario..CLP.'] <<-
+          'Plano tarifario (CLP)'
         names(uso)[names(uso) == 'Descuentos..CLP.'] <<- 'Descuentos (CLP)'
       }
       else {
@@ -1002,6 +1017,28 @@ shinyServer(function(input, output, session) {
           allow.keywords = FALSE
         )
       }
+      else if (client == "igb"){
+        dbWriteTable(
+          DB,
+          "usos",
+          uso,
+          field.types = list(
+            `Acceso` = "varchar(255)",
+            `Tipo` = "varchar(255)",
+            `Centro de facturacion` = "varchar(255)",
+            `Proveedor` = "varchar(255)",
+            `Total (CLP)` = "double(15,2)",
+            `Plano tarifario (CLP)` = "double(15,2)",
+            `Descuentos (CLP)` = "double(15,2)",
+            `Mes` = "text",
+            `Fecha` = "date"
+          ),
+          row.names = FALSE,
+          overwrite = TRUE,
+          append = FALSE,
+          allow.keywords = FALSE
+        )
+      }
       else {
        
         dbWriteTable(
@@ -1032,7 +1069,7 @@ shinyServer(function(input, output, session) {
         )
       }
       #Send an MySQL Query that delete spaces inside Accesos
-      if (client != "igm" & client != "afm"){
+      if (client != "igm" & client != "afm"& client != "igb"){
       dbSendQuery(DB, "update `usos` set ACCESO = replace(ACCESO, ' ', '')")
       }
       uso <<- uso
@@ -1410,7 +1447,7 @@ shinyServer(function(input, output, session) {
           allow.keywords = FALSE
         )
       }
-      else if (client == "igm"|client =="igi"){
+      else if (client == "igm"|client =="igi"|client=="igb"){
         #Only select the columns with the following titles
         a<-as.Date(ACCESSES$ELIGIBILITY.DATE, origin="1899-12-30")
         ACCESSES[,'Fecha Renovacion']<-as.Date(ACCESSES$ELIGIBILITY.DATE, origin="1899-12-30")
@@ -1499,6 +1536,7 @@ shinyServer(function(input, output, session) {
           MNG<-subset(MNG,MNG[["duplicados"]]=="FALSE")
           MNG[["duplicados"]]<-NULL
           MNG<<-MNG
+    
           dbWriteTable(
             DB,
             "accesses",
@@ -1547,6 +1585,7 @@ shinyServer(function(input, output, session) {
           MNG<-subset(MNG,MNG[["duplicados"]]=="FALSE")
           MNG[["duplicados"]]<-NULL
           MNG<<-MNG
+          
           dbWriteTable(
             DB,
             "accesses",
@@ -1635,6 +1674,7 @@ shinyServer(function(input, output, session) {
           MNG<-subset(MNG,MNG[["duplicados"]]=="FALSE")
           MNG[["duplicados"]]<-NULL
           MNG<<-MNG
+          
           dbWriteTable(
             DB,
             "accesses",
@@ -1674,6 +1714,7 @@ shinyServer(function(input, output, session) {
           MNG<-subset(MNG,MNG[["duplicados"]]=="FALSE")
           MNG[["duplicados"]]<-NULL
           MNG<<-MNG
+         
           dbWriteTable(
             DB,
             "accesses",
@@ -1710,6 +1751,7 @@ shinyServer(function(input, output, session) {
           MNG<-subset(MNG,MNG[["duplicados"]]=="FALSE")
           MNG[["duplicados"]]<-NULL
           MNG<<-MNG
+         
           dbWriteTable(
             DB,
             "accesses",
@@ -1743,6 +1785,7 @@ shinyServer(function(input, output, session) {
           MNG<-subset(MNG,MNG[["duplicados"]]=="FALSE")
           MNG[["duplicados"]]<-NULL
           MNG<<-MNG
+         
           dbWriteTable(
             DB,
             "accesses",
@@ -1773,6 +1816,7 @@ shinyServer(function(input, output, session) {
           MNG<-subset(MNG,MNG[["duplicados"]]=="FALSE")
           MNG[["duplicados"]]<-NULL
           MNG<<-MNG
+          
           dbWriteTable(
             DB,
             "accesses",
@@ -1968,6 +2012,19 @@ shinyServer(function(input, output, session) {
               "IMEI",
               "Estado")
         }
+        else if (client == "igb") {
+          
+          write.table(DEVICES, file = "DEVICES.txt", fileEncoding = "UTF-8")
+          DEVICES <<-
+            read.table(file = "DEVICES.txt", encoding = "UTF-8")
+          DEVICES <- subset(DEVICES,select = c("TYPE", "MODEL","REFNUM","IMEI","STATUS"))
+          names(DEVICES) <-
+            c("Tipo",
+              "Modelo",
+              "REFNUM",
+              "IMEI",
+              "Estado")
+        }
         dbWriteTable(
           DB,
           "devices",
@@ -2029,8 +2086,10 @@ shinyServer(function(input, output, session) {
           allow.keywords = FALSE
         )
       }
+      #########################################MERGE_IGI######
       if (client == "igi"){
         if(!is.null(uso)){
+         
           if(proveedor2=="Lexmark"){
           ACCESSES2<-ACCESSES
           ACCESSES2[["Tipo"]]<-NULL
