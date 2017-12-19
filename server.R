@@ -1536,7 +1536,9 @@ shinyServer(function(input, output, session) {
           MNG<-subset(MNG,MNG[["duplicados"]]=="FALSE")
           MNG[["duplicados"]]<-NULL
           MNG<<-MNG
-    
+          a<-data.frame("Sin Ceco","Sin Ceco","Sin Ceco","Sin Ceco","Sin Ceco","Sin Ceco","Sin Ceco","Sin Ceco")
+          MNG<-data.frame(rbind(as.matrix(MNG),as.matrix(a)))
+          MNG<<-MNG
           dbWriteTable(
             DB,
             "accesses",
@@ -1585,7 +1587,9 @@ shinyServer(function(input, output, session) {
           MNG<-subset(MNG,MNG[["duplicados"]]=="FALSE")
           MNG[["duplicados"]]<-NULL
           MNG<<-MNG
-          
+          a<-data.frame("Sin Ceco","Sin Ceco","Sin Ceco","Sin Ceco","Sin Ceco","Sin Ceco","Sin Ceco")
+          MNG<-data.frame(rbind(as.matrix(MNG),as.matrix(a)))
+          MNG<<-MNG
           dbWriteTable(
             DB,
             "accesses",
@@ -1631,7 +1635,9 @@ shinyServer(function(input, output, session) {
           MNG<-subset(MNG,MNG[["duplicados"]]=="FALSE")
           MNG[["duplicados"]]<-NULL
           MNG<<-MNG
-          
+          a<-data.frame("Sin Ceco","Sin Ceco","Sin Ceco","Sin Ceco","Sin Ceco","Sin Ceco")
+          MNG<-data.frame(rbind(as.matrix(MNG),as.matrix(a)))
+          MNG<<-MNG
           dbWriteTable(
             DB,
             "accesses",
@@ -1674,7 +1680,9 @@ shinyServer(function(input, output, session) {
           MNG<-subset(MNG,MNG[["duplicados"]]=="FALSE")
           MNG[["duplicados"]]<-NULL
           MNG<<-MNG
-          
+          a<-data.frame("Sin Ceco","Sin Ceco","Sin Ceco","Sin Ceco","Sin Ceco")
+          MNG<-data.frame(rbind(as.matrix(MNG),as.matrix(a)))
+          MNG<<-MNG
           dbWriteTable(
             DB,
             "accesses",
@@ -1714,7 +1722,9 @@ shinyServer(function(input, output, session) {
           MNG<-subset(MNG,MNG[["duplicados"]]=="FALSE")
           MNG[["duplicados"]]<-NULL
           MNG<<-MNG
-         
+          a<-data.frame("Sin Ceco","Sin Ceco","Sin Ceco","Sin Ceco")
+          MNG<-data.frame(rbind(as.matrix(MNG),as.matrix(a)))
+          MNG<<-MNG
           dbWriteTable(
             DB,
             "accesses",
@@ -1751,7 +1761,9 @@ shinyServer(function(input, output, session) {
           MNG<-subset(MNG,MNG[["duplicados"]]=="FALSE")
           MNG[["duplicados"]]<-NULL
           MNG<<-MNG
-         
+          a<-data.frame("Sin Ceco","Sin Ceco","Sin Ceco")
+          MNG<-data.frame(rbind(as.matrix(MNG),as.matrix(a)))
+          MNG<<-MNG
           dbWriteTable(
             DB,
             "accesses",
@@ -1785,7 +1797,9 @@ shinyServer(function(input, output, session) {
           MNG<-subset(MNG,MNG[["duplicados"]]=="FALSE")
           MNG[["duplicados"]]<-NULL
           MNG<<-MNG
-         
+          a<-data.frame("Sin Ceco","Sin Ceco")
+          MNG<-data.frame(rbind(as.matrix(MNG),as.matrix(a)))
+          MNG<<-MNG
           dbWriteTable(
             DB,
             "accesses",
@@ -1816,7 +1830,9 @@ shinyServer(function(input, output, session) {
           MNG<-subset(MNG,MNG[["duplicados"]]=="FALSE")
           MNG[["duplicados"]]<-NULL
           MNG<<-MNG
-          
+          a<-data.frame("Sin Ceco")
+          MNG<-data.frame(rbind(as.matrix(MNG),as.matrix(a)))
+          MNG<<-MNG
           dbWriteTable(
             DB,
             "accesses",
@@ -2089,7 +2105,13 @@ shinyServer(function(input, output, session) {
       #########################################MERGE_IGI######
       if (client == "igi"){
         if(!is.null(uso)){
-         
+          uso1<-subset(uso,uso[["Usuario ID"]]=="")
+          uso2<-subset(uso,uso[["Usuario ID"]]!="")
+          if (length(uso1[["Acceso"]])>0){
+          uso1[["Usuario ID"]]<-NULL
+          uso1[["Usuario ID"]]<-"Sin Ceco"
+          uso<<-rbind(uso1,uso2)}
+          uso<<-uso
           if(proveedor2=="Lexmark"){
           ACCESSES2<-ACCESSES
           ACCESSES2[["Tipo"]]<-NULL
@@ -2102,9 +2124,10 @@ shinyServer(function(input, output, session) {
             ACCESSES2[["MANAGEMENTORG5"]]<-NULL
             ACCESSES2[["MANAGEMENTORG6"]]<-NULL
             ACCESSES2[["MANAGEMENTORG7"]]<-NULL
+            ACCESSES2[["MANAGEMENTORG8"]]<-NULL
             
             Consolidado1<-merge(uso,ACCESSES2,by = "Acceso",all.x = TRUE)
-            Consolidado<-merge(Consolidado1,MNG,by.x = "Usuario ID",by.y = "MANAGEMENTORG8")
+            Consolidado<-merge(Consolidado1,MNG,by.x = "Usuario ID",by.y = "MANAGEMENTORG8",all.x = TRUE)
             
           }
           else if(is.null(ACCESSES[["MANAGEMENTORG8"]]) & !is.null(ACCESSES[["MANAGEMENTORG7"]])){
@@ -2114,9 +2137,10 @@ shinyServer(function(input, output, session) {
             ACCESSES2[["MANAGEMENTORG4"]]<-NULL
             ACCESSES2[["MANAGEMENTORG5"]]<-NULL
             ACCESSES2[["MANAGEMENTORG6"]]<-NULL
+            ACCESSES2[["MANAGEMENTORG7"]]<-NULL
             
             Consolidado1<-merge(uso,ACCESSES2,by = "Acceso",all.x = TRUE)
-            Consolidado<-merge(Consolidado1,MNG,by.x = "Usuario ID",by.y = "MANAGEMENTORG7")
+            Consolidado<-merge(Consolidado1,MNG,by.x = "Usuario ID",by.y = "MANAGEMENTORG7",all.x = TRUE)
           }
           else if(is.null(ACCESSES[["MANAGEMENTORG7"]]) & !is.null(ACCESSES[["MANAGEMENTORG6"]])){
             ACCESSES2[["MANAGEMENTORG1"]]<-NULL
@@ -2124,45 +2148,50 @@ shinyServer(function(input, output, session) {
             ACCESSES2[["MANAGEMENTORG3"]]<-NULL
             ACCESSES2[["MANAGEMENTORG4"]]<-NULL
             ACCESSES2[["MANAGEMENTORG5"]]<-NULL
+            ACCESSES2[["MANAGEMENTORG6"]]<-NULL
             
             Consolidado1<-merge(uso,ACCESSES2,by = "Acceso",all.x = TRUE)
-            Consolidado<-merge(Consolidado1,MNG,by.x = "Usuario ID",by.y = "MANAGEMENTORG6")
+            Consolidado<-merge(Consolidado1,MNG,by.x = "Usuario ID",by.y = "MANAGEMENTORG6",all.x = TRUE)
           }
           else if(is.null(ACCESSES[["MANAGEMENTORG6"]]) & !is.null(ACCESSES[["MANAGEMENTORG5"]])){
             ACCESSES2[["MANAGEMENTORG1"]]<-NULL
             ACCESSES2[["MANAGEMENTORG2"]]<-NULL
             ACCESSES2[["MANAGEMENTORG3"]]<-NULL
             ACCESSES2[["MANAGEMENTORG4"]]<-NULL
+            ACCESSES2[["MANAGEMENTORG5"]]<-NULL
             
             Consolidado1<-merge(uso,ACCESSES2,by = "Acceso",all.x = TRUE)
-            Consolidado<-merge(Consolidado1,MNG,by.x = "Usuario ID",by.y = "MANAGEMENTORG5")
+            Consolidado<-merge(Consolidado1,MNG,by.x = "Usuario ID",by.y = "MANAGEMENTORG5",all.x = TRUE)
           }
           else if(is.null(ACCESSES[["MANAGEMENTORG5"]]) & !is.null(ACCESSES[["MANAGEMENTORG4"]])){
             ACCESSES2[["MANAGEMENTORG1"]]<-NULL
             ACCESSES2[["MANAGEMENTORG2"]]<-NULL
             ACCESSES2[["MANAGEMENTORG3"]]<-NULL
+            ACCESSES2[["MANAGEMENTORG4"]]<-NULL
             
             Consolidado1<-merge(uso,ACCESSES2,by = "Acceso",all.x = TRUE)
-            Consolidado<-merge(Consolidado1,MNG,by.x = "Usuario ID",by.y = "MANAGEMENTORG4")
+            Consolidado<-merge(Consolidado1,MNG,by.x = "Usuario ID",by.y = "MANAGEMENTORG4",all.x = TRUE)
           }
           else if(is.null(ACCESSES[["MANAGEMENTORG4"]]) & !is.null(ACCESSES[["MANAGEMENTORG3"]])){
             ACCESSES2[["MANAGEMENTORG1"]]<-NULL
             ACCESSES2[["MANAGEMENTORG2"]]<-NULL
+            ACCESSES2[["MANAGEMENTORG3"]]<-NULL
             
             Consolidado1<-merge(uso,ACCESSES2,by = "Acceso",all.x = TRUE)
-            Consolidado<-merge(Consolidado1,MNG,by.x = "Usuario ID",by.y = "MANAGEMENTORG3")
+            Consolidado<-merge(Consolidado1,MNG,by.x = "Usuario ID",by.y = "MANAGEMENTORG3",all.x = TRUE)
           }
           else if(is.null(ACCESSES[["MANAGEMENTORG3"]]) & !is.null(ACCESSES[["MANAGEMENTORG2"]])){
             ACCESSES2[["MANAGEMENTORG1"]]<-NULL
+            ACCESSES2[["MANAGEMENTORG2"]]<-NULL
             
             Consolidado1<-merge(uso,ACCESSES2,by = "Acceso",all.x = TRUE)
-            Consolidado<-merge(Consolidado1,MNG,by.x = "Usuario ID",by.y = "MANAGEMENTORG2")
+            Consolidado<-merge(Consolidado1,MNG,by.x = "Usuario ID",by.y = "MANAGEMENTORG2",all.x = TRUE)
           }
           else if(is.null(ACCESSES[["MANAGEMENTORG2"]]) & !is.null(ACCESSES[["MANAGEMENTORG1"]])){
-            
+            ACCESSES2[["MANAGEMENTORG1"]]<-NULL
             
             Consolidado1<-merge(uso,ACCESSES2,by = "Acceso",all.x = TRUE)
-            Consolidado<-merge(Consolidado1,MNG,by.x = "Usuario ID",by.y = "MANAGEMENTORG1")
+            Consolidado<-merge(Consolidado1,MNG,by.x = "Usuario ID",by.y = "MANAGEMENTORG1",all.x = TRUE)
           }
           else {
             Consolidado<-merge(uso,ACCESSES2,by = "Acceso",all.x = TRUE)
