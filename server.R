@@ -53,6 +53,7 @@ shinyServer(function(input, output, session) {
     contrato <- input$contrato
     proveedor <<-input$proveedor
     proveedor2 <<-input$proveedor2
+    customfield <<- input$customfield
     
     #Change name of client input to the same name of the database
     if (client == "Parque Arauco") {
@@ -1452,6 +1453,27 @@ shinyServer(function(input, output, session) {
       }
       else if (client == "igm"|client =="igi"|client=="ige"){
         #Only select the columns with the following titles
+        if(client == "ige"){
+          if (customfield == "Si"){
+            CUSTOM <- subset(ACCESSES,select = c("ACCESS.NUMBER",
+                                                  "CUSTOM_FIELD:BW",
+                                                  "CUSTOM_FIELD:Cliente",
+                                                  "CUSTOM_FIELD:Descripción",
+                                                  "CUSTOM_FIELD:Destino",
+                                                  "CUSTOM_FIELD:Prioridad",
+                                                  "CUSTOM_FIELD:Red.de.acceso",
+                                                  "CUSTOM_FIELD:Switch"))
+            names(CUSTOM)<-c("Acceso",
+                             "BW",
+                             "Cliente",
+                             "Descripcion",
+                             "Destino",
+                             "Prioridad",
+                             "Red de acceso",
+                             "Switch")
+            CUSTOM<<-CUSTOM
+          }
+        }
         a<-as.Date(ACCESSES$ELIGIBILITY.DATE, origin="1899-12-30")
         ACCESSES[,'Fecha Renovacion']<-as.Date(ACCESSES$ELIGIBILITY.DATE, origin="1899-12-30")
         ACCESSES <-
@@ -2234,7 +2256,8 @@ shinyServer(function(input, output, session) {
           ACCESSES2<-ACCESSES
           ACCESSES2[["Tipo"]]<-NULL
           ACCESSES2[["Proveedor"]]<-NULL
-          Consolidado<-merge(uso,ACCESSES2,by = "Acceso", all.x = TRUE)
+          Consolidado1<-merge(uso,ACCESSES2,by = "Acceso", all.x = TRUE)
+          Consolidado<-merge(Consolidado1,CUSTOM,by = "Acceso", all.x = TRUE)
           Consolidado<<-Consolidado
           dbWriteTable(
             DB,
