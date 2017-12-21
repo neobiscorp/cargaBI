@@ -28,7 +28,7 @@ shinyUI(fluidPage(
           "Informe Gestion Movil",
           "Anomalias de Facturacion Movil",
           "Informe Gestion Impresion",
-          "Informe Gestion Base"
+          "Informe Gestion Enlace"
         ),
         selected = ""
       ),

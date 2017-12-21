@@ -76,8 +76,8 @@ shinyServer(function(input, output, session) {
     if (client=="Informe Gestion Impresion"){
       client <- "igi"
     }
-    if (client == "Informe Gestion Base"){
-      client <- "igb"
+    if (client == "Informe Gestion Enlace"){
+      client <- "ige"
     }
     
     
@@ -374,7 +374,7 @@ shinyServer(function(input, output, session) {
         
       }
       #If the client its not Parque Arauco and licitacion run the following
-      else if (client != "lmovil" & client != "igm" & client!= "afm" & client!="igi") {
+      else if (client != "lmovil" & client != "igm" & client!= "afm" & client!="igi" & client != "ige") {
         print("no lmovil o igm o afm o igi")
         #Change the name of the columns
         names(uso)[names(uso) == 'ï..Acceso'] <<- 'Acceso'
@@ -514,16 +514,18 @@ shinyServer(function(input, output, session) {
         names(uso)[names(uso) == 'Descuentos..CLP.'] <<- 'Descuentos (CLP)'
        
       }
-      else if (client == "igb"){
+      else if (client == "ige"){
         names(uso)[names(uso) == 'ï..Acceso'] <<- 'Acceso'
         names(uso)[names(uso) == 'Tipo'] <<- 'Tipo'
         names(uso)[names(uso) == 'Proveedor'] <<- 'Proveedor'
+        names(uso)[names(uso) == 'Equipo'] <<- 'Equipo'
         names(uso)[names(uso) == 'Centro.de.facturaciÃ³n'] <<-  'Centro de facturacion'
         names(uso)[names(uso) == 'PerÃ.odo.de'] <<-  'Periodo de'
         names(uso)[names(uso) == 'Total..CLP.'] <<- 'Total (CLP)'
         names(uso)[names(uso) == 'Plano.tarifario..CLP.'] <<-
           'Plano tarifario (CLP)'
         names(uso)[names(uso) == 'Descuentos..CLP.'] <<- 'Descuentos (CLP)'
+       
       }
       else {
         #Change the name of the columns for the Licitacion movil
@@ -593,7 +595,7 @@ shinyServer(function(input, output, session) {
       
       #If the client got printer access eliminate the thousand dot separator
       if (client != "hdc" &
-          client != "aguasandinas" & client != "lmovil"& client != "igm"& client != "afm" & client != "igi") {
+          client != "aguasandinas" & client != "lmovil"& client != "igm"& client != "afm" & client != "igi"& client != "ige") {
         uso[, c('N Copias', 'N Copias B/N', 'N Copias Color')] <<-
           lapply(uso[, c('N Copias', 'N Copias B/N', 'N Copias Color')], function(x)
             as.character(gsub("\\.", "", x)))
@@ -681,7 +683,7 @@ shinyServer(function(input, output, session) {
         
       }
       else if (client != "hdc" &
-               client != "aguasandinas" & client != "lmovil"& client != "igm"& client != "afm"& client != "igi") {
+               client != "aguasandinas" & client != "lmovil"& client != "igm"& client != "afm"& client != "igi" & client != "ige") {
         dbWriteTable(
           DB,
           "usos",
@@ -1017,7 +1019,7 @@ shinyServer(function(input, output, session) {
           allow.keywords = FALSE
         )
       }
-      else if (client == "igb"){
+      else if (client == "ige"){
         dbWriteTable(
           DB,
           "usos",
@@ -1027,6 +1029,7 @@ shinyServer(function(input, output, session) {
             `Tipo` = "varchar(255)",
             `Centro de facturacion` = "varchar(255)",
             `Proveedor` = "varchar(255)",
+            `Equipo` = "varchar(255)",
             `Total (CLP)` = "double(15,2)",
             `Plano tarifario (CLP)` = "double(15,2)",
             `Descuentos (CLP)` = "double(15,2)",
@@ -1082,7 +1085,7 @@ shinyServer(function(input, output, session) {
       
       #######################################USERS############
       
-      if (client != "lmovil" & client != "igm" & client != "igi") {
+      if (client != "lmovil" & client != "igm" & client != "igi" & client != "ige") {
         #Read the xlsx file at the sheet USERS
         USERS <- read.xlsx(export$datapath,
                            sheet = "USERS",
@@ -1447,7 +1450,7 @@ shinyServer(function(input, output, session) {
           allow.keywords = FALSE
         )
       }
-      else if (client == "igm"|client =="igi"|client=="igb"){
+      else if (client == "igm"|client =="igi"|client=="ige"){
         #Only select the columns with the following titles
         a<-as.Date(ACCESSES$ELIGIBILITY.DATE, origin="1899-12-30")
         ACCESSES[,'Fecha Renovacion']<-as.Date(ACCESSES$ELIGIBILITY.DATE, origin="1899-12-30")
@@ -1880,7 +1883,6 @@ shinyServer(function(input, output, session) {
         ACCESSES <<- ACCESSES
         
       }
-      
       else if (client == "lmovil") {
         #Only select the columns with the following titles
         
@@ -1928,7 +1930,7 @@ shinyServer(function(input, output, session) {
       }
       file.remove("ACCESSES.txt")
       #######################################DEVICES############
-      if (client != "lmovil" & client != "igm" & client != "igi") {
+      if (client != "lmovil" & client != "igm" & client != "igi" & client != "ige") {
         DEVICES <- read.xlsx(export$datapath,
                              sheet = "DEVICES",
                              startRow = 1)
@@ -2054,7 +2056,7 @@ shinyServer(function(input, output, session) {
         DEVICES<<-DEVICES
       }
       #######################################ASSOCIATIONS############
-      if (client != "lmovil"& client != "igm" & client != "igi") {
+      if (client != "lmovil"& client != "igm" & client != "igi" & client != "ige") {
         ASSOCIATIONS <- read.xlsx(export$datapath,
                                   sheet = "ASSOCIATIONS",
                                   startRow = 1)
@@ -2079,7 +2081,7 @@ shinyServer(function(input, output, session) {
         ASSOCIATIONS <<- ASSOCIATIONS
       }
       #######################################PRODUCT_ASSOCIATIONS############
-      if (client != "lmovil"& client != "igm" & client != "igi") {
+      if (client != "lmovil"& client != "igm" & client != "igi" & client != "ige") {
         PRODUCT_ASSOCIATIONS <- read.xlsx(export$datapath,
                                           sheet = "PRODUCT ASSOCIATIONS",
                                           startRow = 1)
@@ -2218,6 +2220,35 @@ shinyServer(function(input, output, session) {
           
         }
       }
+      ########################################MERGE_IGE#########
+      if (client == "ige"){
+        if(!is.null(uso)){
+          uso1<-subset(uso,uso[["Equipo"]]=="")
+          uso2<-subset(uso,uso[["Equipo"]]!="")
+          if (length(uso1[["Acceso"]])>0){
+            uso1[["Equipo"]]<-NULL
+            uso1[["Equipo"]]<-"Otro"
+            uso<<-rbind(uso1,uso2)
+          }
+          #Se busca un merge de trazabilidad por proyeccion del periodo actual
+          ACCESSES2<-ACCESSES
+          ACCESSES2[["Tipo"]]<-NULL
+          ACCESSES2[["Proveedor"]]<-NULL
+          Consolidado<-merge(uso,ACCESSES2,by = "Acceso", all.x = TRUE)
+          Consolidado<<-Consolidado
+          dbWriteTable(
+            DB,
+            "consolidado",
+            Consolidado,
+            field.types = NULL ,
+            row.names = FALSE,
+            overwrite = TRUE,
+            append = FALSE,
+            allow.keywords = FALSE
+          )
+        }
+      }
+      
     }
     #Run the following code if theres a file in the presupuesto file input
     if (!is.null(presupuesto2)){
