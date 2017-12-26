@@ -228,6 +228,19 @@ shinyUI(fluidPage(
       ),
       #Create conditional panel with a checkbox
       conditionalPanel(
+        condition = "input.Client =='Informe Gestion Enlace'",
+        selectInput(
+          "divisa",
+          label = h5("Divisa"),
+          choices = c(
+            "CLP",
+            "UF"
+          ),
+          selected = ""
+        )
+      ),
+      #Create conditional panel with a checkbox
+      conditionalPanel(
         condition = "input.Client == 'Licitacion Movil (Entel y Movistar)'",
         checkboxInput('excel', '¿Crear RFP en Excel?', value = FALSE)
       ),

@@ -54,7 +54,7 @@ shinyServer(function(input, output, session) {
     proveedor <<-input$proveedor
     proveedor2 <<-input$proveedor2
     customfield <<- input$customfield
-    
+    divisa<<- input$divisa
     #Change name of client input to the same name of the database
     if (client == "Parque Arauco") {
       client <- "pa"
@@ -516,6 +516,7 @@ shinyServer(function(input, output, session) {
        
       }
       else if (client == "ige"){
+        if (divisa =="CLP"){
         names(uso)[names(uso) == 'ï..Acceso'] <<- 'Acceso'
         names(uso)[names(uso) == 'Tipo'] <<- 'Tipo'
         names(uso)[names(uso) == 'Proveedor'] <<- 'Proveedor'
@@ -526,6 +527,19 @@ shinyServer(function(input, output, session) {
         names(uso)[names(uso) == 'Plano.tarifario..CLP.'] <<-
           'Plano tarifario (CLP)'
         names(uso)[names(uso) == 'Descuentos..CLP.'] <<- 'Descuentos (CLP)'
+        }
+        else if (divisa == "UF"){
+          names(uso)[names(uso) == 'ï..Acceso'] <<- 'Acceso'
+          names(uso)[names(uso) == 'Tipo'] <<- 'Tipo'
+          names(uso)[names(uso) == 'Proveedor'] <<- 'Proveedor'
+          names(uso)[names(uso) == 'Equipo'] <<- 'Equipo'
+          names(uso)[names(uso) == 'Centro.de.facturaciÃ³n'] <<-  'Centro de facturacion'
+          names(uso)[names(uso) == 'PerÃ.odo.de'] <<-  'Periodo de'
+          names(uso)[names(uso) == 'Total..UF.'] <<- 'Total (CLP)'
+          names(uso)[names(uso) == 'Plano.tarifario..UF.'] <<-
+            'Plano tarifario (CLP)'
+          names(uso)[names(uso) == 'Descuentos..UF.'] <<- 'Descuentos (CLP)'
+        }
        
       }
       else {
@@ -1021,6 +1035,7 @@ shinyServer(function(input, output, session) {
         )
       }
       else if (client == "ige"){
+      
         dbWriteTable(
           DB,
           "usos",
@@ -1042,6 +1057,7 @@ shinyServer(function(input, output, session) {
           append = FALSE,
           allow.keywords = FALSE
         )
+        
       }
       else {
        
@@ -2252,13 +2268,46 @@ shinyServer(function(input, output, session) {
             uso1[["Equipo"]]<-"Otro"
             uso<<-rbind(uso1,uso2)
           }
+          
+          month1 <- sapply(uso[,'Fecha'], substr, 6, 7)
+          month <- as.numeric(month1)
+          rm(month1)
+          year1<-sapply(uso[,'Fecha'],substr,1,4)
+          year<-as.numeric(year1)
+          rm(year1)
+          AAA<-data.frame(uso[,'Fecha'])
+          AAA[,'month']<-month
+          AAA[,'year']<-year
+          BBB<-subset(AAA,
+                      AAA["year"]==max(year))
+          rm(month,year)
+          fin1<-max(BBB[["month"]])
+          fin2<-max(BBB[["year"]])
+          rm(BBB)
+          for (i in 1:length(uso[["Acceso"]])){
+            uso[["Meses"]][i]<-(fin2-AAA[["year"]][i])*12+fin1-AAA[["month"]][i]+1
+          }
+          uso2<-data.frame()
+          for (i in 1:max(uso[["Meses"]])){
+            uso1<-subset(uso,uso[["Meses"]]== i)
+            uso1[,'Porcentaje']<-uso1[,'Total (CLP)']/sum(uso1[["Total (CLP)"]])
+           
+            uso2<-rbind(uso2,uso1)
+          }
+          uso<-uso2
+          uso<<-uso
           #Se busca un merge de trazabilidad por proyeccion del periodo actual
           ACCESSES2<-ACCESSES
           ACCESSES2[["Tipo"]]<-NULL
           ACCESSES2[["Proveedor"]]<-NULL
+          if (customfield == "Si"){
           Consolidado1<-merge(uso,ACCESSES2,by = "Acceso", all.x = TRUE)
-          Consolidado<-merge(Consolidado1,CUSTOM,by = "Acceso", all.x = TRUE)
+          Consolidado<-merge(Consolidado1,CUSTOM,by = "Acceso", all.x = TRUE)}
+          else if (customfield=="No"){
+            Consolidado<-merge(uso,ACCESSES2,by = "Acceso", all.x = TRUE)
+          }
           Consolidado<<-Consolidado
+          
           dbWriteTable(
             DB,
             "consolidado",
