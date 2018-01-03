@@ -205,7 +205,9 @@ shinyServer(function(input, output, session) {
       #Clear and create variable and read CSV file
       dataFilesUF <<- NULL
       dataFilesUF <<- lapply(input$usos[['datapath']], read.csv2)
-     
+      #CAMBIO PENDIENTE, EN CONJUNTO CAMBIAR LA LECTURA DE TITULOS EN TODOS LOS IF DE ADELANTE EN CONSECUENCIA
+      #dataFilesUF <<- lapply(input$usos[['datapath']], function(x) read.csv2(x,encoding = "UTF-8"))
+      
       #Append all usos files to the same dataframe
       if (client == "igm"){
       uso <<- rbindlist(dataFilesUF,fill = TRUE)}
@@ -2840,7 +2842,8 @@ shinyServer(function(input, output, session) {
         #Read CDR file with correct fileencoding
         CDRFile <<-
           lapply(input$cdr[['datapath']], function(x) read.csv2(x,encoding = "UTF-8"))
-        
+        # CDRFile <<-
+        #   lapply(input$cdr[['datapath']],read.csv2)
         #join all CDR months
         cdr <<- rbindlist(CDRFile)
         
@@ -2975,13 +2978,22 @@ shinyServer(function(input, output, session) {
         cdr<<-cdr
       }
         if(!is.null(input$usos)&!is.null(planes)&!is.null(contrato)&!is.null(input$factura)){
-          cdr2<<-subset(cdr,(cdr[["Geografia"]]!="Nacional desconocido"& cdr[["Tipo de llamada"]]!="SMS"))
-          cdr3<<-subset(cdr,(cdr[["Servicio llamado"]]=="Números especiales" & cdr[["Tipo de llamada"]]!="SMS"))
+          cdr2<<-subset(cdr,
+                        (cdr[["Geografia"]]!="Nacional desconocido"
+                         & cdr[["Tipo de llamada"]]!="SMS"))
+          cdr3<<-subset(cdr,
+                        (cdr[["Servicio llamado"]]=="Números especiales" 
+                         & cdr[["Tipo de llamada"]]!="SMS"))
         source("pj_afm.r", local = TRUE)
           {
           ################Consolidado############
             SFPlanes_final<-SFPlanes_final
-          Fact<<-merge(uso,SFPlanes_final,by = c("Acceso fix","Acceso","Centro de facturacion"),all.x = TRUE)
+          Fact<<-merge(uso,
+                       SFPlanes_final,
+                       by = c("Acceso fix",
+                              "Acceso",
+                              "Centro de facturacion"),
+                       all.x = TRUE)
           facturas2<-facturas
           facturas2[,'Proveedor']<-NULL
           facturas2[,'Total sin impuestos']<-NULL
@@ -2993,7 +3005,16 @@ shinyServer(function(input, output, session) {
           facturas2<<-facturas2
           Fact<<-merge(Fact,facturas2,by = "Centro de facturacion", all.x = TRUE)
           Fact[["Acceso fix"]]<-NULL
-          Contratoplanes<-subset(MOVISTAR_PLANES,select = c("Producto","Tipo","Precio (CLP)","Voz (min)","Datos (KB)","Precio/min (CLP)","PrecioSC/min (CLP)","Precio/SMS (CLP)","Precio/KB (CLP)"))
+          Contratoplanes<-subset(MOVISTAR_PLANES,
+                                 select = c("Producto",
+                                            "Tipo",
+                                            "Precio (CLP)",
+                                            "Voz (min)",
+                                            "Datos (KB)",
+                                            "Precio/min (CLP)",
+                                            "PrecioSC/min (CLP)",
+                                            "Precio/SMS (CLP)",
+                                            "Precio/KB (CLP)"))
           Contratoplanes[,'Tipo Contrato']<-Contratoplanes[,'Tipo']
           Contratoplanes[["Tipo"]]<-NULL
           Consolidado<<-merge(Fact,Contratoplanes,by = "Producto",all.x = TRUE)
@@ -3008,11 +3029,12 @@ shinyServer(function(input, output, session) {
           MIN_ADICIONAL2[,'Delta minutos']<-MIN_ADICIONAL2[,'Voz nac. (min)']-MIN_ADICIONAL2[,'Voz (min)']
           MIN_ADICIONAL2[,'Precio Real']<- 0
           MIN_ADICIONAL2[,'Delta']<-MIN_ADICIONAL2[,'Voz nacional (CLP)']-MIN_ADICIONAL2[,'Precio Real']
+          MIN_ADICIONAL2<<-MIN_ADICIONAL2
           cdr4<-subset(cdr3,select = c("Numero de llamada","Servicio llamado"))
           
-          MIN_ADICIONAL<<-rbind(MIN_ADICIONAL1,MIN_ADICIONAL2)
+          MIN_ADICIONAL<-rbind(MIN_ADICIONAL1,MIN_ADICIONAL2)
           
-          MIN_ADICIONAL<<-merge(MIN_ADICIONAL,cdr3,by.x = "Acceso",by.y = "Numero de llamada",all.x = TRUE)
+          MIN_ADICIONAL<-merge(MIN_ADICIONAL,cdr3,by.x = "Acceso",by.y = "Numero de llamada",all.x = TRUE)
           a<-duplicated(MIN_ADICIONAL[["Acceso"]],fromLast = FALSE)
           MIN_ADICIONAL[["Duplicados"]]<-a
           MIN_ADICIONAL<-subset(MIN_ADICIONAL,MIN_ADICIONAL[["Duplicados"]]=="FALSE")
@@ -3032,6 +3054,128 @@ shinyServer(function(input, output, session) {
           PlanContratoGranel<<-subset(PlanContratoGranel,PlanContratoGranel[["Delta"]]>0)
           print("Total Plan Granel")
           print(sum(PlanContratoGranel[["Delta"]]))
+          ##############################PAISES ROAMING VOZ####################
+          
+          RoaVoz<-subset(Consolidado,
+                          Consolidado[["Estado acceso"]]=="Activo"&
+                          Consolidado[["Voz roaming (CLP)"]]>0)
+          
+          cdrA<-subset(cdr2,cdr2[["Tipo de llamada"]]=="Voz")
+          cdrB<-cdrA
+          a<-duplicated(cdrA[["Pais emisor"]])
+          b<-duplicated(cdrB[["Pais destinatario"]])
+          cdrA[["duplicados"]]<-a
+          cdrA<-subset(cdrA,cdrA[["duplicados"]]=="FALSE")
+          
+          cdrB[["duplicados"]]<-b
+          cdrB<-subset(cdrB,cdrB[["duplicados"]]=="FALSE")
+          paisesA<-data.frame(cdrA[["Pais emisor"]])
+          names(paisesA)<-c("Pais")
+          paisesB<-data.frame(cdrB[["Pais destinatario"]])
+          names(paisesB)<-c("Pais")
+          paises<-rbind(paisesA,paisesB)
+          a<-duplicated(paises[["Pais"]])
+          paises[["duplicados"]]<-a
+          paises<-subset(paises,paises[["duplicados"]]=="FALSE")
+          rm(cdrA,cdrB,paisesA,paisesB,a,b)
+          
+      PMatriz<-matrix(nrow = length(RoaVoz[["Acceso"]]),ncol = length(paises[["Pais"]]))
+      
+          for(i in 1:length(RoaVoz[["Acceso"]])){
+            cdrC<-subset(cdr2,cdr2[["Tipo de llamada"]]=="Voz" &
+                           cdr2[["Numero de llamada"]]==RoaVoz[["Acceso"]][i])
+            for(j in 1:length(paises[["Pais"]])){
+              P<-as.character(paises[["Pais"]][j])
+              for(k in 1:length(cdrC[["Numero de llamada"]])){
+                Pe<-as.character(cdrC[["Pais emisor"]][k])
+                Pd<-as.character(cdrC[["Pais destinatario"]][k])
+          if(Pe==P){
+            PMatriz[i,j]<-P
+          }
+          else if(Pd==P){
+                PMatriz[i,j]<-P
+              }
+            }
+            }
+          }
+      PMatriz<-data.frame(PMatriz)
+      names(PMatriz)<-paises[["Pais"]]
+      RoaVoz<-subset(RoaVoz,select = c("Acceso",
+                                       "Estado acceso",
+                                       "Tipo",
+                                       "Producto",
+                                       "Centro de facturacion",
+                                       "Cuenta cliente",
+                                       "Factura",
+                                       "Total (CLP)",
+                                       "Plano tarifario (CLP)",
+                                       "Servicios (CLP)",
+                                       "Servicios opciones (CLP)",
+                                       "Servicios otros (CLP)",
+                                       "Descuentos (CLP)",
+                                       "Descuentos opciones (CLP)",
+                                       "Descuentos otros (CLP)",
+                                       "Uso rebajado (CLP)",
+                                       "Voz (CLP)",
+                                       "Voz roaming (CLP)",
+                                       "Voz roaming (seg)"))
+      RoaVoz<-cbind(RoaVoz,PMatriz)
+      RoaVoz<<-RoaVoz
+          
+          ##############################PAISES ROAMING DATOS ###################
+      
+      RoaDat<-subset(Consolidado,
+                     Consolidado[["Estado acceso"]]=="Activo"&
+                       Consolidado[["Datos inter (CLP)"]]>0)
+      cdrA<-subset(cdr2,cdr2[["Tipo de llamada"]]=="Datos")
+      a<-duplicated(cdrA[["Pais emisor"]])
+      cdrA[["duplicados"]]<-a
+      cdrA<-subset(cdrA,cdrA[["duplicados"]]=="FALSE")
+      paises<-data.frame(cdrA[["Pais emisor"]])
+      names(paises)<-c("Pais")
+      rm(cdrA,cdrB,a)
+      PMatriz<-matrix(nrow = length(RoaDat[["Acceso"]]),ncol = length(paises[["Pais"]]))
+      for(i in 1:length(RoaDat[["Acceso"]])){
+        cdrC<-subset(cdr2,cdr2[["Tipo de llamada"]]=="Datos" &
+                       cdr2[["Numero de llamada"]]==RoaDat[["Acceso"]][i])
+        for(j in 1:length(paises[["Pais"]])){
+          P<-as.character(paises[["Pais"]][j])
+          for(k in 1:length(cdrC[["Numero de llamada"]])){
+            Pe<-as.character(cdrC[["Pais emisor"]][k])
+            Pd<-as.character(cdrC[["Pais destinatario"]][k])
+            if(Pe==P){
+              PMatriz[i,j]<-P
+            }
+            else if(Pd==P){
+              PMatriz[i,j]<-P
+            }
+          }
+        }
+      }
+      PMatriz<-data.frame(PMatriz)
+      names(PMatriz)<-paises[["Pais"]]
+      RoaDat<-subset(RoaDat,select = c("Acceso",
+                                       "Estado acceso",
+                                       "Tipo",
+                                       "Producto",
+                                       "Centro de facturacion",
+                                       "Cuenta cliente",
+                                       "Factura",
+                                       "Total (CLP)",
+                                       "Plano tarifario (CLP)",
+                                       "Servicios (CLP)",
+                                       "Servicios opciones (CLP)",
+                                       "Servicios otros (CLP)",
+                                       "Descuentos (CLP)",
+                                       "Descuentos opciones (CLP)",
+                                       "Descuentos otros (CLP)",
+                                       "Uso rebajado (CLP)",
+                                       "Datos (CLP)",
+                                       "Datos inter (CLP)",
+                                       "Datos inter (KB)"))
+      RoaDat<-cbind(RoaDat,PMatriz)
+      RoaDat<<-RoaDat
+      
           }
 ############Consolidado###########
           dbWriteTable(
@@ -3286,6 +3430,28 @@ shinyServer(function(input, output, session) {
               `Servicio llamado` = "varchar(255)",
               `Organizacion Proveedor` = "varchar(255)"
             ),
+            row.names = FALSE,
+            overwrite = TRUE,
+            append = FALSE,
+            allow.keywords = FALSE
+          )
+#################Roaming Voz###########
+          dbWriteTable(
+            DB,
+            "roaming_voz",
+            RoaVoz,
+            field.types = NULL ,
+            row.names = FALSE,
+            overwrite = TRUE,
+            append = FALSE,
+            allow.keywords = FALSE
+          )
+#################Roaming Datos########
+          dbWriteTable(
+            DB,
+            "roaming_datos",
+            RoaDat,
+            field.types = NULL ,
             row.names = FALSE,
             overwrite = TRUE,
             append = FALSE,

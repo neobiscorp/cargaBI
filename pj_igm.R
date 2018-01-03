@@ -19,7 +19,9 @@ if(length(CF[["Nombre"]])>0){
     ACCESSES2<-subset(ACCESSES,
                        ACCESSES[["Proveedor"]]== "Movistar CL" |
                        ACCESSES[["Proveedor"]] == "Entel PCS (CL)"|
-                        ACCESSES[["Proveedor"]]== "Claro CL"
+                        ACCESSES[["Proveedor"]]== "Claro CL"|
+                        ACCESSES[["Proveedor"]] == "Movistar CL (Landline)"|
+                        ACCESSES[["Proveedor"]] == "Entel Fijo (CL)"
                      )
   
  # ASSOCIATIONS["Acceso fix"]<-substr(ASSOCIATIONS[["Acceso"]],3,1000000L) #Se crea Acceso fix como parametro para unir
@@ -82,7 +84,9 @@ uso3<<-UAADP_usos
     UAADP_usos,
     UAADP_usos[["Proveedor"]] == "Movistar CL" |
       UAADP_usos[["Proveedor"]] == "Entel PCS (CL)" |
-      UAADP_usos[["Proveedor"]] == "Claro CL"
+      UAADP_usos[["Proveedor"]] == "Claro CL"|
+      UAADP_usos[["Proveedor"]] == "Movistar CL (Landline)"|
+      UAADP_usos[["Proveedor"]] == "Entel Fijo (CL)"
   )
   uso6<<-UAADP_usos
  # rm(ACCESSES2, UAAD_users, PLAN2) #Se borran las tablas que no aportan
@@ -106,7 +110,9 @@ SinUsos<-UAADP_usos
         "usocant"
       )
     )
+  
   SinUsos<-subset(SinUsos,SinUsos[["usocant"]]==0)
+
   month1 <- sapply(SinUsos[,'Fecha'], substr, 6, 7)
     month <- as.numeric(month1)
     rm(month1)
