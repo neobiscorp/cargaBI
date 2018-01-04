@@ -1091,7 +1091,7 @@ shinyServer(function(input, output, session) {
         )
       }
       #Send an MySQL Query that delete spaces inside Accesos
-      if (client != "igm" & client != "afm"& client != "igb"){
+      if (client != "igm" & client != "afm"& client != "ige"){
       dbSendQuery(DB, "update `usos` set ACCESO = replace(ACCESO, ' ', '')")
       }
       uso <<- uso
@@ -2506,6 +2506,7 @@ shinyServer(function(input, output, session) {
         SFACTURADOS <<- read.xlsx(planes$datapath,
                           sheet = "Uso por accesoproducto",
                           startRow = 1)
+       
         SFACTURADOS <<-
           subset(
             SFACTURADOS,
@@ -2513,6 +2514,8 @@ shinyServer(function(input, output, session) {
               "Acceso",
               "Estado.acceso",
               "Producto",
+              "Fecha.de.activación",
+              "Fecha.de.desactivación",
               "Tipo.de.producto",
               "Centro.de.facturación",
               "Importe.de.las.opciones.facturadas.(CLP)",
@@ -2530,6 +2533,8 @@ shinyServer(function(input, output, session) {
           "Acceso",
           "Estado acceso",
           "Producto",
+          "Fecha de activación",
+          "Fecha de desactivación",
           "Tipo de producto",
           "Centro de facturacion",
           "Importe de las opciones facturadas (CLP)",
@@ -2547,6 +2552,8 @@ shinyServer(function(input, output, session) {
         SFACTURADOS3[,'Importe descuentos sobre plano tarifario (CLP)']<- 0
         SFACTURADOS<-rbind(SFACTURADOS3,SFACTURADOS2)
         }
+        SFACTURADOS[["Fecha de activación"]]<-NULL
+        SFACTURADOS[["Fecha de desactivación"]]<-NULL
         dbWriteTable(
           DB,
           "servicios_facturados",
