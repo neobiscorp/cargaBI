@@ -2636,7 +2636,7 @@ shinyServer(function(input, output, session) {
         link<<-"https://cdn.pbrd.co/images/GWEuMor.gif"
       }
       else if (nombre =="Hogar de Cristo"){
-        link<<-"https://cdn.pbrd.co/images/GWEuX3b.png"
+        link<<-"https://cdn.pbrd.co/images/H1pXkPQO.png"
       }
       else if (nombre =="Nuevo Pudahuel"){
         link<<-"https://cdn.pbrd.co/images/GWEvad0.png"
