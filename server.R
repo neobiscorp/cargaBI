@@ -2663,6 +2663,9 @@ shinyServer(function(input, output, session) {
       else if (nombre =="Walmart"){
         link<<-"https://cdn.pbrd.co/images/GWEvY8X.jpg"
       }
+      else if (nombre =="Neobis"){
+        link<<-"http://neobiscorp.com/images/logo.png"
+      }
       else{print("No se encontro un link Para el nombre seleccionado")}
       #Create table logo_cliente if doesnt exist
       dbSendQuery(

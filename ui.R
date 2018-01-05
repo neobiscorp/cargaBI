@@ -48,7 +48,8 @@ shinyUI(fluidPage(
           "Rhona",
           "SAAM",
           "Subsole",
-          "Walmart"
+          "Walmart",
+          "Neobis"
         ),
         selected = ""
         ),
