@@ -1038,6 +1038,22 @@ shinyServer(function(input, output, session) {
       }
       else if (client == "ige"){
       
+        uso <-
+          subset(
+            uso,
+            select = c(
+              "Acceso",
+              "Proveedor",
+              "Tipo",
+              "Centro de facturacion",
+              "Equipo",
+              "Total (CLP)",
+              "Plano tarifario (CLP)",
+              "Descuentos (CLP)",
+              "Fecha",
+              "Mes"
+            )
+          )
         dbWriteTable(
           DB,
           "usos",
@@ -1059,6 +1075,7 @@ shinyServer(function(input, output, session) {
           append = FALSE,
           allow.keywords = FALSE
         )
+       
         
       }
       else {
