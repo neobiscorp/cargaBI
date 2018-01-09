@@ -16,17 +16,18 @@ if(length(CF[["Nombre"]])>0){
   uso2<<-uso
 
   #Dejamos los proveedores relevantes para conseguir la informacion necesaria de ACCESSES
-    ACCESSES2<-subset(ACCESSES,
-                       ACCESSES[["Proveedor"]]== "Movistar CL" |
-                       ACCESSES[["Proveedor"]] == "Entel PCS (CL)"|
-                        ACCESSES[["Proveedor"]]== "Claro CL"|
-                        ACCESSES[["Proveedor"]] == "Movistar CL (Landline)"|
-                        ACCESSES[["Proveedor"]] == "Entel Fijo (CL)"
-                     )
+    # ACCESSES2<-subset(ACCESSES,
+    #                    ACCESSES[["Proveedor"]]== "Movistar CL" |
+    #                    ACCESSES[["Proveedor"]] == "Entel PCS (CL)"|
+    #                     ACCESSES[["Proveedor"]]== "Claro CL"|
+    #                     ACCESSES[["Proveedor"]] == "Movistar CL (Landline)"|
+    #                     ACCESSES[["Proveedor"]] == "Entel Fijo (CL)"
+    #                  )
   
  # ASSOCIATIONS["Acceso fix"]<-substr(ASSOCIATIONS[["Acceso"]],3,1000000L) #Se crea Acceso fix como parametro para unir
   #Se borran las columnas innecesarias que causaran distorcion sobre los nombres finales de las columnas
-ACCESSES2[["Acceso"]]<-NULL
+ACCESSES2<-ACCESSES
+  ACCESSES2[["Acceso"]]<-NULL
 ACCESSES2[["Proveedor"]]<-NULL
 ACCESSES2[["Tipo"]]<-NULL
 ACCESSES2[["Estado"]]<-NULL
@@ -80,14 +81,14 @@ uso3<<-UAADP_usos
   uso4<<-UAADP_usos
  # UAADP_usos[["Proveedor2"]]<-NULL #Se elimina la columna sobrante
   #Se dejan los proveedores relevantes para analizar
-  UAADP_usos <- subset(
-    UAADP_usos,
-    UAADP_usos[["Proveedor"]] == "Movistar CL" |
-      UAADP_usos[["Proveedor"]] == "Entel PCS (CL)" |
-      UAADP_usos[["Proveedor"]] == "Claro CL"|
-      UAADP_usos[["Proveedor"]] == "Movistar CL (Landline)"|
-      UAADP_usos[["Proveedor"]] == "Entel Fijo (CL)"
-  )
+  # UAADP_usos <- subset(
+  #   UAADP_usos,
+  #   UAADP_usos[["Proveedor"]] == "Movistar CL" |
+  #     UAADP_usos[["Proveedor"]] == "Entel PCS (CL)" |
+  #     UAADP_usos[["Proveedor"]] == "Claro CL"|
+  #     UAADP_usos[["Proveedor"]] == "Movistar CL (Landline)"|
+  #     UAADP_usos[["Proveedor"]] == "Entel Fijo (CL)"
+  # )
   uso6<<-UAADP_usos
  # rm(ACCESSES2, UAAD_users, PLAN2) #Se borran las tablas que no aportan
   
