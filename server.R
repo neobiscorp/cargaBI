@@ -2460,7 +2460,7 @@ shinyServer(function(input, output, session) {
       PLAN <- read.xlsx(planes$datapath,
                         sheet = "Uso por accesoproducto",
                         startRow = 1)
-      
+ 
       PLAN <-
         subset(
           PLAN,
@@ -2683,6 +2683,9 @@ shinyServer(function(input, output, session) {
       else if (nombre =="Neobis"){
         link<<-"http://neobiscorp.com/images/logo.png"
       }
+      else if (nombre == "Hortifrut"){
+        link<<-"https://cdn.pbrd.co/images/H3oxeYy.png"
+      }
       else{print("No se encontro un link Para el nombre seleccionado")}
       #Create table logo_cliente if doesnt exist
       dbSendQuery(
@@ -2710,7 +2713,7 @@ shinyServer(function(input, output, session) {
           sep = '\''
         )
       )
-      if(client == "igm"){
+      if(client == "igm" & !is.null(input$usos)){
         source("pj_igm.r", local = TRUE)
         source("pj_igm_db.r", local = TRUE)
       }
@@ -3493,7 +3496,7 @@ shinyServer(function(input, output, session) {
         lapply(input$cdr[['datapath']], read.csv2)
       
       #join all CDR months
-      cdr <<- rbindlist(CDRFile)
+      cdr <<- rbindlist(CDRFile,fill = TRUE)
       
       #Change column names of the CDR
       names(cdr)[names(cdr) == 'NÃºmero.de.llamada'] <<-
@@ -3520,6 +3523,38 @@ shinyServer(function(input, output, session) {
         'Red recurrente'
       names(cdr)[names(cdr) == 'Red.destinada'] <<- 'Red destinada'
       names(cdr)[names(cdr) == 'OrganizaciÃ³n.de.gestiÃ²n'] <<-
+        'Organización de gestion'
+      names(cdr)[names(cdr) == 'VPN'] <<- 'VPN'
+      names(cdr)[names(cdr) == 'Llamadas.internas'] <<-
+        'Llamadas internas'
+      names(cdr)[names(cdr) == 'Servicio.llamado'] <<-
+        'Servicio llamado'
+      #################################
+      #Change column names of the CDR
+      names(cdr)[names(cdr) == 'Número.de.llamada'] <<-
+        'Numero de llamada'
+      names(cdr)[names(cdr) == 'Número.llamado'] <<-
+        'Numero llamado'
+      names(cdr)[names(cdr) == 'Tipo de llamada'] <<-
+        'Tipo de llamada'
+      names(cdr)[names(cdr) == 'Fecha.de.llamada'] <<-
+        'Fecha de llamada'
+      names(cdr)[names(cdr) == 'Geografía'] <<- 'Geografia'
+      names(cdr)[names(cdr) == 'País.emisor'] <<- 'Pais emisor'
+      names(cdr)[names(cdr) == 'País.destinatario'] <<-
+        'Pais destinatario'
+      names(cdr)[names(cdr) == 'Duración'] <<- 'Duracion'
+      names(cdr)[names(cdr) == 'Volumen'] <<- 'Volumen'
+      names(cdr)[names(cdr) == 'Precio'] <<- 'Precio'
+      names(cdr)[names(cdr) == 'Organización.Proveedor'] <<-
+        'Organizacion Proveedor'
+      names(cdr)[names(cdr) == 'Tarificación'] <<- 'Tarificacion'
+      names(cdr)[names(cdr) == 'ï..Usuario'] <<- 'Usuario'
+      names(cdr)[names(cdr) == 'Tecnología'] <<- 'Tecnologia'
+      names(cdr)[names(cdr) == 'Red.recurrente'] <<-
+        'Red recurrente'
+      names(cdr)[names(cdr) == 'Red.destinada'] <<- 'Red destinada'
+      names(cdr)[names(cdr) == 'Organización.de.gestiòn'] <<-
         'Organización de gestion'
       names(cdr)[names(cdr) == 'VPN'] <<- 'VPN'
       names(cdr)[names(cdr) == 'Llamadas.internas'] <<-
@@ -3636,13 +3671,13 @@ shinyServer(function(input, output, session) {
                 1,
                 0)
       
-      mes1 <- sapply(cdr_accesses["Fecha de llamada"],substr, 6, 7)
+      mes1 <- sapply(cdr_accesses["Fecha de llamada"],substr, 4, 5)
       mes <- as.numeric(mes1)
       rm(mes1)
       cdr_accesses["Mes"] <- mes
       
-      cdr_accesses <-
-        subset(cdr_accesses, cdr_accesses["Mes"] != min(cdr_accesses["Mes"]))
+      # cdr_accesses <-
+      #   subset(cdr_accesses, cdr_accesses["Mes"] != min(cdr_accesses["Mes"]))
       
       dbWriteTable(
         DB,
@@ -3848,13 +3883,13 @@ shinyServer(function(input, output, session) {
         sheet = "RFP EQUIPOS",
         z,
         startCol = 3,
-        startRow = 1,
+        startRow = 1
       )
       
       #Functions in other files
-      #source("pj.r", local = TRUE)
-      source("pb.r", local = TRUE)
-      #source("jp.r", local = TRUE)
+      source("pj.r", local = TRUE)
+      #source("pb.r", local = TRUE)
+      
       
       
       # Consumo total Voz MOVISTAR

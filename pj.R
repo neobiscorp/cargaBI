@@ -28,14 +28,13 @@ cdr_accesses[, "NET"] <-
           1,
           0) #Se crea un mecanismo para definir cuales llamadas son realizadas dentro de un mismo cliente
 
-mes1 <- sapply(cdr_accesses["Fecha de llamada"], substr, 6, 7)
+mes1 <- sapply(cdr_accesses["Fecha de llamada"], substr, 4, 5)
 mes <- as.numeric(mes1)
 cdr_accesses["Mes"] <- mes #Se agrega el mes como columna a parte de la fecha para poder utilizar el mes dentro de otras formulas
 
 rm(mes1, mes) #Con rm se borran los exedentes de datos, genera una optimizacion de tiempo a la hora de procesar los datos
 
-cdr_accesses <-
-  subset(cdr_accesses, cdr_accesses["Mes"] != min(cdr_accesses["Mes"])) # Se extraen los datos sobrantes de los periodos anteriores de los que se van a revisar
+
 cdr_accesses[,"PdivD"] <- cdr_accesses[,"Precio"]/cdr_accesses[,"Duracion"]*60 #generacion de variable Precio/Duracion que se usara mas adelante *60 para que este en minutos
 cdr_accesses[,"PdivV"] <- cdr_accesses[,"Precio"]/cdr_accesses[,"Volumen"]*1024 #generacion de variable Precio/Volumen que se usara mas adelante *1024 para que este en Mb
 #Estas variables pueden presentar valores infinitos o no acordes a la realidad pero no pasan a estar incluidos en algun dato relevante debido a que los filtros usados
@@ -65,8 +64,8 @@ cdr_accesses[,"PdivV"] <- cdr_accesses[,"Precio"]/cdr_accesses[,"Volumen"]*1024 
       all.x = TRUE
     )
   usoplantjointipo2<-usoplantjointipo
-  usoplantjointipo2["Proveedor.x"] <- NULL
-  usoplantjointipo2["Proveedor.y"] <- NULL
+  usoplantjointipo2[["Proveedor.x"]] <- NULL
+  usoplantjointipo2[["Proveedor.y"]] <- NULL
   
   UTP_accesses<-
   merge (
@@ -112,21 +111,24 @@ cdr_accesses[,"PdivV"] <- cdr_accesses[,"Precio"]/cdr_accesses[,"Volumen"]*1024 
   MovVozOnNet<-c()
   
   
-  nomemp<-unique(CUENTAS["Empresa"]) #Se genera una columna que solo contenga los nombres sin repetir de los centros de facturacion
-  m<-lapply(nomemp,as.character) #se deja en un formato compatible con otras formulas
-  CC<-as.numeric(lengths(nomemp))  #se cuentan la cantidad de nombres de empresas que hay de los centros de facturacion
-  
+  nomemp<-as.character(unique(CUENTAS[["Empresa"]]))
+  m<-as.matrix(nomemp) #se deja en un formato compatible con otras formulas
+  CC<-as.numeric(length(nomemp))  #se cuentan la cantidad de nombres de empresas que hay de los centros de facturacion
 
-  
+
+
+  CUENTAS2<-CUENTAS
+  CUENTAS2[["Cuenta Cliente"]]<-as.character(CUENTAS2[["Cuenta Cliente"]])
 
   UTP_accesses <-
-    merge (
+    merge(
       UTP_accesses,
-      CUENTAS,
+      CUENTAS2,
       by.x = "Proveedor Nivel 3",
       by.y = "Cuenta Cliente",
       all.x = TRUE
     )
+ 
   UTP_accesses2<-UTP_accesses #se deja guardado un original de UTP_accesses para no perder datos al filtrar
 }
 #BAM por Empresa
@@ -136,10 +138,10 @@ cdr_accesses[,"PdivV"] <- cdr_accesses[,"Precio"]/cdr_accesses[,"Volumen"]*1024 
       print("datos generales")
     }else{    
       print(i)
-      print(m[["Empresa"]][i]) #Se ve que empresa se esta usando
+      print(m[i]) #Se ve que empresa se esta usando
       UTP_accesses<-
         subset(UTP_accesses,
-               UTP_accesses["Empresa"]==m[["Empresa"]][i] 
+               UTP_accesses[["Empresa"]]==m[i] 
         ) #Se filtra segun que empresa para sacar RFP de los distintos clientes
     }
   #BAM O SERVICIOS DE TELEMETRÍA MOVISTAR
@@ -168,11 +170,11 @@ cdr_accesses <-
     all.x = TRUE
   ) #Se hace une cdr_accesses con CUENTAS para poder filtrar segun el nombre de la empresa
 cdr_accesses2<-cdr_accesses #se guardan los datos de cdr_accesses para ser reutilizados despues
-nomemp<-unique(CUENTAS["Empresa"])
+nomemp<-as.character(unique(CUENTAS[["Empresa"]]))
+m<-as.matrix(nomemp)
+#m<-lapply(nomemp,as.character)
 
-m<-lapply(nomemp,as.character)
-
-CC<-as.numeric(lengths(nomemp))
+CC<-as.numeric(length(nomemp))
 
 
   }
@@ -183,16 +185,17 @@ if (i==CC+1){
   print("datos generales")
 }else{
   print(i)
-  print(m[["Empresa"]][i])
+  print(m[i])
      cdr_accesses<-
        subset(cdr_accesses,
-         cdr_accesses["Empresa"]==m[["Empresa"]][i]
+         cdr_accesses["Empresa"]==m[i]
        )
 }
 
 #######MOVISTAR######
   
 {
+
   cdr_movistar <-
     subset(cdr_accesses, cdr_accesses[["Proveedor.x"]] == "Movistar CL") #dado que en esta parte solo usaremos proveedor movistar, lo filtraremos ahora para no hacerlo por cada dato a sacar
   datM[i]<-as.numeric(lengths(cdr_movistar["Tipo de llamada"])) #guarda la cantidad de datos existentes como un numero
@@ -264,6 +267,7 @@ if (i==CC+1){
     )
   
   MovMms[i]<-as.numeric(sapply(movistarMMS["Precio"], median)) #bajo la misma logica que en SMS se usa mediana para los MMS
+  
   print(MovMms)
   rm (movistarMMS)
   
@@ -277,8 +281,8 @@ if (i==CC+1){
     ) #Filtro para revisar solo los Roaming
   mroamvoz <-
     subset(mroam,
-           mroam["Tipo de llamada"] == "Voz" &
-             mroam["Duracion"] > 0)
+           mroam[["Tipo de llamada"]] == "Voz" &
+             mroam[["Duracion"]] > 0)
   datM2<-as.numeric(lengths(mroamvoz["Tipo de llamada"])) 
   if(datM2!=0){     #misma logica pasada se ocupa despues de un filtro fuerte
   MovRoaVoz[i]<-(sum(mroamvoz["Duracion"]) / 60 / nM[[i]]) # los segundos se dividen por 60 y se obtiene un promedio mensual
@@ -339,7 +343,7 @@ if (i==CC+1){
 
 #######ENTEL######
   #Se usan los mismos fitros y formulas que en movistar a excepcion de "A internacional" que no se presenta en movistar y se presenta en la linea 444 - 450
-{
+  if(FALSE){
   cdr_entel <-
     subset(cdr_accesses, cdr_accesses[["Proveedor.x"]] == "Entel PCS (CL)")
   datEn[i]<-as.numeric(lengths(cdr_entel["Tipo de llamada"]))
@@ -513,6 +517,7 @@ MovPais<-MovPais3[order(-MovPais3[["Duracion"]]),] #Manera de dejar ordenado de 
 
 rm(PaisesMov,PaisesMov2,PaisesMov3,MovPaisDur,movistarpais,MovPais3)
 #Se hace de la misma manera la lista de paises ahora con el proveedor entel
+if(FALSE){
 cdr_entel <-
   subset(cdr_accesses, cdr_accesses[["Proveedor.x"]] == "Entel PCS (CL)")
 entelpais<-
@@ -541,13 +546,15 @@ EntPais3<-EntPais
 EntPais<-EntPais3[order(-EntPais3[["Duracion"]]),]
 
 rm(PaisesEnt,PaisesEnt2,PaisesEnt3,EntPaisDur,entelpais,EntPais3)
+}
   }
+  cdr_entel<-NULL
   rm(cdr_entel,cdr_movistar)
   
   
   
   
-  
+  if(FALSE){
   
 #Accesos unicos por tipo
   #Se quiere generar los consumos promedios mensuales por acceso
@@ -597,14 +604,14 @@ rm(Vnacional)
   accesosunicos["Cantidad Meses"]<-nmeses
   
   rm(Vtotal2,VRoamSal2,VRoamEnt2,VRoam2,Vnacional2,Vinter2,VhaciaInt2,nmeses,accesosunicos2,AccMes,uso2,UTP_accesses2)
-
+}
   
   
 }
 
 
 
-
+sum(MovPais[["Duracion"]])
 
 
 

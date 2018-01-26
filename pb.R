@@ -1,3 +1,4 @@
+{
 cdr_accesses <-
   merge (cdr, ACCESSES, by.x = "Numero de llamada fix", by.y = "Acceso fix")
 
@@ -22,13 +23,13 @@ cdr_accesses["Mes"] <- mes
 n <- (length(unique(mes))) - 1 #número de meses
 rm(mes1, mes)
 
-cdr_accesses <-
-  subset(cdr_accesses, cdr_accesses["Mes"] != min(cdr_accesses["Mes"]))
+# cdr_accesses <-
+#   subset(cdr_accesses, cdr_accesses["Mes"] != min(cdr_accesses["Mes"]))
 
 #MOVISTAR
 {
   cdr_movistar <-
-    subset(cdr_accesses, cdr_accesses$Proveedor.x == "Movistar CL")
+    subset(cdr_accesses, cdr_accesses[["Proveedor.x"]] == "Movistar CL")
   
   #CONSUMO TOTAL VOZ
   movistarvoz <-
@@ -146,7 +147,7 @@ cdr_accesses <-
   }
 
 #ENTEL
-{
+if(FALSE){
   cdr_entel <-
     subset(cdr_accesses, cdr_accesses$Proveedor.x == "Entel PCS (CL)")
   
@@ -271,4 +272,5 @@ cdr_accesses <-
   #print(EntMbAct)
   #Remoción tablas y variables
   rm(cdr_entel, mroam, entelvoz, enteldatos)
+}
 }
