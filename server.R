@@ -2654,13 +2654,13 @@ shinyServer(function(input, output, session) {
         link<<-"https://cdn.pbrd.co/images/GWEuhGn.jpg"
       }
       else if (nombre =="Copec"){
-        link<<-"https://cdn.pbrd.co/images/GWEuxvg.png"
+        link<<-"https://item4.neobiscorp.com/images/logos_powerbi/clientes/copec.png"
       }
       else if (nombre =="Enap"){
         link<<-"https://cdn.pbrd.co/images/GWEuMor.gif"
       }
       else if (nombre =="Hogar de Cristo"){
-        link<<-"https://cdn.pbrd.co/images/H1pXkPQO.png"
+        link<<-"https://item4.neobiscorp.com/images/logos_powerbi/clientes/hdc.png"
       }
       else if (nombre =="Nuevo Pudahuel"){
         link<<-"https://cdn.pbrd.co/images/GWEvad0.png"
@@ -2678,7 +2678,7 @@ shinyServer(function(input, output, session) {
         link<<-"https://cdn.pbrd.co/images/GWEvOqH.png"
       }
       else if (nombre =="Walmart"){
-        link<<-"https://cdn.pbrd.co/images/GWEvY8X.jpg"
+        link<<-"https://item4.neobiscorp.com/images/logos_powerbi/clientes/walmart.png"
       }
       else if (nombre =="Neobis"){
         link<<-"http://neobiscorp.com/images/logo.png"
