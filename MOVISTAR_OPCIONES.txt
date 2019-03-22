@@ -1,0 +1,9 @@
+"Opciones" "Tipo" "Valor.Opcion" "Minutos" "KB" "Duracion"
+"1" "Servicio Roaming Empresas Ca1" "Móvil" 25202 0 0 0
+"2" "Plan Roaming 10 mb" "Móvil" 21000 0 10240 0
+"3" "Bolsa Roaming 24 Horas" "Móvil" 0 0 0 0
+"4" "Pasaporte Roaming 10 Dias" "Móvil" 42008 0 0 0
+"5" "Pasaporte Roaming 30 Dias" "Móvil" 84025 0 0 0
+"6" "Pasaporte Roaming 4 Dias" "Móvil" 21000 0 0 0
+"7" "Plan Roaming 20 mb" "Móvil" 37807 0 20480 0
+"8" "Plan Roaming 50mb Empresas" "Móvil" 84025 0 51200 0
