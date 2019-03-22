@@ -2256,7 +2256,7 @@ shinyServer(function(input, output, session) {
             Consolidado<-merge(uso,ACCESSES2,by = "Acceso",all.x = TRUE)
           }
           }
-          else if (proveedor == "UNIT CL"){
+          else if (proveedor2 == "UNIT CL"){
             print("Falta validar")
             ACCESSES2<-ACCESSES
             ACCESSES2[["Tipo"]]<-NULL
@@ -3018,6 +3018,7 @@ shinyServer(function(input, output, session) {
           {
           ################Consolidado############
             SFPlanes_final<-SFPlanes_final
+            uso[["Acceso"]]<-as.double(uso[["Acceso"]])
           Fact<<-merge(uso,
                        SFPlanes_final,
                        by = c("Acceso fix",
@@ -3091,7 +3092,7 @@ shinyServer(function(input, output, session) {
                           Consolidado[["Voz roaming (CLP)"]]>0)
           
           cdrA<-subset(cdr2,cdr2[["Tipo de llamada"]]=="Voz")
-          cdrB<-cdrA
+          cdrB<<-cdrA
           a<-duplicated(cdrA[["Pais emisor"]])
           b<-duplicated(cdrB[["Pais destinatario"]])
           cdrA[["duplicados"]]<-a
@@ -3157,6 +3158,7 @@ shinyServer(function(input, output, session) {
       RoaDat<-subset(Consolidado,
                      Consolidado[["Estado acceso"]]=="Activo"&
                        Consolidado[["Datos inter (CLP)"]]>0)
+      if(length(RoaDat[["Acceso"]])>0){
       cdrA<-subset(cdr2,cdr2[["Tipo de llamada"]]=="Datos")
       a<-duplicated(cdrA[["Pais emisor"]])
       cdrA[["duplicados"]]<-a
@@ -3204,6 +3206,29 @@ shinyServer(function(input, output, session) {
                                        "Datos inter (CLP)",
                                        "Datos inter (KB)"))
       RoaDat<-cbind(RoaDat,PMatriz)
+      }
+      else{
+        RoaDat<-subset(RoaDat,select = c("Acceso",
+                                         "Estado acceso",
+                                         "Tipo",
+                                         "Producto",
+                                         "Centro de facturacion",
+                                         "Cuenta cliente",
+                                         "Factura",
+                                         "Total (CLP)",
+                                         "Plano tarifario (CLP)",
+                                         "Servicios (CLP)",
+                                         "Servicios opciones (CLP)",
+                                         "Servicios otros (CLP)",
+                                         "Descuentos (CLP)",
+                                         "Descuentos opciones (CLP)",
+                                         "Descuentos otros (CLP)",
+                                         "Uso rebajado (CLP)",
+                                         "Datos (CLP)",
+                                         "Datos inter (CLP)",
+                                         "Datos inter (KB)"))
+        
+      }
       RoaDat<<-RoaDat
       
           }
